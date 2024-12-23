@@ -8,16 +8,8 @@ namespace Client
 {
     public partial class AuthorizationForm : Form
     {
-        //Источник данных для DGV
-        private BindingSource _bsDbClients;
-        //редактируемый сотрудник
-        private BindingSource _bsCurrentDbClient;
-        //работа с БД
         private IUserAuth _repo;
-        private bool IsAddMethodCalled = false;
-        MainForm mf;
-        RecoverForm recf;
-        RegistrationForm regf;
+
         public AuthorizationForm()
         {
             InitializeComponent();
@@ -47,6 +39,7 @@ namespace Client
 
                 if (IsUserExists) {
                     MessageBox.Show("Добро пожаловать в систему", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MainForm mf = new MainForm();
                     mf.Show();
                 }
                 else
@@ -66,18 +59,13 @@ namespace Client
 
         private void recoverButton_Click(object sender, EventArgs e)
         {
+            RecoverForm recf = new RecoverForm();
             recf.Show();
-        }
-
-        private void AuthorizationForm_Load(object sender, EventArgs e)
-        {
-            mf = new MainForm();
-            recf = new RecoverForm();
-            regf = new RegistrationForm();
         }
 
         private void regButton_Click(object sender, EventArgs e)
         {
+            RegistrationForm regf = new RegistrationForm();
             regf.Show();
         }
     }

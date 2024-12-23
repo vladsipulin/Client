@@ -114,7 +114,6 @@
             this.Controls.Add(this.тбЛогин);
             this.Name = "AuthorizationForm";
             this.Text = "Авторизация";
-            this.Load += new System.EventHandler(this.AuthorizationForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

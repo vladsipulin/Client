@@ -12,9 +12,6 @@ namespace Client
 {
     public partial class MainForm : Form
     {
-        Клиенты clients;
-        Организация org;
-
         public MainForm()
         {
             InitializeComponent();
@@ -22,18 +19,14 @@ namespace Client
 
         private void button1_Click(object sender, EventArgs e)
         {
+            Клиенты clients = new Клиенты();
             clients.Show();
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
+            Организация org = new Организация();
             org.Show();
-        }
-
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            clients = new Клиенты();
-            org = new Организация();
         }
     }
 }

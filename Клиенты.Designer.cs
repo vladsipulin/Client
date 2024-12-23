@@ -31,6 +31,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.clientsDGV = new System.Windows.Forms.DataGridView();
+            this.НКл = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ФИО = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Пол = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ДатаРождения = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Логин = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Пароль = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Email = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnForward = new System.Windows.Forms.Button();
             this.btnBack = new System.Windows.Forms.Button();
@@ -45,13 +52,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.НКл = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ФИО = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Пол = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ДатаРождения = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Логин = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Пароль = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Email = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.clientsDGV)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -96,6 +96,41 @@
             this.clientsDGV.RowTemplate.Height = 25;
             this.clientsDGV.Size = new System.Drawing.Size(537, 237);
             this.clientsDGV.TabIndex = 2;
+            // 
+            // НКл
+            // 
+            this.НКл.HeaderText = "Номер клиента";
+            this.НКл.Name = "НКл";
+            // 
+            // ФИО
+            // 
+            this.ФИО.HeaderText = "ФИО";
+            this.ФИО.Name = "ФИО";
+            // 
+            // Пол
+            // 
+            this.Пол.HeaderText = "Пол";
+            this.Пол.Name = "Пол";
+            // 
+            // ДатаРождения
+            // 
+            this.ДатаРождения.HeaderText = "Дата рождения";
+            this.ДатаРождения.Name = "ДатаРождения";
+            // 
+            // Логин
+            // 
+            this.Логин.HeaderText = "Логин";
+            this.Логин.Name = "Логин";
+            // 
+            // Пароль
+            // 
+            this.Пароль.HeaderText = "Пароль";
+            this.Пароль.Name = "Пароль";
+            // 
+            // Email
+            // 
+            this.Email.HeaderText = "Email";
+            this.Email.Name = "Email";
             // 
             // groupBox1
             // 
@@ -232,41 +267,6 @@
             this.label2.Size = new System.Drawing.Size(34, 15);
             this.label2.TabIndex = 0;
             this.label2.Text = "ФИО";
-            // 
-            // НКл
-            // 
-            this.НКл.HeaderText = "Номер клиента";
-            this.НКл.Name = "НКл";
-            // 
-            // ФИО
-            // 
-            this.ФИО.HeaderText = "ФИО";
-            this.ФИО.Name = "ФИО";
-            // 
-            // Пол
-            // 
-            this.Пол.HeaderText = "Пол";
-            this.Пол.Name = "Пол";
-            // 
-            // ДатаРождения
-            // 
-            this.ДатаРождения.HeaderText = "Дата рождения";
-            this.ДатаРождения.Name = "ДатаРождения";
-            // 
-            // Логин
-            // 
-            this.Логин.HeaderText = "Логин";
-            this.Логин.Name = "Логин";
-            // 
-            // Пароль
-            // 
-            this.Пароль.HeaderText = "Пароль";
-            this.Пароль.Name = "Пароль";
-            // 
-            // Email
-            // 
-            this.Email.HeaderText = "Email";
-            this.Email.Name = "Email";
             // 
             // Клиенты
             // 

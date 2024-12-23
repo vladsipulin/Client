@@ -43,12 +43,12 @@
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.orgsDGV = new System.Windows.Forms.DataGridView();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
             this.НОрг = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Наименование = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.СфераДеятельности = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ДатаРегистрации = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.orgsDGV)).BeginInit();
             this.panel1.SuspendLayout();
@@ -204,6 +204,26 @@
             this.orgsDGV.Size = new System.Drawing.Size(537, 237);
             this.orgsDGV.TabIndex = 5;
             // 
+            // НОрг
+            // 
+            this.НОрг.HeaderText = "Номер";
+            this.НОрг.Name = "НОрг";
+            // 
+            // Наименование
+            // 
+            this.Наименование.HeaderText = "Наименование";
+            this.Наименование.Name = "Наименование";
+            // 
+            // СфераДеятельности
+            // 
+            this.СфераДеятельности.HeaderText = "Сфера деятельности";
+            this.СфераДеятельности.Name = "СфераДеятельности";
+            // 
+            // ДатаРегистрации
+            // 
+            this.ДатаРегистрации.HeaderText = "Дата регистрации";
+            this.ДатаРегистрации.Name = "ДатаРегистрации";
+            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.LightSteelBlue;
@@ -226,26 +246,6 @@
             this.label1.Size = new System.Drawing.Size(170, 32);
             this.label1.TabIndex = 0;
             this.label1.Text = "Организации";
-            // 
-            // НОрг
-            // 
-            this.НОрг.HeaderText = "Номер";
-            this.НОрг.Name = "НОрг";
-            // 
-            // Наименование
-            // 
-            this.Наименование.HeaderText = "Наименование";
-            this.Наименование.Name = "Наименование";
-            // 
-            // СфераДеятельности
-            // 
-            this.СфераДеятельности.HeaderText = "Сфера деятельности";
-            this.СфераДеятельности.Name = "СфераДеятельности";
-            // 
-            // ДатаРегистрации
-            // 
-            this.ДатаРегистрации.HeaderText = "Дата регистрации";
-            this.ДатаРегистрации.Name = "ДатаРегистрации";
             // 
             // Организация
             // 
