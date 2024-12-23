@@ -28,5 +28,11 @@ namespace Client
             Организация org = new Организация();
             org.Show();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Должность position = new Должность();
+            position.Show();
+        }
     }
 }
