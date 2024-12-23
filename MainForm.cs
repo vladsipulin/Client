@@ -34,5 +34,11 @@ namespace Client
             Должность position = new Должность();
             position.Show();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            ClientQueriesForAppartments queryForApps = new ClientQueriesForAppartments();
+            queryForApps.Show();
+        }
     }
 }
