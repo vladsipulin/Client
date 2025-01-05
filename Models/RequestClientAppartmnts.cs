@@ -10,7 +10,6 @@ namespace Client.Models
     internal class RequestClientAppartmnts
     {
         //поля таблицы Клиент
-        public int НЗаявки { get; set; }
         public int НКомнаты { get; set; }
         public int НК { get; set; }
         public int НЭ { get; set; }
@@ -27,11 +26,10 @@ namespace Client.Models
         public int НЭОлд { get; set; }
         public int НГОлд { get; set; }
 
-        public RequestClientAppartmnts(int НЗаявки = 0, int НКомнаты = 0, int НК = 0, int НЭ = 0, int НГ = 0, int НКл = 0, 
+        public RequestClientAppartmnts(int НКомнаты = 0, int НК = 0, int НЭ = 0, int НГ = 0, int НКл = 0, 
                                        DateTime ДатаОплаты = default, DateTime ДатаЗаселения = default, 
                                        DateTime ДатаВыезда = default, float СтоимостьОплаты = 0)
         {
-            this.НЗаявки = НЗаявки;
             this.НКомнаты = НКомнаты;
             this.НК = НК;
             this.НЭ = НЭ;
@@ -63,7 +61,7 @@ namespace Client.Models
             if (rca is null)
                 throw new ArgumentNullException(nameof(rca));
 
-            return new RequestClientAppartmnts(rca.НЗаявки)
+            return new RequestClientAppartmnts(rca.НКомнаты)
             {
                 НКомнаты = rca.НКомнаты,
                 НК = rca.НК,
@@ -79,7 +77,7 @@ namespace Client.Models
 
         public override string ToString()
         {
-            return $"НЗаявки: {НЗаявки} НКомнаты: {НКомнаты} НК: {НК} НЭ: {НЭ} НГ: {НГ} НКл: " +
+            return $"НКомнаты: {НКомнаты} НК: {НК} НЭ: {НЭ} НГ: {НГ} НКл: " +
                    $"{НКл} ДатаОплаты: {ДатаОплаты} ДатаЗаселения: {ДатаЗаселения} ДатаВыезда: {ДатаВыезда} СтоимостьОплаты: {СтоимостьОплаты}";
         }
     }

@@ -1,4 +1,7 @@
-﻿using Client.Utils;
+﻿using Client.Interfaces;
+using Client.Services;
+using Client.Utils;
+using Client.Models;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -11,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Configuration;
 
 namespace Client
 {
@@ -20,7 +24,10 @@ namespace Client
         MySqlCommand cmd;
         MySqlDataAdapter da;
         DataTable dt;
+        private IReqClientApparts _repo;
         string sql;
+        int clientId;
+        string username;
 
         private void LoadCombo(ComboBoxDataForFill obj)
         {
@@ -74,6 +81,15 @@ namespace Client
             }
         }
 
+        private MySqlConnection GetConnection()
+        {
+            var cs = ConfigurationManager.ConnectionStrings["MySqlConn"].ToString();
+            var builder = new MySqlConnectionStringBuilder(cs);
+            //чтоб избежать проблем с русским языком
+            builder.CharacterSet = "utf8";
+            return new MySqlConnection(builder.ConnectionString);
+        }
+
         public ClientQueriesForAppartments()
         {
             InitializeComponent();
@@ -81,6 +97,8 @@ namespace Client
 
         private void ClientQueriesForAppartments_Load(object sender, EventArgs e)
         {
+            _repo = new RRequestClientApparts();
+
             sql = "SELECT Название, НГ FROM `ГостиничныйКомплекс`";
             ComboBoxDataForFill Гостиница = new ComboBoxDataForFill(sql, "Название", "НГ");
             LoadCombo(Гостиница);
@@ -237,9 +255,64 @@ namespace Client
             }
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        public void SetClientIdByUsername(string login)
         {
+            string message = String.Empty;
+            try
+            {
+                using (var con = GetConnection())
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT НКл FROM Клиент WHERE Логин = @Логин";
 
+                    cmd.Parameters.Add(new MySqlParameter("@Логин", MySqlDbType.VarChar, 255)
+                    { Value = login });
+
+                    con.Open();
+                    var result = cmd.ExecuteScalar();
+                    if (result != null) // Проверяем, нашлось ли значение
+                    {
+                        clientId = Convert.ToInt32(result); // Преобразуем результат в int
+                        //MessageBox.Show($"Найден клиент с НКл: {clientId}", "Успешно", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Клиент с указанным логином не найден.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async void button1_Click_1(object sender, EventArgs e)
+        {
+            username = lbWhoLogged.Text;
+            SetClientIdByUsername(username);
+
+            RequestClientAppartmnts current = new RequestClientAppartmnts(Convert.ToInt32(кбНКомнаты.Text), Convert.ToInt32(кбНК.Text), Convert.ToInt32(кбНЭ.Text),
+                                                                          Convert.ToInt32(кбНГ.SelectedValue), clientId,
+                                       Convert.ToDateTime(dateTimePicker1.Text), Convert.ToDateTime(dateTimePicker2.Text),
+                                       Convert.ToDateTime(dateTimePicker3.Text), float.Parse(tbCost.Text));
+
+            Result<int> result;
+            result = await _repo.Add(current);
+
+            if (result)
+            {
+                MessageBox.Show("Заявка успешно создана!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            if (!result)
+            {
+                MessageBox.Show(result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void кбНК_SelectionChangeCommitted(object sender, EventArgs e)

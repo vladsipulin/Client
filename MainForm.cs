@@ -39,6 +39,7 @@ namespace Client
         {
             ClientQueriesForAppartments queryForApps = new ClientQueriesForAppartments();
             queryForApps.Show();
+            queryForApps.lbWhoLogged.Text = keyLbl.Text;
         }
 
         private void MainForm_Load(object sender, EventArgs e)

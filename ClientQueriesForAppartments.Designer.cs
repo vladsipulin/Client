@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            label12 = new Label();
+            lbWhoLogged = new Label();
             dateTimePicker1 = new DateTimePicker();
             кбНГ = new ComboBox();
             кбНК = new ComboBox();
@@ -56,6 +58,8 @@
             // panel1
             // 
             panel1.BackColor = Color.LightSteelBlue;
+            panel1.Controls.Add(label12);
+            panel1.Controls.Add(lbWhoLogged);
             panel1.Controls.Add(dateTimePicker1);
             panel1.Controls.Add(кбНГ);
             panel1.Controls.Add(кбНК);
@@ -71,12 +75,31 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(649, 252);
+            panel1.Size = new Size(728, 252);
             panel1.TabIndex = 8;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Location = new Point(573, 29);
+            label12.Name = "label12";
+            label12.Size = new Size(79, 15);
+            label12.TabIndex = 18;
+            label12.Text = "Дата оплаты:";
+            // 
+            // lbWhoLogged
+            // 
+            lbWhoLogged.AutoSize = true;
+            lbWhoLogged.Location = new Point(483, 29);
+            lbWhoLogged.Name = "lbWhoLogged";
+            lbWhoLogged.Size = new Size(59, 15);
+            lbWhoLogged.TabIndex = 16;
+            lbWhoLogged.Text = "username";
+            lbWhoLogged.Visible = false;
             // 
             // dateTimePicker1
             // 
-            dateTimePicker1.Location = new Point(483, 27);
+            dateTimePicker1.Location = new Point(572, 47);
             dateTimePicker1.Name = "dateTimePicker1";
             dateTimePicker1.Size = new Size(143, 23);
             dateTimePicker1.TabIndex = 15;
@@ -237,7 +260,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(483, 416);
+            button1.Location = new Point(572, 427);
             button1.Name = "button1";
             button1.Size = new Size(143, 35);
             button1.TabIndex = 21;
@@ -265,7 +288,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(649, 468);
+            ClientSize = new Size(728, 474);
             Controls.Add(label10);
             Controls.Add(tbRoomPrice);
             Controls.Add(button1);
@@ -309,5 +332,7 @@
         private Button button1;
         private TextBox tbRoomPrice;
         private Label label10;
+        internal Label lbWhoLogged;
+        private Label label12;
     }
 }

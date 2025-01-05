@@ -14,8 +14,8 @@ namespace Client.Interfaces
         //добавление
         Task<Result<int>> Add(RequestClientAppartmnts objOfTable);
         //удаление
-        Task<Result<int>> Remove(int НЗаявки, int НКомнаты, int НК, int НЭ, int НГ, int НКл);
+        Task<Result<int>> Remove(int НКомнаты, int НК, int НЭ, int НГ, int НКл);
         //обновление
-        Task<Result<int>> Update(RequestClientAppartmnts objOfTable, int НЗаявкиОлд, int НКомнатыОлд, int НКОлд, int НЭОлд, int НГОлд);
+        Task<Result<int>> Update(RequestClientAppartmnts objOfTable, int НКомнатыОлд, int НКОлд, int НЭОлд, int НГОлд);
     }
 }
