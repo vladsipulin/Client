@@ -40,5 +40,16 @@ namespace Client
             ClientQueriesForAppartments queryForApps = new ClientQueriesForAppartments();
             queryForApps.Show();
         }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            if (Equals(keyLbl.Text,"Клиент"))
+            {
+                button1.Visible = false;
+                button2.Visible = false;
+                clientsButton.Visible = false;
+                button3.Location = new Point(38, 109);
+            }
+        }
     }
 }

@@ -34,7 +34,7 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM Клиент";
+                    cmd.CommandText = "SELECT НКл, клиент.Логин, клиент.Пароль, Пол FROM `клиент` UNION SELECT НС, сотрудник.Логин, сотрудник.Пароль, НД FROM `сотрудник`;";
                     con.Open();
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
@@ -42,8 +42,9 @@ namespace Client.Services
                         {
                             var user = new UserAuth(reader.GetInt32(0));
                             user.НКл = reader.IsDBNull(0) ? 0 : reader.GetInt32(0); 
-                            user.Логин = reader.IsDBNull(4) ? "null" : reader.GetString(4);
-                            user.Пароль = reader.IsDBNull(5) ? "null" : reader.GetString(5);
+                            user.Логин = reader.IsDBNull(1) ? "null" : reader.GetString(1);
+                            user.Пароль = reader.IsDBNull(2) ? "null" : reader.GetString(2);
+                            user.UserType = reader.IsDBNull(3) ? "null" : reader.GetString(3);
                             list.Add(user);
                         }
                     }

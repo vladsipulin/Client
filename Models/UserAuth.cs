@@ -13,12 +13,14 @@ namespace Client.Models
         public string Логин { get; set; }
         public string Пароль { get; set; }
         public string Email { get; set; }
+        public string UserType { get; set; }
 
-        public UserAuth(int НКл = 0, string Логин = "<Логин>", string Пароль = "<Пароль>")
+        public UserAuth(int НКл = 0, string Логин = "<Логин>", string Пароль = "<Пароль>", string UserType = "<UserType>")
         {
             this.НКл = НКл;
             this.Логин = Логин;
             this.Пароль = GetPasswordHash(Пароль);
+            this.UserType = UserType;
         }
 
         private string GetPasswordHash(string password)
@@ -44,13 +46,14 @@ namespace Client.Models
             return new UserAuth(userAuth.НКл)
             {
                 Логин = userAuth.Логин,
-                Пароль = userAuth.Пароль
+                Пароль = userAuth.Пароль,
+                UserType = userAuth.UserType
             };
         }
 
         public override string ToString()
         {
-            return $"{НКл}: login: {Логин} password: {Пароль}";
+            return $"{НКл}: login: {Логин} password: {Пароль} userType: {UserType}";
         }
     }
 }

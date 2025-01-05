@@ -1,10 +1,12 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Client.Utils;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,8 +21,6 @@ namespace Client
         MySqlDataAdapter da;
         DataTable dt;
         string sql;
-
-
 
         private void LoadCombo(ComboBoxDataForFill obj)
         {
@@ -64,7 +64,7 @@ namespace Client
             public DataTable dataSource { get; set; }
             public List<MySqlParameter> paramsForSQLQuery { get; set; }
 
-            public ComboBoxDataForFill (string Sql, string displayMember, string valueMember)
+            public ComboBoxDataForFill(string Sql, string displayMember, string valueMember)
             {
                 sql = Sql;
                 DisplayMember = displayMember;
@@ -88,32 +88,382 @@ namespace Client
             кбНГ.DisplayMember = Гостиница.DisplayMember;
             кбНГ.ValueMember = Гостиница.ValueMember;
 
+            int НГ = (int)кбНГ.SelectedValue;
+            // так как при загрузке формы всегда загружается элемент из самой первой строки таблицы
+            // то мы напрямую к нему обращаемся
+            //DataRow row = dt.Rows[0];
+            //var cells = row.ItemArray;
+            //object? cell = cells[1];
+            //if (cell != null )
+            //{
+            //НГ = (int)cell;
             sql = "SELECT * FROM `Корпус` WHERE НГ=@НГ";
             ComboBoxDataForFill Корпус = new ComboBoxDataForFill(sql, "НК", "НК");
-            int НомерГостиницы = Convert.ToInt32(кбНГ.SelectedValue);
-            Корпус.paramsForSQLQuery.Add(new MySqlParameter("@НГ", MySqlDbType.Int32) { Value = НомерГостиницы });
+            Корпус.paramsForSQLQuery.Add(new MySqlParameter("@НГ", MySqlDbType.Int32) { Value = НГ });
             LoadCombo(Корпус);
             кбНК.DataSource = Корпус.dataSource;
             кбНК.DisplayMember = Корпус.DisplayMember;
             кбНК.ValueMember = Корпус.ValueMember;
-            
+
+            //int НК = Convert.ToInt32(кбНК.Text);
+            int НК = (int)кбНК.SelectedValue;
+            sql = "SELECT * FROM `ЭтажиИКорпусы` WHERE НК=@НК";
+            ComboBoxDataForFill Этаж = new ComboBoxDataForFill(sql, "НЭ", "НЭ");
+            Этаж.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            LoadCombo(Этаж);
+            кбНЭ.DataSource = Этаж.dataSource;
+            кбНЭ.DisplayMember = Этаж.DisplayMember;
+            кбНЭ.ValueMember = Этаж.ValueMember;
+
+            sql = "SELECT DISTINCT Вместимость FROM `Комната`";
+            ComboBoxDataForFill Вместимость = new ComboBoxDataForFill(sql, "Вместимость", "Вместимость");
+            LoadCombo(Вместимость);
+            кбВместимостьКомнаты.DataSource = Вместимость.dataSource;
+            кбВместимостьКомнаты.DisplayMember = Вместимость.DisplayMember;
+            кбВместимостьКомнаты.ValueMember = Вместимость.ValueMember;
+
+            int НЭ = (int)кбНЭ.SelectedValue;
+            int ВместимостьКомнаты = (int)кбВместимостьКомнаты.SelectedValue;
+            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость";
+            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@Вместимость", MySqlDbType.Int32) { Value = ВместимостьКомнаты });
+            LoadCombo(Комната);
+            кбНКомнаты.DataSource = Комната.dataSource;
+            кбНКомнаты.DisplayMember = Комната.DisplayMember;
+            кбНКомнаты.ValueMember = Комната.ValueMember;
+
+            if (кбНКомнаты.DataSource is DataTable dataTable)
+            {
+                float pricePerNight;
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    int? drНКоманты = Convert.ToInt32(row["НКомнаты"]);
+                    int? drНК = Convert.ToInt32(row["НК"]);
+                    int? drНЭ = Convert.ToInt32(row["НЭ"]);
+                    if (drНКоманты == Convert.ToInt32(кбНКомнаты.Text)
+                        & drНК == Convert.ToInt32(кбНК.Text)
+                        & drНЭ == Convert.ToInt32(кбНЭ.Text))
+                    {
+                        if (row["Цена1Ночь"] != DBNull.Value)
+                        {
+                            pricePerNight = (float)row["Цена1Ночь"];
+                            tbRoomPrice.Text = pricePerNight.ToString();
+                            break;
+                        }
+                        else
+                            pricePerNight = 0;
+                    }
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("Ошибка вывода цены комнаты за одну ночь: DataSource не является DataTable.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        //}
+
+        private void кбНГ_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            //перезаполняем остальные объекты comboBox исходя из нового SelectedValue в объекте кбНГ
+            int НГ = (int)кбНГ.SelectedValue;
+
+            sql = "SELECT * FROM `Корпус` WHERE НГ=@НГ";
+            ComboBoxDataForFill Корпус = new ComboBoxDataForFill(sql, "НК", "НК");
+            Корпус.paramsForSQLQuery.Add(new MySqlParameter("@НГ", MySqlDbType.Int32) { Value = НГ });
+            LoadCombo(Корпус);
+            кбНК.DataSource = Корпус.dataSource;
+            кбНК.DisplayMember = Корпус.DisplayMember;
+            кбНК.ValueMember = Корпус.ValueMember;
+
+            int? НК = (int?)(кбНК.SelectedValue ?? 0);
+            sql = "SELECT * FROM `ЭтажиИКорпусы` WHERE НК=@НК";
+            ComboBoxDataForFill Этаж = new ComboBoxDataForFill(sql, "НЭ", "НЭ");
+            Этаж.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            LoadCombo(Этаж);
+            кбНЭ.DataSource = Этаж.dataSource;
+            кбНЭ.DisplayMember = Этаж.DisplayMember;
+            кбНЭ.ValueMember = Этаж.ValueMember;
+
+            sql = "SELECT DISTINCT Вместимость FROM `Комната`";
+            ComboBoxDataForFill Вместимость = new ComboBoxDataForFill(sql, "Вместимость", "Вместимость");
+            LoadCombo(Вместимость);
+            кбВместимостьКомнаты.DataSource = Вместимость.dataSource;
+            кбВместимостьКомнаты.DisplayMember = Вместимость.DisplayMember;
+            кбВместимостьКомнаты.ValueMember = Вместимость.ValueMember;
+
+            int? НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
+            int? ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
+            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость";
+            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@Вместимость", MySqlDbType.Int32) { Value = ВместимостьКомнаты });
+            LoadCombo(Комната);
+            кбНКомнаты.DataSource = Комната.dataSource;
+            кбНКомнаты.DisplayMember = Комната.DisplayMember;
+            кбНКомнаты.ValueMember = Комната.ValueMember;
+
+
+            if (кбНКомнаты.DataSource is DataTable dataTable)
+            {
+                float pricePerNight;
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    int? drНКоманты = Convert.ToInt32(row["НКомнаты"]);
+                    int? drНК = Convert.ToInt32(row["НК"]);
+                    int? drНЭ = Convert.ToInt32(row["НЭ"]);
+                    if (drНКоманты == Convert.ToInt32(кбНКомнаты.Text)
+                        & drНК == Convert.ToInt32(кбНК.Text)
+                        & drНЭ == Convert.ToInt32(кбНЭ.Text))
+                    {
+                        if (row["Цена1Ночь"] != DBNull.Value)
+                        {
+                            pricePerNight = (float)row["Цена1Ночь"];
+                            tbRoomPrice.Text = pricePerNight.ToString();
+                            break;
+                        }
+                        else
+                            pricePerNight = 0;
+                    }
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("Ошибка вывода цены комнаты за одну ночь: DataSource не является DataTable.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click_1(object sender, EventArgs e)
         {
 
         }
 
-        private void кбНГ_TextChanged(object sender, EventArgs e)
+        private void кбНК_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            //sql = "SELECT * FROM `Корпус` WHERE НГ=@НГ";
-            //ComboBoxDataForFill Корпус = new ComboBoxDataForFill(sql, "НК", "НК");
-            //int НомерГостиницы = Convert.ToInt32(кбНГ.SelectedValue);
-            //Корпус.paramsForSQLQuery.Add(new MySqlParameter("@НГ", MySqlDbType.Int32) { Value = НомерГостиницы });
-            //LoadCombo(Корпус);
-            //кбНК.DataSource = Корпус.dataSource;
-            //кбНК.DisplayMember = Корпус.DisplayMember;
-            //кбНК.ValueMember = Корпус.ValueMember;
+            int? НК = (int?)(кбНК.SelectedValue ?? 0);
+            sql = "SELECT * FROM `ЭтажиИКорпусы` WHERE НК=@НК";
+            ComboBoxDataForFill Этаж = new ComboBoxDataForFill(sql, "НЭ", "НЭ");
+            Этаж.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            LoadCombo(Этаж);
+            кбНЭ.DataSource = Этаж.dataSource;
+            кбНЭ.DisplayMember = Этаж.DisplayMember;
+            кбНЭ.ValueMember = Этаж.ValueMember;
+
+            sql = "SELECT DISTINCT Вместимость FROM `Комната`";
+            ComboBoxDataForFill Вместимость = new ComboBoxDataForFill(sql, "Вместимость", "Вместимость");
+            LoadCombo(Вместимость);
+            кбВместимостьКомнаты.DataSource = Вместимость.dataSource;
+            кбВместимостьКомнаты.DisplayMember = Вместимость.DisplayMember;
+            кбВместимостьКомнаты.ValueMember = Вместимость.ValueMember;
+
+            int? НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
+            int? ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
+            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость";
+            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@Вместимость", MySqlDbType.Int32) { Value = ВместимостьКомнаты });
+            LoadCombo(Комната);
+            кбНКомнаты.DataSource = Комната.dataSource;
+            кбНКомнаты.DisplayMember = Комната.DisplayMember;
+            кбНКомнаты.ValueMember = Комната.ValueMember;
+
+            if (кбНКомнаты.DataSource is DataTable dataTable)
+            {
+                float pricePerNight;
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    int? drНКоманты = Convert.ToInt32(row["НКомнаты"]);
+                    int? drНК = Convert.ToInt32(row["НК"]);
+                    int? drНЭ = Convert.ToInt32(row["НЭ"]);
+                    if (drНКоманты == Convert.ToInt32(кбНКомнаты.Text)
+                        & drНК == Convert.ToInt32(кбНК.Text)
+                        & drНЭ == Convert.ToInt32(кбНЭ.Text))
+                    {
+                        if (row["Цена1Ночь"] != DBNull.Value)
+                        {
+                            pricePerNight = (float)row["Цена1Ночь"];
+                            tbRoomPrice.Text = pricePerNight.ToString();
+                            break;
+                        }
+                        else
+                            pricePerNight = 0;
+                    }
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("Ошибка вывода цены комнаты за одну ночь: DataSource не является DataTable.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void кбНЭ_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            int? НК = (int?)(кбНК.SelectedValue ?? 0);
+            int? НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
+
+            sql = "SELECT DISTINCT Вместимость FROM `Комната`";
+            ComboBoxDataForFill Вместимость = new ComboBoxDataForFill(sql, "Вместимость", "Вместимость");
+            LoadCombo(Вместимость);
+            кбВместимостьКомнаты.DataSource = Вместимость.dataSource;
+            кбВместимостьКомнаты.DisplayMember = Вместимость.DisplayMember;
+            кбВместимостьКомнаты.ValueMember = Вместимость.ValueMember;
+
+            int? ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
+            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость";
+            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@Вместимость", MySqlDbType.Int32) { Value = ВместимостьКомнаты });
+            LoadCombo(Комната);
+            кбНКомнаты.DataSource = Комната.dataSource;
+            кбНКомнаты.DisplayMember = Комната.DisplayMember;
+            кбНКомнаты.ValueMember = Комната.ValueMember;
+
+            if (кбНКомнаты.DataSource is DataTable dataTable)
+            {
+                float pricePerNight;
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    int? drНКоманты = Convert.ToInt32(row["НКомнаты"]);
+                    int? drНК = Convert.ToInt32(row["НК"]);
+                    int? drНЭ = Convert.ToInt32(row["НЭ"]);
+                    if (drНКоманты == Convert.ToInt32(кбНКомнаты.Text)
+                        & drНК == Convert.ToInt32(кбНК.Text)
+                        & drНЭ == Convert.ToInt32(кбНЭ.Text))
+                    {
+                        if (row["Цена1Ночь"] != DBNull.Value)
+                        {
+                            pricePerNight = (float)row["Цена1Ночь"];
+                            tbRoomPrice.Text = pricePerNight.ToString();
+                            break;
+                        }
+                        else
+                            pricePerNight = 0;
+                    }
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("Ошибка вывода цены комнаты за одну ночь: DataSource не является DataTable.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void кбНКомнаты_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (кбНКомнаты.DataSource is DataTable dataTable)
+            {
+                float pricePerNight;
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    int? drНКоманты = Convert.ToInt32(row["НКомнаты"]);
+                    int? drНК = Convert.ToInt32(row["НК"]);
+                    int? drНЭ = Convert.ToInt32(row["НЭ"]);
+                    if (drНКоманты == Convert.ToInt32(кбНКомнаты.Text)
+                        & drНК == Convert.ToInt32(кбНК.Text)
+                        & drНЭ == Convert.ToInt32(кбНЭ.Text))
+                    {
+                        if (row["Цена1Ночь"] != DBNull.Value)
+                        {
+                            pricePerNight = (float)row["Цена1Ночь"];
+                            tbRoomPrice.Text = pricePerNight.ToString();
+                            break;
+                        }
+                        else
+                            pricePerNight = 0;
+                    }
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("Ошибка вывода цены комнаты за одну ночь: DataSource не является DataTable.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void кбВместимостьКомнаты_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            int? НК = (int?)(кбНК.SelectedValue ?? 0);
+            int? НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
+            int? ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
+            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость";
+            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@Вместимость", MySqlDbType.Int32) { Value = ВместимостьКомнаты });
+            LoadCombo(Комната);
+            кбНКомнаты.DataSource = Комната.dataSource;
+            кбНКомнаты.DisplayMember = Комната.DisplayMember;
+            кбНКомнаты.ValueMember = Комната.ValueMember;
+
+            if (кбНКомнаты.DataSource is DataTable dataTable)
+            {
+                float pricePerNight;
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    int? drНКоманты = Convert.ToInt32(row["НКомнаты"]);
+                    int? drНК = Convert.ToInt32(row["НК"]);
+                    int? drНЭ = Convert.ToInt32(row["НЭ"]);
+                    if (drНКоманты == Convert.ToInt32(кбНКомнаты.Text)
+                        & drНК == Convert.ToInt32(кбНК.Text)
+                        & drНЭ == Convert.ToInt32(кбНЭ.Text))
+                    {
+                        if (row["Цена1Ночь"] != DBNull.Value)
+                        {
+                            pricePerNight = (float)row["Цена1Ночь"];
+                            tbRoomPrice.Text = pricePerNight.ToString();
+                            break;
+                        }
+                        else
+                            pricePerNight = 0;
+                    }
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("Ошибка вывода цены комнаты за одну ночь: DataSource не является DataTable", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dateTimePicker2_ValueChanged(object sender, EventArgs e)
+        {
+            DateTime date1 = dateTimePicker2.Value.Date;
+            DateTime date2 = dateTimePicker3.Value.Date;
+            int nights = (date2 - date1).Days;
+            if (nights < 0)
+            {
+                MessageBox.Show("Ошибка: дата заселения позже даты выезда", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                float roomPrice = float.Parse(tbRoomPrice.Text);
+                float cost = nights * roomPrice;
+                tbCost.Text = Convert.ToString(cost);
+            }
+        }
+
+        private void dateTimePicker3_ValueChanged(object sender, EventArgs e)
+        {
+            DateTime date1 = dateTimePicker2.Value.Date;
+            DateTime date2 = dateTimePicker3.Value.Date;
+            int nights = (date2 - date1).Days;
+            if (nights < 0)
+            {
+                MessageBox.Show("Ошибка: дата выезда раньше даты заселения", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                float roomPrice = float.Parse(tbRoomPrice.Text);
+                float cost = nights * roomPrice;
+                tbCost.Text = Convert.ToString(cost);
+            }
         }
     }
 }
