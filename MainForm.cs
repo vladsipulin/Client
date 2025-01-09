@@ -1,21 +1,174 @@
-﻿using System;
+﻿using Client.Utils;
+using Microsoft.VisualBasic.Logging;
+using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Relational;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace Client
 {
     public partial class MainForm : Form
     {
+        DataTable table = new DataTable();
+        MySqlDataAdapter adapter = new MySqlDataAdapter();
+        MySqlDataAdapter da;
+        DataTable dt;
+        int numOfColumn;
+        int[] oldNumOfRow;
+        bool resultExists = false;
+
         public MainForm()
         {
             InitializeComponent();
         }
+
+        private MySqlConnection GetConnection()
+        {
+            var cs = ConfigurationManager.ConnectionStrings["MySqlConn"].ToString();
+            var builder = new MySqlConnectionStringBuilder(cs);
+            //чтоб избежать проблем с русским языком
+            builder.CharacterSet = "utf8";
+            return new MySqlConnection(builder.ConnectionString);
+        }
+        class ComboBoxDataForFill
+        {
+            public string sql { get; set; }
+            public string DisplayMember { get; set; }
+            public string ValueMember { get; set; }
+            public DataTable dataSource { get; set; }
+            public List<MySqlParameter> paramsForSQLQuery { get; set; }
+
+            public ComboBoxDataForFill(string Sql, string displayMember, string valueMember)
+            {
+                sql = Sql;
+                DisplayMember = displayMember;
+                ValueMember = valueMember;
+                dataSource = new DataTable();
+                paramsForSQLQuery = new List<MySqlParameter>();
+            }
+        }
+
+        private void LoadCombo(ComboBoxDataForFill obj)
+        {
+            using (var con = GetConnection())
+            {
+                try
+                {
+                    con.Open();
+                    MySqlCommand cmd = new MySqlCommand();
+                    cmd.Connection = con;
+                    cmd.CommandText = obj.sql;
+                    //cmd.Parameters.Add(new MySqlParameter("@НОрг", MySqlDbType.Int32)
+                    //{ Value = objOfTable.НОрг });
+                    foreach (MySqlParameter e in obj.paramsForSQLQuery)
+                    {
+                        cmd.Parameters.Add(e);
+                    }
+                    da = new MySqlDataAdapter();
+                    da.SelectCommand = cmd;
+                    dt = new DataTable();
+                    da.Fill(dt);
+
+                    obj.dataSource = dt;
+                    //comboBox2.DataSource = dt;
+                    //comboBox2.DisplayMember = DisplayMember;
+                    //comboBox2.ValueMember = ValueMember;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
+        }
+
+        private string GetUserFriendlyErrorMessage(MySqlException ex)
+        {
+            var message = String.Empty;
+            switch (ex.Number)
+            {
+                case 0:
+                    if (ex.InnerException.Message.Contains("Unknown"))
+                    {
+                        message = "Неверное название схемы или таблицы.";
+                    }
+                    else if (ex.InnerException.Message.Contains("Access"))
+                    {
+                        message = "Неверное имя или пароль доступа.";
+                    }
+                    else
+                    {
+                        message = ex.Message;
+                    }
+                    break;
+                case 1042:
+                    message = "Сервер по указанному адресу не доступен." +
+                        "\nОшибка ожидания.";
+                    break;
+                case 1045:
+                    message = "Неверное имя пользователя или пароль, " +
+                        "\nпожалуйста, попробуйте еще раз.";
+                    break;
+                default:
+                    message = ex.Message;
+                    break;
+            }
+            return message;
+        }
+
+        private void SelectFrom(string tableName)
+        {
+            string message = string.Empty;
+            try
+            {
+                using (var con = GetConnection())
+                {
+                    using (var cmd = con.CreateCommand())
+                    {
+                        // Формируем запрос динамически
+                        string query = $"SELECT * FROM {tableName};";
+
+                        // Выполняем запрос
+                        cmd.CommandText = query;
+                        // No need to open and dispose the connection here
+                        table = new DataTable();
+                        adapter = new MySqlDataAdapter(cmd);
+                        MySqlCommandBuilder commandBuilder = new MySqlCommandBuilder(adapter);
+                        adapter.InsertCommand = commandBuilder.GetInsertCommand();
+                        adapter.UpdateCommand = commandBuilder.GetUpdateCommand();
+                        adapter.DeleteCommand = commandBuilder.GetDeleteCommand();
+                        adapter.Fill(table);
+
+                        // Привязка данных к DataGridView
+                        dataGridView1.DataSource = table;
+                        dataGridView1.AutoResizeColumnHeadersHeight();
+                        dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                message = GetUserFriendlyErrorMessage(ex);
+                MessageBox.Show(message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -44,12 +197,154 @@ namespace Client
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            if (Equals(keyLbl.Text,"Клиент"))
+            if (Equals(lbWhoLogged.Text, "Клиент:"))
             {
                 button1.Visible = false;
                 button2.Visible = false;
                 clientsButton.Visible = false;
-                button3.Location = new Point(38, 109);
+                //button3.Location = new Point(38, 109);
+                string sql = "SELECT TABLE_NAME AS 'id', TABLE_COMMENT AS 'Таблица' FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='hotel' ORDER BY TABLE_COMMENT ASC";
+                ComboBoxDataForFill ИменаТаблиц = new ComboBoxDataForFill(sql, "Таблица", "id");
+                LoadCombo(ИменаТаблиц);
+                кбТаблицыБД.DataSource = ИменаТаблиц.dataSource;
+                кбТаблицыБД.DisplayMember = ИменаТаблиц.DisplayMember;
+                кбТаблицыБД.ValueMember = ИменаТаблиц.ValueMember;
+
+                string tableName = (string)кбТаблицыБД.SelectedValue;
+                SelectFrom(tableName);
+
+                string таблица = (string)кбТаблицыБД.SelectedValue;
+                sql = "SELECT COLUMN_NAME AS 'Столбец' FROM INFORMATION_SCHEMA.COlUMNS WHERE TABLE_SCHEMA='hotel' AND TABLE_NAME=@Таблица";
+                ComboBoxDataForFill Столбец = new ComboBoxDataForFill(sql, "Столбец", "Столбец");
+                Столбец.paramsForSQLQuery.Add(new MySqlParameter("@Таблица", MySqlDbType.VarChar, 255) { Value = таблица });
+                LoadCombo(Столбец);
+                кбСтолбцыТаблицы.DataSource = Столбец.dataSource;
+                кбСтолбцыТаблицы.DisplayMember = Столбец.DisplayMember;
+                кбСтолбцыТаблицы.ValueMember = Столбец.ValueMember;
+            }
+            else
+            {
+                string sql = "SELECT TABLE_NAME AS 'id', TABLE_COMMENT AS 'Таблица' FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='hotel'";
+                ComboBoxDataForFill ИменаТаблиц = new ComboBoxDataForFill(sql, "Таблица", "id");
+                LoadCombo(ИменаТаблиц);
+                кбТаблицыБД.DataSource = ИменаТаблиц.dataSource;
+                кбТаблицыБД.DisplayMember = ИменаТаблиц.DisplayMember;
+                кбТаблицыБД.ValueMember = ИменаТаблиц.ValueMember;
+            }
+        }
+
+        private void показатьГостиничныеКомплексы_Click(object sender, EventArgs e)
+        {
+            string tableName = "ГостиничныйКомплекс";
+            SelectFrom(tableName);
+        }
+
+        private void показатьЗаявкиКлиентов_Click(object sender, EventArgs e)
+        {
+            string tableName = "ЗаявкаНаЗаселениеКлиента";
+            SelectFrom(tableName);
+        }
+
+        private void показатьЗаселениеКлиента_Click(object sender, EventArgs e)
+        {
+            string tableName = "ЗаселениеКлиента";
+            SelectFrom(tableName);
+        }
+
+
+        private void updateButton_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Точно ли вы хотите продолжить?",
+                                      "Подтверждение действия",
+                                      MessageBoxButtons.YesNo,
+                                      MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                string message = string.Empty;
+                using (var con = GetConnection())
+                {
+                    try
+                    {
+                        // Assign the new connection to each command
+                        adapter.SelectCommand.Connection = con;
+                        adapter.InsertCommand.Connection = con;
+                        adapter.UpdateCommand.Connection = con;
+                        adapter.DeleteCommand.Connection = con;
+
+                        con.Open(); // Open the connection
+                        adapter.Update(table); // Perform the update
+                    }
+                    catch (MySqlException ex)
+                    {
+                        message = GetUserFriendlyErrorMessage(ex);
+                        MessageBox.Show(message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    finally
+                    {
+                        // The 'using' statement ensures the connection is closed and disposed
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Операция отменена.");
+            }
+        }
+
+        private void кбТаблицыБД_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            string tableName = (string)кбТаблицыБД.SelectedValue;
+            SelectFrom(tableName);
+
+            string таблица = (string)кбТаблицыБД.SelectedValue;
+            string sql = "SELECT COLUMN_NAME AS 'Столбец' FROM INFORMATION_SCHEMA.COlUMNS WHERE TABLE_SCHEMA='hotel' AND TABLE_NAME=@Таблица";
+            ComboBoxDataForFill Столбец = new ComboBoxDataForFill(sql, "Столбец", "Столбец");
+            Столбец.paramsForSQLQuery.Add(new MySqlParameter("@Таблица", MySqlDbType.VarChar, 255) { Value = таблица });
+            LoadCombo(Столбец);
+            кбСтолбцыТаблицы.DataSource = Столбец.dataSource;
+            кбСтолбцыТаблицы.DisplayMember = Столбец.DisplayMember;
+            кбСтолбцыТаблицы.ValueMember = Столбец.ValueMember;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            string? searchValue = tbSearch.Text;
+            if (searchValue is "")
+            {
+                MessageBox.Show("Введите значение в поле Поиск", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                int j = 0;
+                if (oldNumOfRow is not null & resultExists)
+                {
+                    for (int i = 0; i < oldNumOfRow.Length; i++)
+                        dataGridView1.Rows[oldNumOfRow[i]].Selected = false;
+                }
+                else
+                    oldNumOfRow = new int[dataGridView1.Rows.Count];
+
+                dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                numOfColumn = кбСтолбцыТаблицы.SelectedIndex;
+
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    if (row.Cells[numOfColumn].Value is not null)
+                    {
+                        if (row.Cells[numOfColumn].Value.ToString().IndexOf(searchValue, StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            row.Selected = true;
+                            oldNumOfRow[j++] = row.Index;
+                            resultExists = true;
+                        }
+                    }
+                }
+                if (!resultExists)
+                    MessageBox.Show($"Введенное значение не найдено – столбец {кбСтолбцыТаблицы.Text}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

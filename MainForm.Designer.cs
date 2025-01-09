@@ -32,60 +32,56 @@
             bindingSource1 = new BindingSource(components);
             label1 = new Label();
             label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
             clientsButton = new Button();
             button1 = new Button();
             button2 = new Button();
             button3 = new Button();
             lbWhoLogged = new Label();
             keyLbl = new Label();
+            показатьГостиничныеКомплексы = new Button();
+            dataGridView1 = new DataGridView();
+            показатьЗаявкиКлиентов = new Button();
+            показатьЗаселениеКлиента = new Button();
+            updateButton = new Button();
+            кбТаблицыБД = new ComboBox();
+            label3 = new Label();
+            tbSearch = new TextBox();
+            btnSearch = new Button();
+            кбСтолбцыТаблицы = new ComboBox();
+            label4 = new Label();
+            panel1 = new Panel();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
+            label1.BackColor = Color.LightSteelBlue;
             label1.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            label1.ForeColor = Color.DarkBlue;
             label1.Location = new Point(199, 21);
             label1.Name = "label1";
-            label1.Size = new Size(277, 32);
+            label1.Size = new Size(294, 32);
             label1.TabIndex = 0;
-            label1.Text = "Гостиничный комплекс";
+            label1.Text = "Гостиничные комплексы";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            label2.Location = new Point(51, 70);
+            label2.BackColor = Color.LightSteelBlue;
+            label2.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point);
+            label2.ForeColor = Color.DarkBlue;
+            label2.Location = new Point(37, 77);
             label2.Name = "label2";
-            label2.Size = new Size(130, 25);
+            label2.Size = new Size(71, 20);
             label2.TabIndex = 1;
-            label2.Text = "Справочники";
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            label3.Location = new Point(343, 70);
-            label3.Name = "label3";
-            label3.Size = new Size(87, 25);
-            label3.TabIndex = 2;
-            label3.Text = "Запросы";
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            label4.Location = new Point(343, 252);
-            label4.Name = "label4";
-            label4.Size = new Size(76, 25);
-            label4.TabIndex = 3;
-            label4.Text = "Отчеты";
+            label2.Text = "Таблица:";
             // 
             // clientsButton
             // 
-            clientsButton.Location = new Point(38, 109);
+            clientsButton.Location = new Point(309, 537);
             clientsButton.Name = "clientsButton";
             clientsButton.Size = new Size(143, 23);
             clientsButton.TabIndex = 4;
@@ -95,7 +91,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(38, 138);
+            button1.Location = new Point(11, 537);
             button1.Name = "button1";
             button1.Size = new Size(143, 23);
             button1.TabIndex = 5;
@@ -105,7 +101,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(38, 167);
+            button2.Location = new Point(160, 537);
             button2.Name = "button2";
             button2.Size = new Size(143, 23);
             button2.TabIndex = 6;
@@ -115,7 +111,8 @@
             // 
             // button3
             // 
-            button3.Location = new Point(38, 196);
+            button3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button3.Location = new Point(604, 89);
             button3.Name = "button3";
             button3.Size = new Size(143, 23);
             button3.TabIndex = 7;
@@ -125,41 +122,180 @@
             // 
             // lbWhoLogged
             // 
+            lbWhoLogged.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lbWhoLogged.AutoSize = true;
-            lbWhoLogged.Location = new Point(675, 9);
+            lbWhoLogged.BackColor = Color.LightSteelBlue;
+            lbWhoLogged.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
+            lbWhoLogged.ForeColor = SystemColors.ActiveCaptionText;
+            lbWhoLogged.Location = new Point(604, 21);
             lbWhoLogged.Name = "lbWhoLogged";
-            lbWhoLogged.Size = new Size(113, 15);
+            lbWhoLogged.Size = new Size(127, 15);
             lbWhoLogged.TabIndex = 8;
             lbWhoLogged.Text = "Клиент/Сотрудник:";
             // 
             // keyLbl
             // 
+            keyLbl.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             keyLbl.AutoSize = true;
-            keyLbl.Location = new Point(675, 29);
+            keyLbl.BackColor = Color.LightSteelBlue;
+            keyLbl.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
+            keyLbl.ForeColor = SystemColors.ActiveCaptionText;
+            keyLbl.Location = new Point(604, 41);
             keyLbl.Name = "keyLbl";
             keyLbl.Size = new Size(34, 15);
             keyLbl.TabIndex = 9;
             keyLbl.Text = "login";
             // 
+            // показатьГостиничныеКомплексы
+            // 
+            показатьГостиничныеКомплексы.Location = new Point(458, 537);
+            показатьГостиничныеКомплексы.Name = "показатьГостиничныеКомплексы";
+            показатьГостиничныеКомплексы.Size = new Size(87, 23);
+            показатьГостиничныеКомплексы.TabIndex = 10;
+            показатьГостиничныеКомплексы.Text = "Гостиничный комплекс";
+            показатьГостиничныеКомплексы.UseVisualStyleBackColor = true;
+            показатьГостиничныеКомплексы.Click += показатьГостиничныеКомплексы_Click;
+            // 
+            // dataGridView1
+            // 
+            dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Location = new Point(37, 240);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowTemplate.Height = 25;
+            dataGridView1.Size = new Size(549, 279);
+            dataGridView1.TabIndex = 11;
+            // 
+            // показатьЗаявкиКлиентов
+            // 
+            показатьЗаявкиКлиентов.Location = new Point(551, 537);
+            показатьЗаявкиКлиентов.Name = "показатьЗаявкиКлиентов";
+            показатьЗаявкиКлиентов.Size = new Size(99, 23);
+            показатьЗаявкиКлиентов.TabIndex = 12;
+            показатьЗаявкиКлиентов.Text = "Заявки на заселение клиентов";
+            показатьЗаявкиКлиентов.UseVisualStyleBackColor = true;
+            показатьЗаявкиКлиентов.Click += показатьЗаявкиКлиентов_Click;
+            // 
+            // показатьЗаселениеКлиента
+            // 
+            показатьЗаселениеКлиента.Location = new Point(656, 537);
+            показатьЗаселениеКлиента.Name = "показатьЗаселениеКлиента";
+            показатьЗаселениеКлиента.Size = new Size(102, 23);
+            показатьЗаселениеКлиента.TabIndex = 13;
+            показатьЗаселениеКлиента.Text = "Заселение клиента";
+            показатьЗаселениеКлиента.UseVisualStyleBackColor = true;
+            показатьЗаселениеКлиента.Click += показатьЗаселениеКлиента_Click;
+            // 
+            // updateButton
+            // 
+            updateButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            updateButton.Location = new Point(604, 314);
+            updateButton.Name = "updateButton";
+            updateButton.Size = new Size(143, 45);
+            updateButton.TabIndex = 14;
+            updateButton.Text = "Сохранить изменения в таблице";
+            updateButton.UseVisualStyleBackColor = true;
+            updateButton.Click += updateButton_Click;
+            // 
+            // кбТаблицыБД
+            // 
+            кбТаблицыБД.FormattingEnabled = true;
+            кбТаблицыБД.Location = new Point(117, 77);
+            кбТаблицыБД.Name = "кбТаблицыБД";
+            кбТаблицыБД.Size = new Size(200, 23);
+            кбТаблицыБД.TabIndex = 15;
+            кбТаблицыБД.SelectionChangeCommitted += кбТаблицыБД_SelectionChangeCommitted;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label3.Location = new Point(37, 200);
+            label3.Name = "label3";
+            label3.Size = new Size(58, 20);
+            label3.TabIndex = 16;
+            label3.Text = "Поиск:";
+            // 
+            // tbSearch
+            // 
+            tbSearch.Location = new Point(117, 200);
+            tbSearch.Name = "tbSearch";
+            tbSearch.Size = new Size(200, 23);
+            tbSearch.TabIndex = 17;
+            // 
+            // btnSearch
+            // 
+            btnSearch.Location = new Point(336, 200);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new Size(75, 23);
+            btnSearch.TabIndex = 18;
+            btnSearch.Text = "Найти";
+            btnSearch.UseVisualStyleBackColor = true;
+            btnSearch.Click += button4_Click;
+            // 
+            // кбСтолбцыТаблицы
+            // 
+            кбСтолбцыТаблицы.FormattingEnabled = true;
+            кбСтолбцыТаблицы.Location = new Point(117, 124);
+            кбСтолбцыТаблицы.Name = "кбСтолбцыТаблицы";
+            кбСтолбцыТаблицы.Size = new Size(200, 23);
+            кбСтолбцыТаблицы.TabIndex = 20;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.BackColor = Color.LightSteelBlue;
+            label4.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point);
+            label4.ForeColor = Color.DarkBlue;
+            label4.Location = new Point(37, 124);
+            label4.Name = "label4";
+            label4.Size = new Size(70, 20);
+            label4.TabIndex = 19;
+            label4.Text = "Столбец:";
+            // 
+            // panel1
+            // 
+            panel1.BackColor = Color.LightSteelBlue;
+            panel1.Controls.Add(lbWhoLogged);
+            panel1.Controls.Add(button3);
+            panel1.Controls.Add(keyLbl);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(769, 175);
+            panel1.TabIndex = 21;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(keyLbl);
-            Controls.Add(lbWhoLogged);
-            Controls.Add(button3);
+            ClientSize = new Size(769, 565);
+            Controls.Add(label1);
+            Controls.Add(кбСтолбцыТаблицы);
+            Controls.Add(label4);
+            Controls.Add(btnSearch);
+            Controls.Add(tbSearch);
+            Controls.Add(label3);
+            Controls.Add(кбТаблицыБД);
+            Controls.Add(updateButton);
+            Controls.Add(показатьЗаселениеКлиента);
+            Controls.Add(показатьЗаявкиКлиентов);
+            Controls.Add(dataGridView1);
+            Controls.Add(показатьГостиничныеКомплексы);
             Controls.Add(button2);
             Controls.Add(button1);
             Controls.Add(clientsButton);
-            Controls.Add(label4);
-            Controls.Add(label3);
             Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(panel1);
+            MinimumSize = new Size(785, 604);
             Name = "MainForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "ГлавнаяФорма";
             Load += MainForm_Load;
             ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -168,13 +304,23 @@
         private BindingSource bindingSource1;
         private Label label1;
         private Label label2;
-        private Label label3;
-        private Label label4;
         private Button clientsButton;
         private Button button1;
         private Button button2;
         private Button button3;
         internal Label keyLbl;
         internal Label lbWhoLogged;
+        private Button показатьГостиничныеКомплексы;
+        private DataGridView dataGridView1;
+        private Button показатьЗаявкиКлиентов;
+        private Button показатьЗаселениеКлиента;
+        private Button updateButton;
+        private ComboBox кбТаблицыБД;
+        private Label label3;
+        private TextBox tbSearch;
+        private Button btnSearch;
+        private ComboBox кбСтолбцыТаблицы;
+        private Label label4;
+        private Panel panel1;
     }
 }
