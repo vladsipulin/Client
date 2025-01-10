@@ -100,11 +100,11 @@ namespace Client
                                 тбДатаВыезда.Text = reader["ДатаВыезда"].ToString();
                                 тбСтоимостьОплаты.Text = reader["СтоимостьОплаты"].ToString();
                                 тбСтатусЗаявки.Text = reader["СтатусЗаявки"].ToString();
-                            }
-                            else
-                            {
-                                MessageBox.Show("Ваша заявка ещё на рассмотрении. Вернитесь позже", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                ifDataNull = true;
+                                if (тбСтатусЗаявки.Text.Equals(string.Empty))
+                                {
+                                    MessageBox.Show("Ваша заявка ещё на рассмотрении. Вернитесь позже", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    ifDataNull = true;
+                                }
                             }
                         }
                         con.Close();
