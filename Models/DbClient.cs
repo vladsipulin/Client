@@ -14,21 +14,23 @@ namespace Client.Models
         public string ФИО { get; set; }
         public string Пол { get; set; }
         public string ДатаРождения { get; set; }
+        public string Логин { get; set; }
+        public string Пароль { get; set; }
+        public string Email { get; set; }
 
         //порядковый номер для отображения в DGV
         public int OrderNumber { get; set; }
         //для обновления НКл ищем его по старому НКл - НКлОлд
         public int НКлОлд { get; set; }
-        public string Логин { get; set; }
-        public string Пароль { get; set; }
-        public string Email { get; set; }
+        
 
-        public DbClient(int НКл = 0, string ФИО = "<ФИО>", string Пол = "<Пол>", DateTime ДатаРождения = default)
+        public DbClient(int НКл = 0, string ФИО = "<ФИО>", string Пол = "<Пол>", DateTime ДатаРождения = default, string Email = "<Email>")
         {
             this.НКл = НКл;
             this.ФИО = ФИО;
             this.Пол = Пол;
             this.ДатаРождения = ДатаРождения.ToShortDateString();
+            this.Email = Email;
         }
 
         /// <summary>
@@ -46,12 +48,13 @@ namespace Client.Models
                 ФИО = client.ФИО,
                 Пол = client.Пол,
                 ДатаРождения = client.ДатаРождения,
+                Email = client.Email,
             };
         }
 
         public override string ToString()
         {
-            return $"{НКл}: {ФИО} {Пол} {ДатаРождения}";
+            return $"{НКл}: {ФИО} {Пол} {ДатаРождения} {Email}";
         }
     }
 }

@@ -78,20 +78,23 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "INSERT INTO Клиент (НКл, ФИО, Пол, ДатаРождения)" +
-                        " VALUES(@НКл, @ФИО, @Пол, @ДатаРождения)";
+                    cmd.CommandText = "INSERT INTO Клиент (НКл, ФИО, Пол, ДатаРождения, Email)" +
+                        " VALUES(@НКл, @ФИО, @Пол, @ДатаРождения, @Email)";
 
                     cmd.Parameters.Add(new MySqlParameter("@НКл", MySqlDbType.Int32)
                     { Value = DbClient.НКл });
 
-                    cmd.Parameters.Add(new MySqlParameter("@ФИО", MySqlDbType.VarChar, 200)
+                    cmd.Parameters.Add(new MySqlParameter("@ФИО", MySqlDbType.VarChar, 255)
                     { Value = DbClient.ФИО ?? (object)System.DBNull.Value });
 
-                    cmd.Parameters.Add(new MySqlParameter("@Пол", MySqlDbType.VarChar, 300)
+                    cmd.Parameters.Add(new MySqlParameter("@Пол", MySqlDbType.VarChar, 255)
                     { Value = DbClient.Пол ?? (object)System.DBNull.Value });
 
                     cmd.Parameters.Add(new MySqlParameter("@ДатаРождения", MySqlDbType.Date)
                     { Value = Convert.ToDateTime(DbClient.ДатаРождения)});
+
+                    cmd.Parameters.Add(new MySqlParameter("@Email", MySqlDbType.VarChar, 255)
+                    { Value = Convert.ToDateTime(DbClient.Email) });
 
                     con.Open();
                     result = await cmd.ExecuteNonQueryAsync();
@@ -155,21 +158,23 @@ namespace Client.Services
                 using (var cmd = con.CreateCommand())
                 {
                     cmd.CommandText = "UPDATE Клиент" +
-                        " SET НКл = @НКл, ФИО = @ФИО, Пол = @Пол, ДатаРождения = @ДатаРождения" +
+                        " SET НКл = @НКл, ФИО = @ФИО, Пол = @Пол, ДатаРождения = @ДатаРождения, Email = @Email" +
                         " WHERE НКл =@НКлОлд";
 
                     cmd.Parameters.Add(new MySqlParameter("@НКл", MySqlDbType.Int32)
                     { Value = DbClient.НКл });
 
-                    cmd.Parameters.Add(new MySqlParameter("@ФИО", MySqlDbType.VarChar, 200)
+                    cmd.Parameters.Add(new MySqlParameter("@ФИО", MySqlDbType.VarChar, 255)
                     { Value = DbClient.ФИО ?? (object)System.DBNull.Value });
 
-                    cmd.Parameters.Add(new MySqlParameter("@Пол", MySqlDbType.VarChar, 300)
+                    cmd.Parameters.Add(new MySqlParameter("@Пол", MySqlDbType.VarChar, 255)
                     { Value = DbClient.Пол ?? (object)System.DBNull.Value });
 
                     cmd.Parameters.Add(new MySqlParameter("@ДатаРождения", MySqlDbType.Date)
-                    {
-                        Value = Convert.ToDateTime(DbClient.ДатаРождения) });
+                    { Value = Convert.ToDateTime(DbClient.ДатаРождения) });
+
+                    cmd.Parameters.Add(new MySqlParameter("@Email", MySqlDbType.VarChar, 255)
+                    { Value = DbClient.Email ?? (object)System.DBNull.Value });
 
                     cmd.Parameters.Add(new MySqlParameter("@НКлОлд", MySqlDbType.Int32)
                     { Value = НКлОлд });

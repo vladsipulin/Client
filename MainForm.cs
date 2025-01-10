@@ -3,6 +3,7 @@ using Microsoft.VisualBasic.Logging;
 using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Relational;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -128,7 +129,7 @@ namespace Client
             return message;
         }
 
-        private void SelectFrom(string tableName)
+        private void SelectFrom(string tableName, bool userIsClient = false, string selectView = "<>")
         {
             string message = string.Empty;
             try
@@ -137,8 +138,31 @@ namespace Client
                 {
                     using (var cmd = con.CreateCommand())
                     {
-                        // Формируем запрос динамически
-                        string query = $"SELECT * FROM {tableName};";
+                        string query = String.Empty;
+                        if (!userIsClient)
+                        {
+                            // Формируем запрос динамически
+                            query = $"SELECT * FROM {tableName};";
+                        }
+                        else
+                        {
+                            if (tableName.Equals("заявканауслугу")
+                                || tableName.Equals("клиент")
+                                || tableName.Equals("отзывклиента")
+                                || tableName.Equals("заявканазаселениеклиента"))
+                            {
+                                query = $"SELECT * FROM {tableName} WHERE НКл = {keyLbl.Text};";
+                            }
+                            if (!selectView.Equals("<>"))
+                            {
+
+                            }
+                            else
+                            {
+                                query = $"SELECT * FROM {tableName};";
+                            }
+
+                        }
 
                         // Выполняем запрос
                         cmd.CommandText = query;
@@ -170,6 +194,7 @@ namespace Client
         }
 
 
+
         private void button1_Click(object sender, EventArgs e)
         {
             Клиенты clients = new Клиенты();
@@ -191,8 +216,8 @@ namespace Client
         private void button3_Click(object sender, EventArgs e)
         {
             ClientQueriesForAppartments queryForApps = new ClientQueriesForAppartments();
-            queryForApps.Show();
             queryForApps.lbWhoLogged.Text = keyLbl.Text;
+            queryForApps.ShowDialog();            
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -202,8 +227,15 @@ namespace Client
                 button1.Visible = false;
                 button2.Visible = false;
                 clientsButton.Visible = false;
+                показатьГостиничныеКомплексы.Visible = false;
+                показатьЗаселениеКлиента.Visible = false;
+                показатьЗаявкиКлиентов.Visible = false;
                 //button3.Location = new Point(38, 109);
-                string sql = "SELECT TABLE_NAME AS 'id', TABLE_COMMENT AS 'Таблица' FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='hotel' ORDER BY TABLE_COMMENT ASC";
+                string sql = "SELECT TABLE_NAME AS 'id', TABLE_COMMENT AS 'Таблица' FROM INFORMATION_SCHEMA.TABLES " +
+                    "WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='hotel' " +
+                    "AND TABLE_NAME IN('субъект','гостиничныйкомплекс', 'заселениеклиента', 'учетпокупокуслуг', 'заявканазаселениеклиента', 'заявканауслугу','клиент', 'корпус', 'этажиикорпусы','комната','отзывклиента', 'службабыта') " +
+                    "ORDER BY TABLE_COMMENT ASC;" +
+                    "";
                 ComboBoxDataForFill ИменаТаблиц = new ComboBoxDataForFill(sql, "Таблица", "id");
                 LoadCombo(ИменаТаблиц);
                 кбТаблицыБД.DataSource = ИменаТаблиц.dataSource;
@@ -221,15 +253,64 @@ namespace Client
                 кбСтолбцыТаблицы.DataSource = Столбец.dataSource;
                 кбСтолбцыТаблицы.DisplayMember = Столбец.DisplayMember;
                 кбСтолбцыТаблицы.ValueMember = Столбец.ValueMember;
+                /*
+                if (tableName.Equals("заселениеклиента"))
+                {
+                    string query = $"SELECT f.НГ AS 'Номер гостиницы', f.НК AS 'Номер корпуса', f.НЭ AS 'Этаж', f.НКомнаты AS 'Комната', s.НКл AS 'Номер клиента', f.СтатусЗаявки" +
+                        $"FROM `заселениеклиента` AS f INNER JOIN `заявканазаселениеклиента` AS s ON f.НГ = s.НГ AND f.НК=s.НК AND f.НЭ=s.НЭ AND f.НКомнаты=s.НКомнаты " +
+                        $"WHERE s.НКл = {keyLbl.Text};";
+                    SelectFrom(tableName, true, query);
+                }
+                else if (tableName.Equals("учетпокупокуслуг"))
+                {
+                    string query = $"SELECT f.НЗаявки AS 'Номер заявки', f.НСл AS 'Номер службы быта', f.СрокОплаты AS 'Срок оплаты', f.СуммаВЗаявке AS 'Сумма в заявке', s.НКл AS 'Номер клиента', f.ДатаОплаты, f.РазмерШтрафа, f.СуммаКОплате" +
+                        $"FROM `учетпокупокуслуг` AS f INNER JOIN `заявканауслугу` AS s " +
+                        $"ON f.НЗаявки = s.НЗаявки AND f.НСл=s.НСл AND f.СрокОплаты=s.СрокОплаты AND f.СуммаВЗаявке=s.Сумма" +
+                        $"WHERE s.НКл = {keyLbl.Text};";
+                    SelectFrom(tableName, true, query);
+                }
+                else
+                {
+                    SelectFrom(tableName, true);
+
+                    string таблица = (string)кбТаблицыБД.SelectedValue;
+                    sql = "SELECT COLUMN_NAME AS 'Столбец' FROM INFORMATION_SCHEMA.COlUMNS WHERE TABLE_SCHEMA='hotel' AND TABLE_NAME=@Таблица";
+                    ComboBoxDataForFill Столбец = new ComboBoxDataForFill(sql, "Столбец", "Столбец");
+                    Столбец.paramsForSQLQuery.Add(new MySqlParameter("@Таблица", MySqlDbType.VarChar, 255) { Value = таблица });
+                    LoadCombo(Столбец);
+                    кбСтолбцыТаблицы.DataSource = Столбец.dataSource;
+                    кбСтолбцыТаблицы.DisplayMember = Столбец.DisplayMember;
+                    кбСтолбцыТаблицы.ValueMember = Столбец.ValueMember;
+                }
+                */
             }
             else
             {
+                button1.Visible = false;
+                button2.Visible = false;
+                clientsButton.Visible = false;
+                button3.Visible = false;
+                показатьГостиничныеКомплексы.Visible = false;
+                показатьЗаселениеКлиента.Visible = false;
+                показатьЗаявкиКлиентов.Visible = false;
                 string sql = "SELECT TABLE_NAME AS 'id', TABLE_COMMENT AS 'Таблица' FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='hotel'";
                 ComboBoxDataForFill ИменаТаблиц = new ComboBoxDataForFill(sql, "Таблица", "id");
                 LoadCombo(ИменаТаблиц);
                 кбТаблицыБД.DataSource = ИменаТаблиц.dataSource;
                 кбТаблицыБД.DisplayMember = ИменаТаблиц.DisplayMember;
                 кбТаблицыБД.ValueMember = ИменаТаблиц.ValueMember;
+
+                string tableName = (string)кбТаблицыБД.SelectedValue;
+                SelectFrom(tableName);
+
+                string таблица = (string)кбТаблицыБД.SelectedValue;
+                sql = "SELECT COLUMN_NAME AS 'Столбец' FROM INFORMATION_SCHEMA.COlUMNS WHERE TABLE_SCHEMA='hotel' AND TABLE_NAME=@Таблица";
+                ComboBoxDataForFill Столбец = new ComboBoxDataForFill(sql, "Столбец", "Столбец");
+                Столбец.paramsForSQLQuery.Add(new MySqlParameter("@Таблица", MySqlDbType.VarChar, 255) { Value = таблица });
+                LoadCombo(Столбец);
+                кбСтолбцыТаблицы.DataSource = Столбец.dataSource;
+                кбСтолбцыТаблицы.DisplayMember = Столбец.DisplayMember;
+                кбСтолбцыТаблицы.ValueMember = Столбец.ValueMember;
             }
         }
 
@@ -298,12 +379,11 @@ namespace Client
         private void кбТаблицыБД_SelectionChangeCommitted(object sender, EventArgs e)
         {
             string tableName = (string)кбТаблицыБД.SelectedValue;
-            SelectFrom(tableName);
+            SelectFrom(tableName, true);
 
-            string таблица = (string)кбТаблицыБД.SelectedValue;
             string sql = "SELECT COLUMN_NAME AS 'Столбец' FROM INFORMATION_SCHEMA.COlUMNS WHERE TABLE_SCHEMA='hotel' AND TABLE_NAME=@Таблица";
             ComboBoxDataForFill Столбец = new ComboBoxDataForFill(sql, "Столбец", "Столбец");
-            Столбец.paramsForSQLQuery.Add(new MySqlParameter("@Таблица", MySqlDbType.VarChar, 255) { Value = таблица });
+            Столбец.paramsForSQLQuery.Add(new MySqlParameter("@Таблица", MySqlDbType.VarChar, 255) { Value = tableName });
             LoadCombo(Столбец);
             кбСтолбцыТаблицы.DataSource = Столбец.dataSource;
             кбСтолбцыТаблицы.DisplayMember = Столбец.DisplayMember;
@@ -346,6 +426,21 @@ namespace Client
                 if (!resultExists)
                     MessageBox.Show($"Введенное значение не найдено – столбец {кбСтолбцыТаблицы.Text}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            UserProfile userProfile = new UserProfile();
+            userProfile.keyLbl.Text = keyLbl.Text;
+            userProfile.ShowDialog();
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            ReqStatusApps rsa = new ReqStatusApps();
+            rsa.keyLbl.Text = keyLbl.Text;
+            rsa.ShowDialog();
         }
     }
 }

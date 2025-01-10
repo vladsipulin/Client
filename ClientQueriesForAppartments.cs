@@ -98,6 +98,7 @@ namespace Client
         private void ClientQueriesForAppartments_Load(object sender, EventArgs e)
         {
             _repo = new RRequestClientApparts();
+            this.BackColor = System.Drawing.Color.White;
 
             sql = "SELECT Название, НГ FROM `ГостиничныйКомплекс`";
             ComboBoxDataForFill Гостиница = new ComboBoxDataForFill(sql, "Название", "НГ");
@@ -294,8 +295,8 @@ namespace Client
 
         private async void button1_Click_1(object sender, EventArgs e)
         {
-            username = lbWhoLogged.Text;
-            SetClientIdByUsername(username);
+            int clientId = Convert.ToInt16(lbWhoLogged.Text);
+            //SetClientIdByUsername(username);
 
             RequestClientAppartmnts current = new RequestClientAppartmnts(Convert.ToInt32(кбНКомнаты.Text), Convert.ToInt32(кбНК.Text), Convert.ToInt32(кбНЭ.Text),
                                                                           Convert.ToInt32(кбНГ.SelectedValue), clientId,

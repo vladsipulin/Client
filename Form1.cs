@@ -18,7 +18,7 @@ namespace Client
         private async void loginButton_Click(object sender, EventArgs e)
         {
             //UserAuth user = new UserAuth(0, тбЛогин.Text, тбПароль.Text);
-            UserAuth user = new UserAuth(0, "sipulin_vi", "123");
+            UserAuth user = new UserAuth(0,"sipulin_vi", "123");
             string userAddInfo = String.Empty;
 
             _repo = new Authorization();
@@ -36,6 +36,7 @@ namespace Client
                     {
                         IsUserExists = true;
                         userAddInfo = element.UserType;
+                        user.НКл = element.НКл;
                         break;
                     }
                 }
@@ -47,7 +48,7 @@ namespace Client
                         MessageBox.Show("Добро пожаловать в систему, сотрудник", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         MainForm mf = new MainForm();
                         mf.lbWhoLogged.Text = "Сотрудник:";
-                        mf.keyLbl.Text = user.Логин;
+                        mf.keyLbl.Text = user.НКл.ToString();
                         mf.Show();
                     }
                     catch
@@ -55,7 +56,7 @@ namespace Client
                         MessageBox.Show("Добро пожаловать в систему, клиент", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         MainForm mf = new MainForm();
                         mf.lbWhoLogged.Text = "Клиент:";
-                        mf.keyLbl.Text = user.Логин;
+                        mf.keyLbl.Text = user.НКл.ToString();
                         mf.Show();
                     }
                 }

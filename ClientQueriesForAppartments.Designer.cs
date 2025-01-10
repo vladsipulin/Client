@@ -75,14 +75,14 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(752, 252);
+            panel1.Size = new Size(712, 252);
             panel1.TabIndex = 8;
             // 
             // label12
             // 
             label12.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label12.AutoSize = true;
-            label12.Location = new Point(588, 29);
+            label12.Location = new Point(548, 29);
             label12.Name = "label12";
             label12.Size = new Size(79, 15);
             label12.TabIndex = 18;
@@ -92,7 +92,7 @@
             // 
             lbWhoLogged.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lbWhoLogged.AutoSize = true;
-            lbWhoLogged.Location = new Point(498, 29);
+            lbWhoLogged.Location = new Point(458, 29);
             lbWhoLogged.Name = "lbWhoLogged";
             lbWhoLogged.Size = new Size(59, 15);
             lbWhoLogged.TabIndex = 16;
@@ -102,7 +102,7 @@
             // dateTimePicker1
             // 
             dateTimePicker1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            dateTimePicker1.Location = new Point(587, 47);
+            dateTimePicker1.Location = new Point(547, 47);
             dateTimePicker1.Name = "dateTimePicker1";
             dateTimePicker1.Size = new Size(143, 23);
             dateTimePicker1.TabIndex = 15;
@@ -264,7 +264,7 @@
             // button1
             // 
             button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button1.Location = new Point(596, 443);
+            button1.Location = new Point(556, 413);
             button1.Name = "button1";
             button1.Size = new Size(143, 35);
             button1.TabIndex = 21;
@@ -292,7 +292,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(752, 490);
+            ClientSize = new Size(712, 460);
             Controls.Add(label10);
             Controls.Add(tbRoomPrice);
             Controls.Add(button1);
@@ -303,7 +303,10 @@
             Controls.Add(label7);
             Controls.Add(dateTimePicker2);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            MinimumSize = new Size(728, 499);
             Name = "ClientQueriesForAppartments";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Заявка на заселение";
             Load += ClientQueriesForAppartments_Load;
             panel1.ResumeLayout(false);

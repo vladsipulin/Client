@@ -36,7 +36,7 @@
             button1 = new Button();
             button2 = new Button();
             button3 = new Button();
-            lbWhoLogged = new Label();
+            label6 = new Label();
             keyLbl = new Label();
             показатьГостиничныеКомплексы = new Button();
             dataGridView1 = new DataGridView();
@@ -50,6 +50,9 @@
             кбСтолбцыТаблицы = new ComboBox();
             label4 = new Label();
             panel1 = new Panel();
+            button4 = new Button();
+            lbWhoLogged = new Label();
+            button5 = new Button();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel1.SuspendLayout();
@@ -112,26 +115,26 @@
             // button3
             // 
             button3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button3.Location = new Point(604, 89);
+            button3.Location = new Point(604, 86);
             button3.Name = "button3";
-            button3.Size = new Size(143, 23);
+            button3.Size = new Size(143, 26);
             button3.TabIndex = 7;
-            button3.Text = "Заявка на заселение";
+            button3.Text = "Забронировать номер";
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
-            // lbWhoLogged
+            // label6
             // 
-            lbWhoLogged.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lbWhoLogged.AutoSize = true;
-            lbWhoLogged.BackColor = Color.LightSteelBlue;
-            lbWhoLogged.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
-            lbWhoLogged.ForeColor = SystemColors.ActiveCaptionText;
-            lbWhoLogged.Location = new Point(604, 21);
-            lbWhoLogged.Name = "lbWhoLogged";
-            lbWhoLogged.Size = new Size(127, 15);
-            lbWhoLogged.TabIndex = 8;
-            lbWhoLogged.Text = "Клиент/Сотрудник:";
+            label6.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label6.AutoSize = true;
+            label6.BackColor = Color.LightSteelBlue;
+            label6.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
+            label6.ForeColor = SystemColors.ActiveCaptionText;
+            label6.Location = new Point(598, 35);
+            label6.Name = "label6";
+            label6.Size = new Size(108, 15);
+            label6.TabIndex = 8;
+            label6.Text = "ID пользователя:";
             // 
             // keyLbl
             // 
@@ -140,11 +143,11 @@
             keyLbl.BackColor = Color.LightSteelBlue;
             keyLbl.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
             keyLbl.ForeColor = SystemColors.ActiveCaptionText;
-            keyLbl.Location = new Point(604, 41);
+            keyLbl.Location = new Point(713, 35);
             keyLbl.Name = "keyLbl";
-            keyLbl.Size = new Size(34, 15);
+            keyLbl.Size = new Size(44, 15);
             keyLbl.TabIndex = 9;
-            keyLbl.Text = "login";
+            keyLbl.Text = "123456";
             // 
             // показатьГостиничныеКомплексы
             // 
@@ -256,7 +259,10 @@
             // panel1
             // 
             panel1.BackColor = Color.LightSteelBlue;
+            panel1.Controls.Add(button5);
+            panel1.Controls.Add(button4);
             panel1.Controls.Add(lbWhoLogged);
+            panel1.Controls.Add(label6);
             panel1.Controls.Add(button3);
             panel1.Controls.Add(keyLbl);
             panel1.Dock = DockStyle.Top;
@@ -264,6 +270,37 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(769, 175);
             panel1.TabIndex = 21;
+            // 
+            // button4
+            // 
+            button4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button4.Location = new Point(604, 118);
+            button4.Name = "button4";
+            button4.Size = new Size(143, 26);
+            button4.TabIndex = 22;
+            button4.Text = "Профиль клиента";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click_1;
+            // 
+            // lbWhoLogged
+            // 
+            lbWhoLogged.AutoSize = true;
+            lbWhoLogged.Location = new Point(598, 9);
+            lbWhoLogged.Name = "lbWhoLogged";
+            lbWhoLogged.Size = new Size(38, 15);
+            lbWhoLogged.TabIndex = 10;
+            lbWhoLogged.Text = "label5";
+            lbWhoLogged.Visible = false;
+            // 
+            // button5
+            // 
+            button5.Location = new Point(396, 147);
+            button5.Name = "button5";
+            button5.Size = new Size(202, 25);
+            button5.TabIndex = 23;
+            button5.Text = "Статус заявки на заселение";
+            button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click;
             // 
             // MainForm
             // 
@@ -309,7 +346,7 @@
         private Button button2;
         private Button button3;
         internal Label keyLbl;
-        internal Label lbWhoLogged;
+        internal Label label6;
         private Button показатьГостиничныеКомплексы;
         private DataGridView dataGridView1;
         private Button показатьЗаявкиКлиентов;
@@ -322,5 +359,8 @@
         private ComboBox кбСтолбцыТаблицы;
         private Label label4;
         private Panel panel1;
+        internal Label lbWhoLogged;
+        private Button button4;
+        private Button button5;
     }
 }
