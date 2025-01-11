@@ -51,6 +51,8 @@
             тбВместимость = new TextBox();
             тбНомерКомнаты = new TextBox();
             тбСтоимостьОплаты = new TextBox();
+            btnForward = new Button();
+            btnBack = new Button();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -253,11 +255,33 @@
             тбСтоимостьОплаты.Size = new Size(143, 23);
             тбСтоимостьОплаты.TabIndex = 45;
             // 
+            // btnForward
+            // 
+            btnForward.Location = new Point(243, 454);
+            btnForward.Name = "btnForward";
+            btnForward.Size = new Size(83, 23);
+            btnForward.TabIndex = 47;
+            btnForward.Text = "-->";
+            btnForward.UseVisualStyleBackColor = true;
+            btnForward.Click += btnForward_Click;
+            // 
+            // btnBack
+            // 
+            btnBack.Location = new Point(35, 454);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(83, 23);
+            btnBack.TabIndex = 46;
+            btnBack.Text = "<--";
+            btnBack.UseVisualStyleBackColor = true;
+            btnBack.Click += btnBack_Click;
+            // 
             // ReqStatusApps
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(368, 450);
+            ClientSize = new Size(368, 489);
+            Controls.Add(btnForward);
+            Controls.Add(btnBack);
             Controls.Add(тбСтоимостьОплаты);
             Controls.Add(тбНомерКомнаты);
             Controls.Add(тбВместимость);
@@ -315,5 +339,7 @@
         private TextBox тбВместимость;
         private TextBox тбНомерКомнаты;
         private TextBox тбСтоимостьОплаты;
+        private Button btnForward;
+        private Button btnBack;
     }
 }

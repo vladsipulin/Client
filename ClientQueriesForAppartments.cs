@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Configuration;
+using MySqlX.XDevAPI.Common;
 
 namespace Client
 {
@@ -295,24 +296,31 @@ namespace Client
 
         private async void button1_Click_1(object sender, EventArgs e)
         {
-            int clientId = Convert.ToInt16(lbWhoLogged.Text);
-            //SetClientIdByUsername(username);
-
-            RequestClientAppartmnts current = new RequestClientAppartmnts(Convert.ToInt32(кбНКомнаты.Text), Convert.ToInt32(кбНК.Text), Convert.ToInt32(кбНЭ.Text),
-                                                                          Convert.ToInt32(кбНГ.SelectedValue), clientId,
-                                       Convert.ToDateTime(dateTimePicker1.Text), Convert.ToDateTime(dateTimePicker2.Text),
-                                       Convert.ToDateTime(dateTimePicker3.Text), float.Parse(tbCost.Text));
-
-            Result<int> result;
-            result = await _repo.Add(current);
-
-            if (result)
+            try
             {
-                MessageBox.Show("Заявка успешно создана!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                int clientId = Convert.ToInt16(lbWhoLogged.Text);
+                //SetClientIdByUsername(username);
+
+                RequestClientAppartmnts current = new RequestClientAppartmnts(Convert.ToInt32(кбНКомнаты.Text), Convert.ToInt32(кбНК.Text), Convert.ToInt32(кбНЭ.Text),
+                                                                              Convert.ToInt32(кбНГ.SelectedValue), clientId,
+                                           Convert.ToDateTime(dateTimePicker1.Text), Convert.ToDateTime(dateTimePicker2.Text),
+                                           Convert.ToDateTime(dateTimePicker3.Text), float.Parse(tbCost.Text));
+
+                Result<int> result;
+                result = await _repo.Add(current);
+
+                if (result)
+                {
+                    MessageBox.Show("Заявка успешно создана!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                if (!result)
+                {
+                    MessageBox.Show(result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            if (!result)
+            catch
             {
-                MessageBox.Show(result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Вы не заполнили все поля формы!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

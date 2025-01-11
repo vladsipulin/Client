@@ -217,7 +217,7 @@ namespace Client
         {
             ClientQueriesForAppartments queryForApps = new ClientQueriesForAppartments();
             queryForApps.lbWhoLogged.Text = keyLbl.Text;
-            queryForApps.ShowDialog();            
+            queryForApps.ShowDialog();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -441,6 +441,13 @@ namespace Client
             ReqStatusApps rsa = new ReqStatusApps();
             rsa.keyLbl.Text = keyLbl.Text;
             rsa.ShowDialog();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            ReqOnServiceForm rsf = new ReqOnServiceForm();
+            rsf.lbWhoLogged.Text = keyLbl.Text;
+            rsf.ShowDialog();
         }
     }
 }

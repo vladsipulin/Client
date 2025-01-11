@@ -41,16 +41,6 @@ namespace Client.Models
             this.СтоимостьОплаты = СтоимостьОплаты;
         }
 
-        private string GetPasswordHash(string password)
-        {
-            string salt = "TfbcZEIwOHJokZyDIvOqjg==";
-            //Console.WriteLine($"Salt: {salt}");
-
-            string hashedPassword = PasswordHasher.HashPassword(password, salt);
-            //Console.WriteLine($"Hashed Password: {hashedPassword}");
-            return hashedPassword;
-        }
-
         /// <summary>
         /// Получение клонированного экземпляра
         /// </summary>

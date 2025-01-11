@@ -50,9 +50,10 @@
             кбСтолбцыТаблицы = new ComboBox();
             label4 = new Label();
             panel1 = new Panel();
+            button5 = new Button();
             button4 = new Button();
             lbWhoLogged = new Label();
-            button5 = new Button();
+            button6 = new Button();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel1.SuspendLayout();
@@ -259,6 +260,7 @@
             // panel1
             // 
             panel1.BackColor = Color.LightSteelBlue;
+            panel1.Controls.Add(button6);
             panel1.Controls.Add(button5);
             panel1.Controls.Add(button4);
             panel1.Controls.Add(lbWhoLogged);
@@ -270,6 +272,16 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(769, 175);
             panel1.TabIndex = 21;
+            // 
+            // button5
+            // 
+            button5.Location = new Point(396, 87);
+            button5.Name = "button5";
+            button5.Size = new Size(202, 25);
+            button5.TabIndex = 23;
+            button5.Text = "Статус заявки на заселение";
+            button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click;
             // 
             // button4
             // 
@@ -292,15 +304,15 @@
             lbWhoLogged.Text = "label5";
             lbWhoLogged.Visible = false;
             // 
-            // button5
+            // button6
             // 
-            button5.Location = new Point(396, 147);
-            button5.Name = "button5";
-            button5.Size = new Size(202, 25);
-            button5.TabIndex = 23;
-            button5.Text = "Статус заявки на заселение";
-            button5.UseVisualStyleBackColor = true;
-            button5.Click += button5_Click;
+            button6.Location = new Point(396, 124);
+            button6.Name = "button6";
+            button6.Size = new Size(202, 23);
+            button6.TabIndex = 24;
+            button6.Text = "Заявка на службу быта";
+            button6.UseVisualStyleBackColor = true;
+            button6.Click += button6_Click;
             // 
             // MainForm
             // 
@@ -362,5 +374,6 @@
         internal Label lbWhoLogged;
         private Button button4;
         private Button button5;
+        private Button button6;
     }
 }
