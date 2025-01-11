@@ -53,24 +53,29 @@ namespace Client
 
         private void regButton_Click(object sender, EventArgs e)
         {
-            Random rnd = new Random();
-            code = rnd.Next(100000, 999999);
-            string mail = тбПочта.Text;
-            var result = _rec.FindUser(mail);
-            if (result.ФИО != "<ФИО>")
+            if (!тбПочта.Text.Equals(String.Empty))
             {
-                string username = result.ФИО;
-                _ur = new UserRecover(mail, username);
-                SendEmail(mail, "Код для восстановления пароля", "Здравствуйте, " + username + ".\nВаш код для восстановления пароля: " + code + "");
-                MessageBox.Show("Код восстановления успешно отправлен по адресу: " + mail, "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                тбКВ.Enabled = true;
-                тбНП.Enabled = true;
-                changePassBtn.Enabled = true;
+                Random rnd = new Random();
+                code = rnd.Next(100000, 999999);
+                string mail = тбПочта.Text;
+                var result = _rec.FindUser(mail);
+                if (result.ФИО != "<ФИО>")
+                {
+                    string username = result.ФИО;
+                    _ur = new UserRecover(mail, username);
+                    SendEmail(mail, "Код для восстановления пароля", "Здравствуйте, " + username + ".\nВаш код для восстановления пароля: " + code + "");
+                    MessageBox.Show("Код восстановления успешно отправлен по адресу: " + mail, "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    тбКВ.Enabled = true;
+                    тбНП.Enabled = true;
+                    changePassBtn.Enabled = true;
+                }
+                else
+                {
+                    MessageBox.Show("Пользователя с такой почтой не существует", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
-            {
-                MessageBox.Show("Пользователя с такой почтой не существует", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                MessageBox.Show("Введите значение в поле ввода электронной почты", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void RecoverForm_Load(object sender, EventArgs e)

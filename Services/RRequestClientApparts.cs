@@ -6,6 +6,7 @@ using MySqlX.XDevAPI;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -161,10 +162,10 @@ namespace Client.Services
             return new Result<List<RequestClientAppartmnts>>(list);
         }
 
-        public async Task<Result<int>> Remove(int НКомнаты, int НК, int НЭ, int НГ, int НКл)
+        public async Task<Result<int>> Remove(RequestClientAppartmnts objOfTable, string Статус, int НКомнатыОлд, int НКОлд, int НЭОлд, int НГОлд)
         {
-            if (НКомнаты <= 0 || НК <= 0 || НЭ <= 0 || НГ <= 0 || НКл <= 0)
-                throw new ArgumentException("Invalid input parameters. All IDs must be greater than 0.");
+            if (objOfTable is null)
+                throw new ArgumentNullException(nameof(objOfTable));
 
             int result = 0;
             try
@@ -173,14 +174,23 @@ namespace Client.Services
                 using (var cmd = con.CreateCommand())
                 {
                     cmd.CommandText = @"
-                DELETE FROM ЗаявкаНаЗаселениеКлиента 
-                WHERE НКомнаты = @НКомнаты AND НК = @НК AND НЭ = @НЭ AND НГ = @НГ AND НКл = @НКл";
+                UPDATE ЗаявкаНаЗаселениеКлиента
+                SET Статус = @val2
+                WHERE НКомнаты = @val02 
+                        AND НК = @val03 
+                        AND НЭ = @val04 
+                        AND НГ = @val05 
+                        AND НКл = @val06";
 
-                    cmd.Parameters.Add(new MySqlParameter("@НКомнаты", MySqlDbType.Int32) { Value = НКомнаты });
-                    cmd.Parameters.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
-                    cmd.Parameters.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
-                    cmd.Parameters.Add(new MySqlParameter("@НГ", MySqlDbType.Int32) { Value = НГ });
-                    cmd.Parameters.Add(new MySqlParameter("@НКл", MySqlDbType.Int32) { Value = НКл });
+                    // Параметры для обновления
+                    cmd.Parameters.Add(new MySqlParameter("@val2", MySqlDbType.VarChar, 255) { Value = Статус });
+
+                    // Условие WHERE
+                    cmd.Parameters.Add(new MySqlParameter("@val02", MySqlDbType.Int32) { Value = НКомнатыОлд });
+                    cmd.Parameters.Add(new MySqlParameter("@val03", MySqlDbType.Int32) { Value = НКОлд });
+                    cmd.Parameters.Add(new MySqlParameter("@val04", MySqlDbType.Int32) { Value = НЭОлд });
+                    cmd.Parameters.Add(new MySqlParameter("@val05", MySqlDbType.Int32) { Value = НГОлд });
+                    cmd.Parameters.Add(new MySqlParameter("@val06", MySqlDbType.Int32) { Value = objOfTable.НКл });
 
                     await con.OpenAsync();
                     result = await cmd.ExecuteNonQueryAsync();

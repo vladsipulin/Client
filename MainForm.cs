@@ -292,6 +292,11 @@ namespace Client
                 button2.Visible = false;
                 clientsButton.Visible = false;
                 button3.Visible = false;
+                button4.Visible = false;
+                button5.Visible = false;
+                button6.Visible = false;
+                button7.Visible = false;
+                button8.Visible = false;
                 показатьГостиничныеКомплексы.Visible = false;
                 показатьЗаселениеКлиента.Visible = false;
                 показатьЗаявкиКлиентов.Visible = false;

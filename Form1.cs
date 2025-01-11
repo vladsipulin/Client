@@ -17,8 +17,7 @@ namespace Client
 
         private async void loginButton_Click(object sender, EventArgs e)
         {
-            //UserAuth user = new UserAuth(0, тбЛогин.Text, тбПароль.Text);
-            UserAuth user = new UserAuth(0,"sipulin_vi", "123");
+            UserAuth user = new UserAuth(0, тбЛогин.Text, тбПароль.Text);
             string userAddInfo = String.Empty;
 
             _repo = new Authorization();
@@ -78,13 +77,13 @@ namespace Client
         private void recoverButton_Click(object sender, EventArgs e)
         {
             RecoverForm recf = new RecoverForm();
-            recf.Show();
+            recf.ShowDialog();
         }
 
         private void regButton_Click(object sender, EventArgs e)
         {
             RegistrationForm regf = new RegistrationForm();
-            regf.Show();
+            regf.ShowDialog();
         }
     }
 }

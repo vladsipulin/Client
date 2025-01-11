@@ -28,174 +28,173 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.тбЛогин = new System.Windows.Forms.TextBox();
-            this.тбПароль = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.regButton = new System.Windows.Forms.Button();
-            this.тбПочта = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.тбФИО = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.полеДР = new System.Windows.Forms.DateTimePicker();
-            this.кбПол = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.тбНКл = new System.Windows.Forms.TextBox();
-            this.SuspendLayout();
+            тбЛогин = new TextBox();
+            тбПароль = new TextBox();
+            label2 = new Label();
+            label1 = new Label();
+            regButton = new Button();
+            тбПочта = new TextBox();
+            label3 = new Label();
+            label4 = new Label();
+            тбФИО = new TextBox();
+            label5 = new Label();
+            label6 = new Label();
+            полеДР = new DateTimePicker();
+            кбПол = new ComboBox();
+            label7 = new Label();
+            тбНКл = new TextBox();
+            SuspendLayout();
             // 
             // тбЛогин
             // 
-            this.тбЛогин.Location = new System.Drawing.Point(54, 91);
-            this.тбЛогин.Name = "тбЛогин";
-            this.тбЛогин.Size = new System.Drawing.Size(173, 23);
-            this.тбЛогин.TabIndex = 0;
+            тбЛогин.Location = new Point(54, 91);
+            тбЛогин.Name = "тбЛогин";
+            тбЛогин.Size = new Size(173, 23);
+            тбЛогин.TabIndex = 0;
             // 
             // тбПароль
             // 
-            this.тбПароль.Location = new System.Drawing.Point(54, 146);
-            this.тбПароль.Name = "тбПароль";
-            this.тбПароль.Size = new System.Drawing.Size(172, 23);
-            this.тбПароль.TabIndex = 1;
+            тбПароль.Location = new Point(54, 146);
+            тбПароль.Name = "тбПароль";
+            тбПароль.Size = new Size(172, 23);
+            тбПароль.TabIndex = 1;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(53, 128);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(52, 15);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Пароль:";
+            label2.AutoSize = true;
+            label2.Location = new Point(53, 128);
+            label2.Name = "label2";
+            label2.Size = new Size(52, 15);
+            label2.TabIndex = 5;
+            label2.Text = "Пароль:";
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(53, 73);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 15);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Логин:";
+            label1.AutoSize = true;
+            label1.Location = new Point(53, 73);
+            label1.Name = "label1";
+            label1.Size = new Size(44, 15);
+            label1.TabIndex = 4;
+            label1.Text = "Логин:";
             // 
             // regButton
             // 
-            this.regButton.Location = new System.Drawing.Point(54, 463);
-            this.regButton.Name = "regButton";
-            this.regButton.Size = new System.Drawing.Size(173, 35);
-            this.regButton.TabIndex = 6;
-            this.regButton.Text = "Зарегистрироваться";
-            this.regButton.UseVisualStyleBackColor = true;
-            this.regButton.Click += new System.EventHandler(this.regButton_Click);
+            regButton.Location = new Point(54, 463);
+            regButton.Name = "regButton";
+            regButton.Size = new Size(173, 35);
+            regButton.TabIndex = 6;
+            regButton.Text = "Зарегистрироваться";
+            regButton.UseVisualStyleBackColor = true;
+            regButton.Click += regButton_Click;
             // 
             // тбПочта
             // 
-            this.тбПочта.Location = new System.Drawing.Point(54, 204);
-            this.тбПочта.Name = "тбПочта";
-            this.тбПочта.Size = new System.Drawing.Size(172, 23);
-            this.тбПочта.TabIndex = 7;
+            тбПочта.Location = new Point(54, 204);
+            тбПочта.Name = "тбПочта";
+            тбПочта.Size = new Size(172, 23);
+            тбПочта.TabIndex = 7;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(53, 186);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(116, 15);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "Электронная почта:";
+            label3.AutoSize = true;
+            label3.Location = new Point(53, 186);
+            label3.Name = "label3";
+            label3.Size = new Size(116, 15);
+            label3.TabIndex = 8;
+            label3.Text = "Электронная почта:";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(53, 247);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(34, 15);
-            this.label4.TabIndex = 10;
-            this.label4.Text = "ФИО";
+            label4.AutoSize = true;
+            label4.Location = new Point(53, 247);
+            label4.Name = "label4";
+            label4.Size = new Size(34, 15);
+            label4.TabIndex = 10;
+            label4.Text = "ФИО";
             // 
             // тбФИО
             // 
-            this.тбФИО.Location = new System.Drawing.Point(54, 265);
-            this.тбФИО.Name = "тбФИО";
-            this.тбФИО.Size = new System.Drawing.Size(172, 23);
-            this.тбФИО.TabIndex = 9;
+            тбФИО.Location = new Point(54, 265);
+            тбФИО.Name = "тбФИО";
+            тбФИО.Size = new Size(172, 23);
+            тбФИО.TabIndex = 9;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(53, 307);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(30, 15);
-            this.label5.TabIndex = 12;
-            this.label5.Text = "Пол";
+            label5.AutoSize = true;
+            label5.Location = new Point(53, 307);
+            label5.Name = "label5";
+            label5.Size = new Size(30, 15);
+            label5.TabIndex = 12;
+            label5.Text = "Пол";
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(53, 370);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(90, 15);
-            this.label6.TabIndex = 14;
-            this.label6.Text = "Дата рождения";
+            label6.AutoSize = true;
+            label6.Location = new Point(53, 370);
+            label6.Name = "label6";
+            label6.Size = new Size(90, 15);
+            label6.TabIndex = 14;
+            label6.Text = "Дата рождения";
             // 
             // полеДР
             // 
-            this.полеДР.Location = new System.Drawing.Point(54, 397);
-            this.полеДР.Name = "полеДР";
-            this.полеДР.Size = new System.Drawing.Size(172, 23);
-            this.полеДР.TabIndex = 15;
+            полеДР.Location = new Point(54, 397);
+            полеДР.Name = "полеДР";
+            полеДР.Size = new Size(172, 23);
+            полеДР.TabIndex = 15;
             // 
             // кбПол
             // 
-            this.кбПол.FormattingEnabled = true;
-            this.кбПол.Items.AddRange(new object[] {
-            "муж.",
-            "жен."});
-            this.кбПол.Location = new System.Drawing.Point(54, 325);
-            this.кбПол.Name = "кбПол";
-            this.кбПол.Size = new System.Drawing.Size(172, 23);
-            this.кбПол.TabIndex = 16;
+            кбПол.FormattingEnabled = true;
+            кбПол.Items.AddRange(new object[] { "муж.", "жен." });
+            кбПол.Location = new Point(54, 325);
+            кбПол.Name = "кбПол";
+            кбПол.Size = new Size(172, 23);
+            кбПол.TabIndex = 16;
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(54, 20);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(95, 15);
-            this.label7.TabIndex = 18;
-            this.label7.Text = "Номер клиента:";
+            label7.AutoSize = true;
+            label7.Location = new Point(54, 20);
+            label7.Name = "label7";
+            label7.Size = new Size(95, 15);
+            label7.TabIndex = 18;
+            label7.Text = "Номер клиента:";
             // 
             // тбНКл
             // 
-            this.тбНКл.Location = new System.Drawing.Point(53, 38);
-            this.тбНКл.Name = "тбНКл";
-            this.тбНКл.Size = new System.Drawing.Size(174, 23);
-            this.тбНКл.TabIndex = 17;
+            тбНКл.Location = new Point(53, 38);
+            тбНКл.Name = "тбНКл";
+            тбНКл.Size = new Size(174, 23);
+            тбНКл.TabIndex = 17;
             // 
             // RegistrationForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(309, 536);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.тбНКл);
-            this.Controls.Add(this.кбПол);
-            this.Controls.Add(this.полеДР);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.тбФИО);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.тбПочта);
-            this.Controls.Add(this.regButton);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.тбПароль);
-            this.Controls.Add(this.тбЛогин);
-            this.Name = "RegistrationForm";
-            this.Text = "Регистрация";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(280, 531);
+            Controls.Add(label7);
+            Controls.Add(тбНКл);
+            Controls.Add(кбПол);
+            Controls.Add(полеДР);
+            Controls.Add(label6);
+            Controls.Add(label5);
+            Controls.Add(label4);
+            Controls.Add(тбФИО);
+            Controls.Add(label3);
+            Controls.Add(тбПочта);
+            Controls.Add(regButton);
+            Controls.Add(label2);
+            Controls.Add(label1);
+            Controls.Add(тбПароль);
+            Controls.Add(тбЛогин);
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            Name = "RegistrationForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Регистрация нового клиента";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

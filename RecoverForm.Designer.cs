@@ -28,104 +28,105 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label3 = new System.Windows.Forms.Label();
-            this.тбНП = new System.Windows.Forms.TextBox();
-            this.regButton = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.тбКВ = new System.Windows.Forms.TextBox();
-            this.тбПочта = new System.Windows.Forms.TextBox();
-            this.changePassBtn = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            label3 = new Label();
+            тбНП = new TextBox();
+            regButton = new Button();
+            label2 = new Label();
+            label1 = new Label();
+            тбКВ = new TextBox();
+            тбПочта = new TextBox();
+            changePassBtn = new Button();
+            SuspendLayout();
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(45, 136);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(91, 15);
-            this.label3.TabIndex = 15;
-            this.label3.Text = "Новый пароль:";
+            label3.AutoSize = true;
+            label3.Location = new Point(45, 136);
+            label3.Name = "label3";
+            label3.Size = new Size(91, 15);
+            label3.TabIndex = 15;
+            label3.Text = "Новый пароль:";
             // 
             // тбНП
             // 
-            this.тбНП.Enabled = false;
-            this.тбНП.Location = new System.Drawing.Point(45, 154);
-            this.тбНП.Name = "тбНП";
-            this.тбНП.Size = new System.Drawing.Size(173, 23);
-            this.тбНП.TabIndex = 14;
+            тбНП.Enabled = false;
+            тбНП.Location = new Point(45, 154);
+            тбНП.Name = "тбНП";
+            тбНП.Size = new Size(173, 23);
+            тбНП.TabIndex = 14;
             // 
             // regButton
             // 
-            this.regButton.Location = new System.Drawing.Point(46, 192);
-            this.regButton.Name = "regButton";
-            this.regButton.Size = new System.Drawing.Size(172, 38);
-            this.regButton.TabIndex = 13;
-            this.regButton.Text = "Получить код восстановления";
-            this.regButton.UseVisualStyleBackColor = true;
-            this.regButton.Click += new System.EventHandler(this.regButton_Click);
+            regButton.Location = new Point(46, 192);
+            regButton.Name = "regButton";
+            regButton.Size = new Size(172, 38);
+            regButton.TabIndex = 13;
+            regButton.Text = "Получить код восстановления";
+            regButton.UseVisualStyleBackColor = true;
+            regButton.Click += regButton_Click;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(45, 74);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(112, 15);
-            this.label2.TabIndex = 12;
-            this.label2.Text = "Код из сообщения:";
+            label2.AutoSize = true;
+            label2.Location = new Point(45, 74);
+            label2.Name = "label2";
+            label2.Size = new Size(112, 15);
+            label2.TabIndex = 12;
+            label2.Text = "Код из сообщения:";
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(45, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(116, 15);
-            this.label1.TabIndex = 11;
-            this.label1.Text = "Электронная почта:";
+            label1.AutoSize = true;
+            label1.Location = new Point(45, 19);
+            label1.Name = "label1";
+            label1.Size = new Size(116, 15);
+            label1.TabIndex = 11;
+            label1.Text = "Электронная почта:";
             // 
             // тбКВ
             // 
-            this.тбКВ.Location = new System.Drawing.Point(46, 92);
-            this.тбКВ.Name = "тбКВ";
-            this.тбКВ.Size = new System.Drawing.Size(172, 23);
-            this.тбКВ.TabIndex = 10;
+            тбКВ.Location = new Point(46, 92);
+            тбКВ.Name = "тбКВ";
+            тбКВ.Size = new Size(172, 23);
+            тбКВ.TabIndex = 10;
             // 
             // тбПочта
             // 
-            this.тбПочта.Location = new System.Drawing.Point(45, 37);
-            this.тбПочта.Name = "тбПочта";
-            this.тбПочта.Size = new System.Drawing.Size(173, 23);
-            this.тбПочта.TabIndex = 9;
+            тбПочта.Location = new Point(45, 37);
+            тбПочта.Name = "тбПочта";
+            тбПочта.Size = new Size(173, 23);
+            тбПочта.TabIndex = 9;
             // 
             // changePassBtn
             // 
-            this.changePassBtn.Location = new System.Drawing.Point(46, 236);
-            this.changePassBtn.Name = "changePassBtn";
-            this.changePassBtn.Size = new System.Drawing.Size(172, 38);
-            this.changePassBtn.TabIndex = 16;
-            this.changePassBtn.Text = "Изменить пароль";
-            this.changePassBtn.UseVisualStyleBackColor = true;
-            this.changePassBtn.Click += new System.EventHandler(this.changePassBtn_Click);
+            changePassBtn.Location = new Point(46, 236);
+            changePassBtn.Name = "changePassBtn";
+            changePassBtn.Size = new Size(172, 38);
+            changePassBtn.TabIndex = 16;
+            changePassBtn.Text = "Изменить пароль";
+            changePassBtn.UseVisualStyleBackColor = true;
+            changePassBtn.Click += changePassBtn_Click;
             // 
             // RecoverForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(271, 299);
-            this.Controls.Add(this.changePassBtn);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.тбНП);
-            this.Controls.Add(this.regButton);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.тбКВ);
-            this.Controls.Add(this.тбПочта);
-            this.Name = "RecoverForm";
-            this.Text = "Изменение пароля";
-            this.Load += new System.EventHandler(this.RecoverForm_Load);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(271, 299);
+            Controls.Add(changePassBtn);
+            Controls.Add(label3);
+            Controls.Add(тбНП);
+            Controls.Add(regButton);
+            Controls.Add(label2);
+            Controls.Add(label1);
+            Controls.Add(тбКВ);
+            Controls.Add(тбПочта);
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            Name = "RecoverForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Изменение пароля";
+            Load += RecoverForm_Load;
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

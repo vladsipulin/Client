@@ -39,6 +39,7 @@
             groupBox1 = new GroupBox();
             button3 = new Button();
             button2 = new Button();
+            panel1 = new Panel();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)тбОценка).BeginInit();
             groupBox1.SuspendLayout();
@@ -56,16 +57,17 @@
             // label2
             // 
             label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
             label2.Location = new Point(16, 28);
             label2.Name = "label2";
-            label2.Size = new Size(87, 15);
+            label2.Size = new Size(89, 15);
             label2.TabIndex = 27;
             label2.Text = "Номер заявки:";
             // 
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(16, 222);
+            dataGridView1.Location = new Point(16, 213);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new Size(623, 136);
@@ -74,6 +76,7 @@
             // label1
             // 
             label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
             label1.Location = new Point(16, 82);
             label1.Name = "label1";
             label1.Size = new Size(91, 15);
@@ -115,7 +118,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label3.Location = new Point(16, 184);
+            label3.Location = new Point(16, 175);
             label3.Name = "label3";
             label3.Size = new Size(161, 20);
             label3.TabIndex = 41;
@@ -123,6 +126,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.BackColor = Color.LightSteelBlue;
             groupBox1.Controls.Add(button3);
             groupBox1.Controls.Add(button2);
             groupBox1.Controls.Add(тбОценка);
@@ -157,16 +161,28 @@
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
+            // panel1
+            // 
+            panel1.BackColor = Color.LightSteelBlue;
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(651, 160);
+            panel1.TabIndex = 49;
+            // 
             // ReviewService
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(651, 370);
             Controls.Add(groupBox1);
-            Controls.Add(label3);
             Controls.Add(lbWhoLogged);
+            Controls.Add(panel1);
+            Controls.Add(label3);
             Controls.Add(dataGridView1);
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "ReviewService";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Отзыв на услугу";
             Load += ReviewService_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
@@ -190,5 +206,6 @@
         private GroupBox groupBox1;
         private Button button3;
         private Button button2;
+        private Panel panel1;
     }
 }

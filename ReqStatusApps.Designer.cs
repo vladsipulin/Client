@@ -53,6 +53,10 @@
             тбСтоимостьОплаты = new TextBox();
             btnForward = new Button();
             btnBack = new Button();
+            button1 = new Button();
+            button2 = new Button();
+            тбСтатус = new Label();
+            label13 = new Label();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -106,6 +110,7 @@
             тбДатаОплаты.Name = "тбДатаОплаты";
             тбДатаОплаты.Size = new Size(143, 23);
             тбДатаОплаты.TabIndex = 29;
+            тбДатаОплаты.ValueChanged += тбДатаОплаты_ValueChanged;
             // 
             // label6
             // 
@@ -167,6 +172,7 @@
             тбДатаЗаселения.Name = "тбДатаЗаселения";
             тбДатаЗаселения.Size = new Size(143, 23);
             тбДатаЗаселения.TabIndex = 32;
+            тбДатаЗаселения.ValueChanged += тбДатаЗаселения_ValueChanged;
             // 
             // label8
             // 
@@ -183,6 +189,7 @@
             тбДатаВыезда.Name = "тбДатаВыезда";
             тбДатаВыезда.Size = new Size(143, 23);
             тбДатаВыезда.TabIndex = 34;
+            тбДатаВыезда.ValueChanged += тбДатаВыезда_ValueChanged;
             // 
             // label9
             // 
@@ -197,17 +204,17 @@
             // 
             label10.AutoSize = true;
             label10.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label10.Location = new Point(35, 400);
+            label10.Location = new Point(35, 425);
             label10.Name = "label10";
-            label10.Size = new Size(109, 20);
+            label10.Size = new Size(75, 20);
             label10.TabIndex = 38;
-            label10.Text = "Статус заявки:";
+            label10.Text = "Решение:";
             // 
             // тбСтатусЗаявки
             // 
             тбСтатусЗаявки.AutoSize = true;
             тбСтатусЗаявки.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            тбСтатусЗаявки.Location = new Point(183, 400);
+            тбСтатусЗаявки.Location = new Point(183, 425);
             тбСтатусЗаявки.Name = "тбСтатусЗаявки";
             тбСтатусЗаявки.Size = new Size(131, 20);
             тбСтатусЗаявки.TabIndex = 39;
@@ -257,9 +264,9 @@
             // 
             // btnForward
             // 
-            btnForward.Location = new Point(243, 454);
+            btnForward.Location = new Point(84, 471);
             btnForward.Name = "btnForward";
-            btnForward.Size = new Size(83, 23);
+            btnForward.Size = new Size(47, 23);
             btnForward.TabIndex = 47;
             btnForward.Text = "-->";
             btnForward.UseVisualStyleBackColor = true;
@@ -267,19 +274,63 @@
             // 
             // btnBack
             // 
-            btnBack.Location = new Point(35, 454);
+            btnBack.Location = new Point(31, 471);
             btnBack.Name = "btnBack";
-            btnBack.Size = new Size(83, 23);
+            btnBack.Size = new Size(47, 23);
             btnBack.TabIndex = 46;
             btnBack.Text = "<--";
             btnBack.UseVisualStyleBackColor = true;
             btnBack.Click += btnBack_Click;
             // 
+            // button1
+            // 
+            button1.Location = new Point(159, 471);
+            button1.Name = "button1";
+            button1.Size = new Size(83, 23);
+            button1.TabIndex = 48;
+            button1.Text = "Обновить";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
+            // button2
+            // 
+            button2.Location = new Point(248, 471);
+            button2.Name = "button2";
+            button2.Size = new Size(83, 23);
+            button2.TabIndex = 49;
+            button2.Text = "Удалить";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
+            // тбСтатус
+            // 
+            тбСтатус.AutoSize = true;
+            тбСтатус.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            тбСтатус.Location = new Point(183, 394);
+            тбСтатус.Name = "тбСтатус";
+            тбСтатус.Size = new Size(165, 20);
+            тбСтатус.TabIndex = 51;
+            тбСтатус.Text = "Отмена/Ожид,/Рассм.";
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label13.Location = new Point(35, 394);
+            label13.Name = "label13";
+            label13.Size = new Size(109, 20);
+            label13.TabIndex = 50;
+            label13.Text = "Статус заявки:";
+            // 
             // ReqStatusApps
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(368, 489);
+            ClientSize = new Size(368, 516);
+            Controls.Add(тбСтатус);
+            Controls.Add(label13);
+            Controls.Add(button2);
+            Controls.Add(button1);
             Controls.Add(btnForward);
             Controls.Add(btnBack);
             Controls.Add(тбСтоимостьОплаты);
@@ -341,5 +392,9 @@
         private TextBox тбСтоимостьОплаты;
         private Button btnForward;
         private Button btnBack;
+        private Button button1;
+        private Button button2;
+        private Label тбСтатус;
+        private Label label13;
     }
 }

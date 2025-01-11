@@ -25,21 +25,10 @@ namespace Client
         DataTable dt;
         private IReview _repo;
         string sql;
-
         public ReviewService()
         {
             InitializeComponent();
         }
-
-        private MySqlConnection GetConnection()
-        {
-            var cs = ConfigurationManager.ConnectionStrings["MySqlConn"].ToString();
-            var builder = new MySqlConnectionStringBuilder(cs);
-            //чтоб избежать проблем с русским языком
-            builder.CharacterSet = "utf8";
-            return new MySqlConnection(builder.ConnectionString);
-        }
-
         private void LoadCombo(ComboBoxDataForFill obj)
         {
             try
@@ -106,7 +95,11 @@ namespace Client
             кбНЗаявки.DisplayMember = СлужбаБыта.DisplayMember;
             кбНЗаявки.ValueMember = СлужбаБыта.ValueMember;
 
-            //кбНЗаявки.SelectedIndexChanged += кбНЗаявки_SelectedIndexChanged;
+            if (кбНЗаявки.SelectedValue is null)
+            {
+                MessageBox.Show($"Вы не можете оставить отзыв, пока ваша заявка не будет рассмотрена сотрудником", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+            }
 
             try
             {

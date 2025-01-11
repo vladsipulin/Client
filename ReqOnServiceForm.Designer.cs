@@ -232,7 +232,9 @@
             Controls.Add(тбСумма);
             Controls.Add(label7);
             Controls.Add(тбСрокОплаты);
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "ReqOnServiceForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Заявка на услугу";
             Load += ReqOnService_Load;
             panel1.ResumeLayout(false);
