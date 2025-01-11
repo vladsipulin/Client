@@ -25,8 +25,6 @@ namespace Client
         DataTable dt;
         private IReqOnService _repo;
         string sql;
-        int clientId;
-        string username;
 
         private void LoadCombo(ComboBoxDataForFill obj)
         {
@@ -78,14 +76,6 @@ namespace Client
                 dataSource = new DataTable();
                 paramsForSQLQuery = new List<MySqlParameter>();
             }
-        }
-        private MySqlConnection GetConnection()
-        {
-            var cs = ConfigurationManager.ConnectionStrings["MySqlConn"].ToString();
-            var builder = new MySqlConnectionStringBuilder(cs);
-            //чтоб избежать проблем с русским языком
-            builder.CharacterSet = "utf8";
-            return new MySqlConnection(builder.ConnectionString);
         }
 
         public ReqOnServiceForm()

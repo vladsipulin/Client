@@ -2,6 +2,7 @@
 using Microsoft.VisualBasic.Logging;
 using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Relational;
+using Org.BouncyCastle.Tls.Crypto;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -129,7 +130,7 @@ namespace Client
             return message;
         }
 
-        private void SelectFrom(string tableName, bool userIsClient = false, string selectView = "<>")
+        private void SelectFrom(string tableName, bool userIsClient = false)
         {
             string message = string.Empty;
             try
@@ -146,16 +147,11 @@ namespace Client
                         }
                         else
                         {
-                            if (tableName.Equals("заявканауслугу")
-                                || tableName.Equals("клиент")
-                                || tableName.Equals("отзывклиента")
-                                || tableName.Equals("заявканазаселениеклиента"))
+                            if (tableName.Equals("отзывклиентаназаселение")
+                                || tableName.Equals("учетпокупокуслуг")
+                                || tableName.Equals("отзывклиентанауслугу"))
                             {
                                 query = $"SELECT * FROM {tableName} WHERE НКл = {keyLbl.Text};";
-                            }
-                            if (!selectView.Equals("<>"))
-                            {
-
                             }
                             else
                             {
@@ -222,8 +218,14 @@ namespace Client
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            this.DoubleBuffered = true;
             if (Equals(lbWhoLogged.Text, "Клиент:"))
             {
+                updateButton.Visible = false;
+                dataGridView1.AllowUserToAddRows = false;
+                dataGridView1.AllowUserToDeleteRows = false;
+                dataGridView1.ReadOnly = true;
+
                 button1.Visible = false;
                 button2.Visible = false;
                 clientsButton.Visible = false;
@@ -233,7 +235,7 @@ namespace Client
                 //button3.Location = new Point(38, 109);
                 string sql = "SELECT TABLE_NAME AS 'id', TABLE_COMMENT AS 'Таблица' FROM INFORMATION_SCHEMA.TABLES " +
                     "WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='hotel' " +
-                    "AND TABLE_NAME IN('субъект','гостиничныйкомплекс', 'заселениеклиента', 'учетпокупокуслуг', 'заявканазаселениеклиента', 'заявканауслугу','клиент', 'корпус', 'этажиикорпусы','комната','отзывклиента', 'службабыта') " +
+                    "AND TABLE_NAME IN('субъект','гостиничныйкомплекс', 'отзывклиентаназаселение', 'учетпокупокуслуг', 'отзывклиентанауслугу', 'корпус', 'этажиикорпусы','комната', 'службабыта') " +
                     "ORDER BY TABLE_COMMENT ASC;" +
                     "";
                 ComboBoxDataForFill ИменаТаблиц = new ComboBoxDataForFill(sql, "Таблица", "id");
@@ -243,7 +245,7 @@ namespace Client
                 кбТаблицыБД.ValueMember = ИменаТаблиц.ValueMember;
 
                 string tableName = (string)кбТаблицыБД.SelectedValue;
-                SelectFrom(tableName);
+                SelectFrom(tableName, true);
 
                 string таблица = (string)кбТаблицыБД.SelectedValue;
                 sql = "SELECT COLUMN_NAME AS 'Столбец' FROM INFORMATION_SCHEMA.COlUMNS WHERE TABLE_SCHEMA='hotel' AND TABLE_NAME=@Таблица";
@@ -446,6 +448,20 @@ namespace Client
         private void button6_Click(object sender, EventArgs e)
         {
             ReqOnServiceForm rsf = new ReqOnServiceForm();
+            rsf.lbWhoLogged.Text = keyLbl.Text;
+            rsf.ShowDialog();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            ReviewService rsf = new ReviewService();
+            rsf.lbWhoLogged.Text = keyLbl.Text;
+            rsf.ShowDialog();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            ReviewRoom rsf = new ReviewRoom();
             rsf.lbWhoLogged.Text = keyLbl.Text;
             rsf.ShowDialog();
         }
