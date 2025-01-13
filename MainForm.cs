@@ -387,7 +387,10 @@ namespace Client
         private void кбТаблицыБД_SelectionChangeCommitted(object sender, EventArgs e)
         {
             string tableName = (string)кбТаблицыБД.SelectedValue;
-            SelectFrom(tableName, true);
+            if (Equals(lbWhoLogged.Text, "Клиент:"))
+                SelectFrom(tableName, true);
+            else
+                SelectFrom(tableName);
 
             string sql = "SELECT COLUMN_NAME AS 'Столбец' FROM INFORMATION_SCHEMA.COlUMNS WHERE TABLE_SCHEMA='hotel' AND TABLE_NAME=@Таблица";
             ComboBoxDataForFill Столбец = new ComboBoxDataForFill(sql, "Столбец", "Столбец");
