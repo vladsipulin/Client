@@ -374,16 +374,12 @@ namespace Client
                 }
             }
 
-
-
             try
             {
                 // Получение выбранного значения
                 int selectedId = (int)кбНОрг.SelectedValue;
-
                 // Запрос данных из базы данных
                 var data = await _repo.GetOrgDetails(selectedId);
-
                 // Привязка данных к DataGridView
                 dataGridView1.DataSource = data;
             }

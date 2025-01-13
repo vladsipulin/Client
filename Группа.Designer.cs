@@ -112,9 +112,9 @@
             label5.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
             label5.Location = new Point(13, 39);
             label5.Name = "label5";
-            label5.Size = new Size(89, 15);
+            label5.Size = new Size(92, 15);
             label5.TabIndex = 37;
-            label5.Text = "Номер группы";
+            label5.Text = "Номер группы:";
             // 
             // кбНГр
             // 
@@ -178,9 +178,9 @@
             label2.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
             label2.Location = new Point(13, 87);
             label2.Name = "label2";
-            label2.Size = new Size(80, 15);
+            label2.Size = new Size(83, 15);
             label2.TabIndex = 27;
-            label2.Text = "Организация";
+            label2.Text = "Организация:";
             // 
             // кбНОрг
             // 
