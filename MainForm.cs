@@ -486,6 +486,12 @@ namespace Client
                 obj.lbWhoLogged.Text = keyLbl.Text;
                 obj.ShowDialog();
             }
+            else if (comboBox1.SelectedIndex == 2)
+            {
+                ЗаселениеКлиента obj = new ЗаселениеКлиента();
+                obj.lbWhoLogged.Text = keyLbl.Text;
+                obj.ShowDialog();
+            }
         }
     }
 }
