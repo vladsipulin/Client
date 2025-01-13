@@ -50,6 +50,8 @@
             кбСтолбцыТаблицы = new ComboBox();
             label4 = new Label();
             panel1 = new Panel();
+            label5 = new Label();
+            comboBox1 = new ComboBox();
             button8 = new Button();
             button7 = new Button();
             button6 = new Button();
@@ -67,11 +69,11 @@
             label1.BackColor = Color.LightSteelBlue;
             label1.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold, GraphicsUnit.Point);
             label1.ForeColor = Color.DarkBlue;
-            label1.Location = new Point(199, 21);
+            label1.Location = new Point(182, 21);
             label1.Name = "label1";
-            label1.Size = new Size(294, 32);
+            label1.Size = new Size(334, 32);
             label1.TabIndex = 0;
-            label1.Text = "Гостиничные комплексы";
+            label1.Text = "ИС гостиничного комплекса";
             // 
             // label2
             // 
@@ -166,10 +168,10 @@
             // 
             dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(25, 240);
+            dataGridView1.Location = new Point(25, 307);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new Size(722, 279);
+            dataGridView1.Size = new Size(722, 224);
             dataGridView1.TabIndex = 11;
             // 
             // показатьЗаявкиКлиентов
@@ -195,7 +197,7 @@
             // updateButton
             // 
             updateButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            updateButton.Location = new Point(604, 191);
+            updateButton.Location = new Point(604, 252);
             updateButton.Name = "updateButton";
             updateButton.Size = new Size(143, 39);
             updateButton.TabIndex = 14;
@@ -206,7 +208,7 @@
             // кбТаблицыБД
             // 
             кбТаблицыБД.FormattingEnabled = true;
-            кбТаблицыБД.Location = new Point(107, 77);
+            кбТаблицыБД.Location = new Point(147, 76);
             кбТаблицыБД.Name = "кбТаблицыБД";
             кбТаблицыБД.Size = new Size(200, 23);
             кбТаблицыБД.TabIndex = 15;
@@ -216,7 +218,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label3.Location = new Point(27, 200);
+            label3.Location = new Point(27, 261);
             label3.Name = "label3";
             label3.Size = new Size(58, 20);
             label3.TabIndex = 16;
@@ -224,14 +226,14 @@
             // 
             // tbSearch
             // 
-            tbSearch.Location = new Point(107, 200);
+            tbSearch.Location = new Point(107, 261);
             tbSearch.Name = "tbSearch";
             tbSearch.Size = new Size(200, 23);
             tbSearch.TabIndex = 17;
             // 
             // btnSearch
             // 
-            btnSearch.Location = new Point(326, 200);
+            btnSearch.Location = new Point(326, 261);
             btnSearch.Name = "btnSearch";
             btnSearch.Size = new Size(75, 23);
             btnSearch.TabIndex = 18;
@@ -242,7 +244,7 @@
             // кбСтолбцыТаблицы
             // 
             кбСтолбцыТаблицы.FormattingEnabled = true;
-            кбСтолбцыТаблицы.Location = new Point(107, 124);
+            кбСтолбцыТаблицы.Location = new Point(147, 121);
             кбСтолбцыТаблицы.Name = "кбСтолбцыТаблицы";
             кбСтолбцыТаблицы.Size = new Size(200, 23);
             кбСтолбцыТаблицы.TabIndex = 20;
@@ -262,6 +264,11 @@
             // panel1
             // 
             panel1.BackColor = Color.LightSteelBlue;
+            panel1.Controls.Add(кбСтолбцыТаблицы);
+            panel1.Controls.Add(label5);
+            panel1.Controls.Add(comboBox1);
+            panel1.Controls.Add(label1);
+            panel1.Controls.Add(кбТаблицыБД);
             panel1.Controls.Add(button8);
             panel1.Controls.Add(button7);
             panel1.Controls.Add(button6);
@@ -274,8 +281,30 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(769, 175);
+            panel1.Size = new Size(769, 246);
             panel1.TabIndex = 21;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.BackColor = Color.LightSteelBlue;
+            label5.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point);
+            label5.ForeColor = Color.DarkBlue;
+            label5.Location = new Point(27, 172);
+            label5.Name = "label5";
+            label5.Size = new Size(114, 20);
+            label5.TabIndex = 22;
+            label5.Text = "Бизнес-форма:";
+            // 
+            // comboBox1
+            // 
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Items.AddRange(new object[] { "Создать группу для организации", "Создать договор с организацией", "Заселить группу организации", "Заселить клиента по заявке", "Провести покупку услуги по заявке клиента" });
+            comboBox1.Location = new Point(147, 173);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(200, 23);
+            comboBox1.TabIndex = 27;
+            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             // 
             // button8
             // 
@@ -345,14 +374,11 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(769, 565);
-            Controls.Add(label1);
-            Controls.Add(кбСтолбцыТаблицы);
+            ClientSize = new Size(769, 574);
             Controls.Add(label4);
             Controls.Add(btnSearch);
             Controls.Add(tbSearch);
             Controls.Add(label3);
-            Controls.Add(кбТаблицыБД);
             Controls.Add(updateButton);
             Controls.Add(показатьЗаселениеКлиента);
             Controls.Add(показатьЗаявкиКлиентов);
@@ -366,7 +392,7 @@
             MinimumSize = new Size(785, 604);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "ГлавнаяФорма";
+            Text = "ИС гостиничного комплекса";
             Load += MainForm_Load;
             ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
@@ -404,5 +430,7 @@
         private Button button6;
         private Button button7;
         private Button button8;
+        private Label label5;
+        private ComboBox comboBox1;
     }
 }

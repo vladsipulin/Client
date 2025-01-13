@@ -11,6 +11,7 @@ using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -469,6 +470,22 @@ namespace Client
             ReviewRoom rsf = new ReviewRoom();
             rsf.lbWhoLogged.Text = keyLbl.Text;
             rsf.ShowDialog();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedIndex == 0)
+            {
+                Группа gr = new Группа();
+                gr.lbWhoLogged.Text = keyLbl.Text;
+                gr.ShowDialog();
+            }
+            else if (comboBox1.SelectedIndex == 1)
+            {
+                Договор obj = new Договор();
+                obj.lbWhoLogged.Text = keyLbl.Text;
+                obj.ShowDialog();
+            }
         }
     }
 }

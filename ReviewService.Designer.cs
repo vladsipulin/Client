@@ -86,7 +86,7 @@
             // тбОценка
             // 
             тбОценка.Location = new Point(118, 80);
-            тбОценка.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
+            тбОценка.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
             тбОценка.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             тбОценка.Name = "тбОценка";
             тбОценка.Size = new Size(143, 23);

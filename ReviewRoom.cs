@@ -3,6 +3,7 @@ using Client.Models;
 using Client.Services;
 using Client.Utils;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Relational;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -111,6 +112,8 @@ namespace Client
 
                 // Привязка данных к DataGridView
                 dataGridView1.DataSource = data;
+                dataGridView1.AutoResizeColumnHeadersHeight();
+                dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             }
             catch (Exception ex)
             {
@@ -131,6 +134,8 @@ namespace Client
 
                 // Привязка данных к DataGridView
                 dataGridView1.DataSource = data;
+                dataGridView1.AutoResizeColumnHeadersHeight();
+                dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             }
             catch (Exception ex)
             {

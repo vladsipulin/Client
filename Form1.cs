@@ -17,7 +17,8 @@ namespace Client
 
         private async void loginButton_Click(object sender, EventArgs e)
         {
-            UserAuth user = new UserAuth(0, тбЛогин.Text, тбПароль.Text);
+            //UserAuth user = new UserAuth(0, тбЛогин.Text, тбПароль.Text);
+            UserAuth user = new UserAuth(0, "admin", "admin");
             string userAddInfo = String.Empty;
 
             _repo = new Authorization();
