@@ -15,9 +15,9 @@ namespace Client.Interfaces
         //добавление
         Task<Result<int>> Add(Dogovor objOfTable);
         //удаление
-        Task<Result<int>> Remove(int НДоговора);
+        Task<Result<int>> Remove(int НДоговора, int НОргОлд);
         //обновление
-        Task<Result<int>> Update(Dogovor objOfTable, int НДоговораОлд);
+        Task<Result<int>> Update(Dogovor objOfTable, int НДоговораОлд, int НОргОлд);
         Task<DataTable> GetOrgDetails(int НОрг);
         Task<int> FindExistingNumOfDogovor(int НДоговора);
     }

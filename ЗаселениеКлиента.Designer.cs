@@ -90,7 +90,7 @@
             кбНЗаявки.FormattingEnabled = true;
             кбНЗаявки.Location = new Point(142, 36);
             кбНЗаявки.Name = "кбНЗаявки";
-            кбНЗаявки.Size = new Size(202, 23);
+            кбНЗаявки.Size = new Size(244, 23);
             кбНЗаявки.TabIndex = 38;
             кбНЗаявки.SelectionChangeCommitted += кбНЗаявки_SelectionChangeCommitted;
             // 
@@ -106,7 +106,7 @@
             // 
             // button3
             // 
-            button3.Location = new Point(371, 200);
+            button3.Location = new Point(418, 200);
             button3.Name = "button3";
             button3.Size = new Size(167, 23);
             button3.TabIndex = 34;
@@ -116,20 +116,20 @@
             // 
             // panel1
             // 
-            panel1.BackColor = Color.LightSteelBlue;
+            panel1.BackColor = Color.Moccasin;
             panel1.Controls.Add(lbWhoLogged);
             panel1.Controls.Add(groupBox1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(664, 257);
+            panel1.Size = new Size(660, 257);
             panel1.TabIndex = 55;
             // 
             // lbWhoLogged
             // 
             lbWhoLogged.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lbWhoLogged.AutoSize = true;
-            lbWhoLogged.Location = new Point(1064, 28);
+            lbWhoLogged.Location = new Point(1060, 28);
             lbWhoLogged.Name = "lbWhoLogged";
             lbWhoLogged.Size = new Size(59, 15);
             lbWhoLogged.TabIndex = 51;
@@ -138,7 +138,7 @@
             // 
             // groupBox1
             // 
-            groupBox1.BackColor = Color.LightSteelBlue;
+            groupBox1.BackColor = Color.Moccasin;
             groupBox1.Controls.Add(groupBox2);
             groupBox1.Controls.Add(кбСтатусЗаявки);
             groupBox1.Controls.Add(label1);
@@ -153,7 +153,7 @@
             groupBox1.Controls.Add(button1);
             groupBox1.Location = new Point(16, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(559, 229);
+            groupBox1.Size = new Size(623, 229);
             groupBox1.TabIndex = 49;
             groupBox1.TabStop = false;
             groupBox1.Text = "Информация о заявке на заселение клиента";
@@ -162,7 +162,7 @@
             // 
             groupBox2.Controls.Add(radioButton2);
             groupBox2.Controls.Add(radioButton1);
-            groupBox2.Location = new Point(371, 22);
+            groupBox2.Location = new Point(418, 22);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(167, 80);
             groupBox2.TabIndex = 44;
@@ -198,7 +198,7 @@
             кбСтатусЗаявки.Items.AddRange(new object[] { "Заселен", "Выселен" });
             кбСтатусЗаявки.Location = new Point(142, 183);
             кбСтатусЗаявки.Name = "кбСтатусЗаявки";
-            кбСтатусЗаявки.Size = new Size(202, 23);
+            кбСтатусЗаявки.Size = new Size(244, 23);
             кбСтатусЗаявки.TabIndex = 42;
             // 
             // label1
@@ -216,12 +216,12 @@
             кбНС.FormattingEnabled = true;
             кбНС.Location = new Point(142, 136);
             кбНС.Name = "кбНС";
-            кбНС.Size = new Size(202, 23);
+            кбНС.Size = new Size(244, 23);
             кбНС.TabIndex = 41;
             // 
             // button2
             // 
-            button2.Location = new Point(371, 139);
+            button2.Location = new Point(418, 139);
             button2.Name = "button2";
             button2.Size = new Size(167, 23);
             button2.TabIndex = 33;
@@ -244,12 +244,12 @@
             кбНКл.FormattingEnabled = true;
             кбНКл.Location = new Point(142, 84);
             кбНКл.Name = "кбНКл";
-            кбНКл.Size = new Size(202, 23);
+            кбНКл.Size = new Size(244, 23);
             кбНКл.TabIndex = 28;
             // 
             // button1
             // 
-            button1.Location = new Point(371, 110);
+            button1.Location = new Point(418, 110);
             button1.Name = "button1";
             button1.Size = new Size(167, 23);
             button1.TabIndex = 32;
@@ -261,7 +261,8 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(664, 467);
+            BackColor = SystemColors.Window;
+            ClientSize = new Size(660, 467);
             Controls.Add(dataGridView1);
             Controls.Add(label3);
             Controls.Add(panel1);

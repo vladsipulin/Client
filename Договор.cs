@@ -91,51 +91,50 @@ namespace Client
 
         private async void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
+            sql = $"SELECT * FROM Организация";
+            ComboBoxDataForFill Организация = new ComboBoxDataForFill(sql, "Наименование", "НОрг");
+            LoadCombo(Организация);
+            кбНОрг.DataSource = Организация.dataSource;
+            кбНОрг.DisplayMember = Организация.DisplayMember;
+            кбНОрг.ValueMember = Организация.ValueMember;
+
+            sql = "SELECT * FROM ГостиничныйКомплекс";
+            ComboBoxDataForFill ГК = new ComboBoxDataForFill(sql, "Название", "НГ");
+            LoadCombo(ГК);
+            кбНГ.DataSource = ГК.dataSource;
+            кбНГ.DisplayMember = ГК.DisplayMember;
+            кбНГ.ValueMember = ГК.ValueMember;
+
+            sql = $"SELECT НС, ФИО FROM Сотрудник ";
+            ComboBoxDataForFill Сотрудник = new ComboBoxDataForFill(sql, "ФИО", "НС");
+            LoadCombo(Сотрудник);
+            кбНС.DataSource = Сотрудник.dataSource;
+            кбНС.DisplayMember = Сотрудник.DisplayMember;
+            кбНС.ValueMember = Сотрудник.ValueMember;
             if (checkBox1.Checked)
             {
                 кбНДоговора.Text = "";
-                кбНДоговора.Enabled = false;
                 button1.Enabled = true;
                 button2.Enabled = false;
                 button3.Enabled = false;
 
-                sql = $"SELECT * FROM Организация";
-                ComboBoxDataForFill Организация = new ComboBoxDataForFill(sql, "Наименование", "НОрг");
-                LoadCombo(Организация);
-                кбНОрг.DataSource = Организация.dataSource;
-                кбНОрг.DisplayMember = Организация.DisplayMember;
-                кбНОрг.ValueMember = Организация.ValueMember;
+                // Инициализация ComboBox
+                sql = "SELECT * FROM Договор";
+                ComboBoxDataForFill Договор = new ComboBoxDataForFill(sql, "НДоговора", "НДоговора");
+                LoadCombo(Договор);
 
-                sql = "SELECT * FROM ГостиничныйКомплекс";
-                ComboBoxDataForFill ГК = new ComboBoxDataForFill(sql, "Название", "НГ");
-                LoadCombo(ГК);
-                кбНГ.DataSource = ГК.dataSource;
-                кбНГ.DisplayMember = ГК.DisplayMember;
-                кбНГ.ValueMember = ГК.ValueMember;
-
-                sql = $"SELECT * FROM ВеличинаСкидки ";
-                ComboBoxDataForFill ВеличинаСкидки = new ComboBoxDataForFill(sql, "Значение", "НВелСкидки");
-                LoadCombo(ВеличинаСкидки);
-                кбРазмерСкидки.DataSource = ВеличинаСкидки.dataSource;
-                кбРазмерСкидки.DisplayMember = ВеличинаСкидки.DisplayMember;
-                кбРазмерСкидки.ValueMember = ВеличинаСкидки.ValueMember;
-
-                sql = $"SELECT НС, ФИО FROM Сотрудник ";
-                ComboBoxDataForFill Сотрудник = new ComboBoxDataForFill(sql, "ФИО", "НС");
-                LoadCombo(Сотрудник);
-                кбНС.DataSource = Сотрудник.dataSource;
-                кбНС.DisplayMember = Сотрудник.DisplayMember;
-                кбНС.ValueMember = Сотрудник.ValueMember;
+                кбНДоговора.DataSource = Договор.dataSource;
+                кбНДоговора.DisplayMember = Договор.DisplayMember;
+                кбНДоговора.ValueMember = Договор.ValueMember;
             }
             else
             {
-                кбНДоговора.Enabled = true;
                 button1.Enabled = false;
                 button2.Enabled = true;
                 button3.Enabled = true;
 
                 // Инициализация ComboBox
-                sql = "SELECT * FROM Договор";
+                sql = "SELECT * FROM ДоговорСОрганизацией";
                 ComboBoxDataForFill Договор = new ComboBoxDataForFill(sql, "НДоговора", "НДоговора");
                 LoadCombo(Договор);
 
@@ -146,99 +145,56 @@ namespace Client
                 // Сохранение выбранного значения
                 номерДоговора = (int)кбНДоговора.SelectedValue;
 
-                // Обработчик изменения выбранного значения
-                кбНДоговора.SelectedValueChanged += (sender, e) =>
+                var selectedValue = кбНДоговора.SelectedValue;
+
+                if (selectedValue != null)
                 {
-                    var selectedValue = кбНДоговора.SelectedValue;
+                    var номерSource = кбНДоговора.DataSource as DataTable;
 
-                    if (selectedValue != null)
+                    if (номерSource != null)
                     {
-                        sql = "SELECT НОрг, Наименование FROM Организация";
-                        ComboBoxDataForFill организации = new ComboBoxDataForFill(sql, "Наименование", "НОрг");
-                        LoadCombo(организации);
-                        кбНОрг.DataSource = организации.dataSource;
-                        кбНОрг.DisplayMember = организации.DisplayMember;
-                        кбНОрг.ValueMember = организации.ValueMember;
+                        // Находим строку с выбранным `НГр`
+                        var selectedRow = номерSource.Rows
+                            .Cast<DataRow>()
+                            .FirstOrDefault(row => row["НДоговора"].Equals(selectedValue));
 
-                        sql = "SELECT НГ, Название FROM ГостиничныйКомплекс";
-                        ComboBoxDataForFill ГК = new ComboBoxDataForFill(sql, "Название", "НГ");
-                        LoadCombo(ГК);
-                        кбНГ.DataSource = ГК.dataSource;
-                        кбНГ.DisplayMember = ГК.DisplayMember;
-                        кбНГ.ValueMember = ГК.ValueMember;
-
-                        sql = $"SELECT * FROM ВеличинаСкидки ";
-                        ComboBoxDataForFill ВеличинаСкидки = new ComboBoxDataForFill(sql, "Значение", "НВелСкидки");
-                        LoadCombo(ВеличинаСкидки);
-                        кбРазмерСкидки.DataSource = ВеличинаСкидки.dataSource;
-                        кбРазмерСкидки.DisplayMember = ВеличинаСкидки.DisplayMember;
-                        кбРазмерСкидки.ValueMember = ВеличинаСкидки.ValueMember;
-
-                        sql = $"SELECT НС, ФИО FROM Сотрудник ";
-                        ComboBoxDataForFill Сотрудник = new ComboBoxDataForFill(sql, "ФИО", "НС");
-                        LoadCombo(Сотрудник);
-                        кбНС.DataSource = Сотрудник.dataSource;
-                        кбНС.DisplayMember = Сотрудник.DisplayMember;
-                        кбНС.ValueMember = Сотрудник.ValueMember;
-
-                        var номерSource = кбНДоговора.DataSource as DataTable;
-
-                        if (номерSource != null)
+                        if (selectedRow != null)
                         {
-                            // Находим строку с выбранным `НГр`
-                            var selectedRow = номерSource.Rows
-                                .Cast<DataRow>()
-                                .FirstOrDefault(row => row["НДоговора"].Equals(selectedValue));
-
-                            if (selectedRow != null)
+                            // Устанавливаем соответствующее значение `НОрг` в кбНОрг
+                            var relatedНОрг = selectedRow["НОрг"];
+                            if (relatedНОрг != DBNull.Value)
                             {
-                                // Устанавливаем соответствующее значение `НОрг` в кбНОрг
-                                var relatedНОрг = selectedRow["НОрг"];
-                                if (relatedНОрг != DBNull.Value)
-                                {
-                                    кбНОрг.SelectedValue = relatedНОрг;
-                                }
+                                кбНОрг.SelectedValue = relatedНОрг;
+                            }
 
-                                var relatedНГ = selectedRow["НГ"];
-                                if (relatedНГ != DBNull.Value)
-                                {
-                                    кбНГ.SelectedValue = relatedНГ;
-                                }
+                            var relatedНГ = selectedRow["НГ"];
+                            if (relatedНГ != DBNull.Value)
+                            {
+                                кбНГ.SelectedValue = relatedНГ;
+                            }
 
-                                var relatedНВелСкидки = selectedRow["НВелСкидки"];
-                                if (relatedНВелСкидки != DBNull.Value)
-                                {
-                                    кбРазмерСкидки.SelectedValue = relatedНВелСкидки;
-                                }
+                            var номерСотрудника = selectedRow["НС"];
+                            if (номерСотрудника != DBNull.Value)
+                            {
+                                кбНС.SelectedValue = номерСотрудника;
+                            }
 
-                                var номерСотрудника = selectedRow["НС"];
-                                if (номерСотрудника != DBNull.Value)
-                                {
-                                    кбНС.SelectedValue = номерСотрудника;
-                                }
+                            // Устанавливаем значение для dateTimePicker
+                            var датаНачала = selectedRow["ДатаНачала"];
+                            if (датаНачала != DBNull.Value)
+                            {
+                                тбДатаНачала.Value = Convert.ToDateTime(датаНачала);
+                            }
 
-                                var наименованиеДоговора = selectedRow["Наименование"];
-                                if (наименованиеДоговора != DBNull.Value)
-                                {
-                                    тбНаименование.Text = (string)наименованиеДоговора;
-                                }
-
-                                // Устанавливаем значение для dateTimePicker
-                                var датаНачала = selectedRow["ДатаНачала"];
-                                if (датаНачала != DBNull.Value)
-                                {
-                                    тбДатаНачала.Value = Convert.ToDateTime(датаНачала);
-                                }
-
-                                var датаОкончания = selectedRow["ДатаОкончания"];
-                                if (датаОкончания != DBNull.Value)
-                                {
-                                    тбДатаОкончания.Value = Convert.ToDateTime(датаОкончания);
-                                }
+                            var датаОкончания = selectedRow["ДатаОкончания"];
+                            if (датаОкончания != DBNull.Value)
+                            {
+                                тбДатаОкончания.Value = Convert.ToDateTime(датаОкончания);
                             }
                         }
                     }
-                };
+                }
+
 
             }
 
@@ -261,48 +217,18 @@ namespace Client
 
         private async void кбНДоговора_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            int текущийНомер = (int)кбНДоговора.SelectedValue;
-
-            var selectedValue = кбНДоговора.SelectedValue;
-
-            if (selectedValue != null)
+            if (!checkBox1.Checked)
             {
-                sql = "SELECT НОрг, Наименование FROM Организация";
-                ComboBoxDataForFill организации = new ComboBoxDataForFill(sql, "Наименование", "НОрг");
-                LoadCombo(организации);
-                кбНОрг.DataSource = организации.dataSource;
-                кбНОрг.DisplayMember = организации.DisplayMember;
-                кбНОрг.ValueMember = организации.ValueMember;
-
-                sql = "SELECT НГ, Название FROM ГостиничныйКомплекс";
-                ComboBoxDataForFill ГК = new ComboBoxDataForFill(sql, "Название", "НГ");
-                LoadCombo(ГК);
-                кбНГ.DataSource = ГК.dataSource;
-                кбНГ.DisplayMember = ГК.DisplayMember;
-                кбНГ.ValueMember = ГК.ValueMember;
-
-                sql = $"SELECT * FROM ВеличинаСкидки ";
-                ComboBoxDataForFill ВеличинаСкидки = new ComboBoxDataForFill(sql, "Значение", "НВелСкидки");
-                LoadCombo(ВеличинаСкидки);
-                кбРазмерСкидки.DataSource = ВеличинаСкидки.dataSource;
-                кбРазмерСкидки.DisplayMember = ВеличинаСкидки.DisplayMember;
-                кбРазмерСкидки.ValueMember = ВеличинаСкидки.ValueMember;
-
-                sql = $"SELECT НС, ФИО FROM Сотрудник ";
-                ComboBoxDataForFill Сотрудник = new ComboBoxDataForFill(sql, "ФИО", "НС");
-                LoadCombo(Сотрудник);
-                кбНС.DataSource = Сотрудник.dataSource;
-                кбНС.DisplayMember = Сотрудник.DisplayMember;
-                кбНС.ValueMember = Сотрудник.ValueMember;
+                var selectedValue = кбНДоговора.SelectedValue;
 
                 var номерSource = кбНДоговора.DataSource as DataTable;
 
-                if (номерSource != null)
+                if (номерSource != null & selectedValue != null)
                 {
                     // Находим строку с выбранным `НГр`
                     var selectedRow = номерSource.Rows
                         .Cast<DataRow>()
-                        .FirstOrDefault(row => row["НДоговора"].Equals(текущийНомер));
+                        .FirstOrDefault(row => row["НДоговора"].Equals(selectedValue));
 
                     if (selectedRow != null)
                     {
@@ -319,22 +245,10 @@ namespace Client
                             кбНГ.SelectedValue = relatedНГ;
                         }
 
-                        var relatedНВелСкидки = selectedRow["НВелСкидки"];
-                        if (relatedНВелСкидки != DBNull.Value)
-                        {
-                            кбРазмерСкидки.SelectedValue = relatedНВелСкидки;
-                        }
-
                         var номерСотрудника = selectedRow["НС"];
                         if (номерСотрудника != DBNull.Value)
                         {
                             кбНС.SelectedValue = номерСотрудника;
-                        }
-
-                        var наименованиеДоговора = selectedRow["Наименование"];
-                        if (наименованиеДоговора != DBNull.Value)
-                        {
-                            тбНаименование.Text = (string)наименованиеДоговора;
                         }
 
                         // Устанавливаем значение для dateTimePicker
@@ -388,6 +302,7 @@ namespace Client
         {
             try
             {
+                /*
                 Random rand = new Random();
 
                 bool isUnique = false;
@@ -403,22 +318,24 @@ namespace Client
                         // Если номера еще нет в базе данных, то он уникален
                         isUnique = true;
                     }
-                }
+                }*/
 
-                Dogovor current = new Dogovor(номерДоговора, (int)кбНГ.SelectedValue, (int)кбНОрг.SelectedValue, (int)кбНС.SelectedValue, тбНаименование.Text,
-                                                (int)кбРазмерСкидки.SelectedValue, Convert.ToDateTime(тбДатаНачала.Text), Convert.ToDateTime(тбДатаОкончания.Text));
+                номерДоговора = (int)кбНДоговора.SelectedValue;
+
+                Dogovor current = new Dogovor(номерДоговора, (int)кбНОрг.SelectedValue, (int)кбНГ.SelectedValue, (int)кбНС.SelectedValue,
+                                                 Convert.ToDateTime(тбДатаНачала.Text), Convert.ToDateTime(тбДатаОкончания.Text));
 
                 Result<int> result;
                 result = await _repo.Add(current);
 
                 if (result)
                 {
-                    MessageBox.Show($"Договор №{номерДоговора} с организацией {кбНОрг.Text} успешно создан!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Договор №{номерДоговора} с организацией '{кбНОрг.Text}' успешно создан!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 if (!result)
                 {
 
-                    MessageBox.Show($"Договор №{номерДоговора} с организацией {кбНОрг.Text} не был создан" + result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Договор №{номерДоговора} с организацией '{кбНОрг.Text}' не был создан" + result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch
@@ -432,15 +349,15 @@ namespace Client
             try
             {
                 номерДоговора = (int)кбНДоговора.SelectedValue;
-                Dogovor current = new Dogovor(номерДоговора, (int)кбНГ.SelectedValue, (int)кбНОрг.SelectedValue, (int)кбНС.SelectedValue, тбНаименование.Text,
-                                                (int)кбРазмерСкидки.SelectedValue, Convert.ToDateTime(тбДатаНачала.Text), Convert.ToDateTime(тбДатаОкончания.Text));
+                Dogovor current = new Dogovor(номерДоговора, (int)кбНОрг.SelectedValue, (int)кбНГ.SelectedValue, (int)кбНС.SelectedValue,
+                                                 Convert.ToDateTime(тбДатаНачала.Text), Convert.ToDateTime(тбДатаОкончания.Text));
 
                 Result<int> result;
-                result = await _repo.Update(current, номерДоговора);
+                result = await _repo.Update(current, номерДоговора, (int)кбНОрг.SelectedValue);
 
                 if (result)
                 {
-                    MessageBox.Show($"Сведения договора №{номерДоговора} с организацией {кбНОрг.Text} успешно изменены!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Сведения договора №{номерДоговора} с организацией '{кбНОрг.Text}' успешно изменены!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 if (!result)
                 {
@@ -458,15 +375,15 @@ namespace Client
             try
             {
                 номерДоговора = (int)кбНДоговора.SelectedValue;
-                Dogovor current = new Dogovor(номерДоговора, (int)кбНГ.SelectedValue, (int)кбНОрг.SelectedValue, (int)кбНС.SelectedValue, тбНаименование.Text,
-                                                 (int)кбРазмерСкидки.SelectedValue, Convert.ToDateTime(тбДатаНачала.Text), Convert.ToDateTime(тбДатаОкончания.Text));
+                Dogovor current = new Dogovor(номерДоговора, (int)кбНОрг.SelectedValue, (int)кбНГ.SelectedValue, (int)кбНС.SelectedValue,
+                                                Convert.ToDateTime(тбДатаНачала.Text), Convert.ToDateTime(тбДатаОкончания.Text));
 
                 Result<int> result;
-                result = await _repo.Remove(номерДоговора);
+                result = await _repo.Remove(номерДоговора, (int)кбНОрг.SelectedValue);
 
                 if (result)
                 {
-                    MessageBox.Show($"Договор №{номерДоговора} с организацией {кбНОрг.Text} успешно расторгнут!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Договор №{номерДоговора} с организацией '{кбНОрг.Text}' успешно расторгнут!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 if (!result)
                 {

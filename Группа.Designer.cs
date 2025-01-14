@@ -55,7 +55,7 @@
             // 
             lbWhoLogged.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lbWhoLogged.AutoSize = true;
-            lbWhoLogged.Location = new Point(600, 28);
+            lbWhoLogged.Location = new Point(586, 28);
             lbWhoLogged.Name = "lbWhoLogged";
             lbWhoLogged.Size = new Size(59, 15);
             lbWhoLogged.TabIndex = 51;
@@ -64,18 +64,18 @@
             // 
             // panel1
             // 
-            panel1.BackColor = Color.LightSteelBlue;
+            panel1.BackColor = Color.Moccasin;
             panel1.Controls.Add(lbWhoLogged);
             panel1.Controls.Add(groupBox1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(671, 257);
+            panel1.Size = new Size(657, 257);
             panel1.TabIndex = 52;
             // 
             // groupBox1
             // 
-            groupBox1.BackColor = Color.LightSteelBlue;
+            groupBox1.BackColor = Color.Moccasin;
             groupBox1.Controls.Add(checkBox1);
             groupBox1.Controls.Add(label5);
             groupBox1.Controls.Add(кбНГр);
@@ -88,9 +88,9 @@
             groupBox1.Controls.Add(кбНОрг);
             groupBox1.Controls.Add(button1);
             groupBox1.Controls.Add(label1);
-            groupBox1.Location = new Point(16, 12);
+            groupBox1.Location = new Point(17, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(559, 229);
+            groupBox1.Size = new Size(623, 229);
             groupBox1.TabIndex = 49;
             groupBox1.TabStop = false;
             groupBox1.Text = "Информация о группе";
@@ -98,7 +98,7 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(380, 40);
+            checkBox1.Location = new Point(430, 37);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new Size(158, 19);
             checkBox1.TabIndex = 39;
@@ -119,9 +119,9 @@
             // кбНГр
             // 
             кбНГр.FormattingEnabled = true;
-            кбНГр.Location = new Point(142, 36);
+            кбНГр.Location = new Point(151, 36);
             кбНГр.Name = "кбНГр";
-            кбНГр.Size = new Size(202, 23);
+            кбНГр.Size = new Size(253, 23);
             кбНГр.TabIndex = 38;
             кбНГр.SelectionChangeCommitted += кбНГр_SelectionChangeCommitted;
             // 
@@ -137,14 +137,14 @@
             // 
             // тбДатаРегистрации
             // 
-            тбДатаРегистрации.Location = new Point(142, 133);
+            тбДатаРегистрации.Location = new Point(151, 133);
             тбДатаРегистрации.Name = "тбДатаРегистрации";
-            тбДатаРегистрации.Size = new Size(202, 23);
+            тбДатаРегистрации.Size = new Size(253, 23);
             тбДатаРегистрации.TabIndex = 35;
             // 
             // button3
             // 
-            button3.Location = new Point(380, 154);
+            button3.Location = new Point(430, 151);
             button3.Name = "button3";
             button3.Size = new Size(158, 23);
             button3.TabIndex = 34;
@@ -154,7 +154,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(380, 125);
+            button2.Location = new Point(430, 122);
             button2.Name = "button2";
             button2.Size = new Size(158, 23);
             button2.TabIndex = 33;
@@ -164,11 +164,11 @@
             // 
             // тбЧисленностьГруппы
             // 
-            тбЧисленностьГруппы.Location = new Point(142, 184);
+            тбЧисленностьГруппы.Location = new Point(151, 184);
             тбЧисленностьГруппы.Maximum = new decimal(new int[] { 30, 0, 0, 0 });
             тбЧисленностьГруппы.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             тбЧисленностьГруппы.Name = "тбЧисленностьГруппы";
-            тбЧисленностьГруппы.Size = new Size(202, 23);
+            тбЧисленностьГруппы.Size = new Size(253, 23);
             тбЧисленностьГруппы.TabIndex = 31;
             тбЧисленностьГруппы.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
@@ -185,15 +185,15 @@
             // кбНОрг
             // 
             кбНОрг.FormattingEnabled = true;
-            кбНОрг.Location = new Point(142, 84);
+            кбНОрг.Location = new Point(151, 84);
             кбНОрг.Name = "кбНОрг";
-            кбНОрг.Size = new Size(202, 23);
+            кбНОрг.Size = new Size(253, 23);
             кбНОрг.TabIndex = 28;
             кбНОрг.SelectionChangeCommitted += кбНОрг_SelectionChangeCommitted;
             // 
             // button1
             // 
-            button1.Location = new Point(380, 96);
+            button1.Location = new Point(430, 93);
             button1.Name = "button1";
             button1.Size = new Size(158, 23);
             button1.TabIndex = 32;
@@ -234,7 +234,8 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(671, 475);
+            BackColor = SystemColors.Window;
+            ClientSize = new Size(657, 467);
             Controls.Add(panel1);
             Controls.Add(dataGridView1);
             Controls.Add(label3);

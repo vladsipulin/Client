@@ -33,7 +33,6 @@
             checkBox1 = new CheckBox();
             label5 = new Label();
             кбНДоговора = new ComboBox();
-            label4 = new Label();
             тбДатаНачала = new DateTimePicker();
             button3 = new Button();
             panel1 = new Panel();
@@ -41,12 +40,9 @@
             groupBox1 = new GroupBox();
             label10 = new Label();
             кбНС = new ComboBox();
-            label9 = new Label();
-            тбНаименование = new TextBox();
             label8 = new Label();
             тбДатаОкончания = new DateTimePicker();
             label7 = new Label();
-            кбРазмерСкидки = new ComboBox();
             label6 = new Label();
             кбНГ = new ComboBox();
             button2 = new Button();
@@ -62,7 +58,7 @@
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(16, 455);
+            dataGridView1.Location = new Point(15, 370);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new Size(623, 136);
@@ -72,7 +68,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label3.Location = new Point(16, 417);
+            label3.Location = new Point(15, 332);
             label3.Name = "label3";
             label3.Size = new Size(205, 20);
             label3.TabIndex = 56;
@@ -108,20 +104,9 @@
             кбНДоговора.TabIndex = 38;
             кбНДоговора.SelectionChangeCommitted += кбНДоговора_SelectionChangeCommitted;
             // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label4.Location = new Point(13, 235);
-            label4.Name = "label4";
-            label4.RightToLeft = RightToLeft.No;
-            label4.Size = new Size(109, 15);
-            label4.TabIndex = 36;
-            label4.Text = "Размер скидки, %:";
-            // 
             // тбДатаНачала
             // 
-            тбДатаНачала.Location = new Point(164, 270);
+            тбДатаНачала.Location = new Point(164, 200);
             тбДатаНачала.Name = "тбДатаНачала";
             тбДатаНачала.Size = new Size(202, 23);
             тбДатаНачала.TabIndex = 35;
@@ -133,19 +118,19 @@
             button3.Name = "button3";
             button3.Size = new Size(165, 23);
             button3.TabIndex = 34;
-            button3.Text = "Удалить";
+            button3.Text = "Расторгнуть";
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
             // panel1
             // 
-            panel1.BackColor = Color.LightSteelBlue;
+            panel1.BackColor = Color.Moccasin;
             panel1.Controls.Add(lbWhoLogged);
             panel1.Controls.Add(groupBox1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(659, 399);
+            panel1.Size = new Size(659, 318);
             panel1.TabIndex = 55;
             // 
             // lbWhoLogged
@@ -161,21 +146,17 @@
             // 
             // groupBox1
             // 
-            groupBox1.BackColor = Color.LightSteelBlue;
+            groupBox1.BackColor = Color.Moccasin;
             groupBox1.Controls.Add(label10);
             groupBox1.Controls.Add(кбНС);
-            groupBox1.Controls.Add(label9);
-            groupBox1.Controls.Add(тбНаименование);
             groupBox1.Controls.Add(label8);
             groupBox1.Controls.Add(тбДатаОкончания);
             groupBox1.Controls.Add(label7);
-            groupBox1.Controls.Add(кбРазмерСкидки);
             groupBox1.Controls.Add(label6);
             groupBox1.Controls.Add(кбНГ);
             groupBox1.Controls.Add(checkBox1);
             groupBox1.Controls.Add(label5);
             groupBox1.Controls.Add(кбНДоговора);
-            groupBox1.Controls.Add(label4);
             groupBox1.Controls.Add(тбДатаНачала);
             groupBox1.Controls.Add(button3);
             groupBox1.Controls.Add(button2);
@@ -185,7 +166,7 @@
             groupBox1.Controls.Add(label1);
             groupBox1.Location = new Point(16, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(623, 359);
+            groupBox1.Size = new Size(623, 283);
             groupBox1.TabIndex = 49;
             groupBox1.TabStop = false;
             groupBox1.Text = "Информация о договоре";
@@ -208,23 +189,6 @@
             кбНС.Size = new Size(202, 23);
             кбНС.TabIndex = 62;
             // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label9.Location = new Point(13, 196);
-            label9.Name = "label9";
-            label9.Size = new Size(94, 15);
-            label9.TabIndex = 60;
-            label9.Text = "Наименование:";
-            // 
-            // тбНаименование
-            // 
-            тбНаименование.Location = new Point(164, 193);
-            тбНаименование.Name = "тбНаименование";
-            тбНаименование.Size = new Size(202, 23);
-            тбНаименование.TabIndex = 59;
-            // 
             // label8
             // 
             label8.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -238,7 +202,7 @@
             // 
             // тбДатаОкончания
             // 
-            тбДатаОкончания.Location = new Point(164, 310);
+            тбДатаОкончания.Location = new Point(164, 240);
             тбДатаОкончания.Name = "тбДатаОкончания";
             тбДатаОкончания.Size = new Size(202, 23);
             тбДатаОкончания.TabIndex = 44;
@@ -248,19 +212,11 @@
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label7.Location = new Point(13, 316);
+            label7.Location = new Point(13, 246);
             label7.Name = "label7";
             label7.Size = new Size(99, 15);
             label7.TabIndex = 43;
             label7.Text = "Дата окончания:";
-            // 
-            // кбРазмерСкидки
-            // 
-            кбРазмерСкидки.FormattingEnabled = true;
-            кбРазмерСкидки.Location = new Point(164, 232);
-            кбРазмерСкидки.Name = "кбРазмерСкидки";
-            кбРазмерСкидки.Size = new Size(202, 23);
-            кбРазмерСкидки.TabIndex = 42;
             // 
             // label6
             // 
@@ -286,7 +242,7 @@
             button2.Name = "button2";
             button2.Size = new Size(165, 23);
             button2.TabIndex = 33;
-            button2.Text = "Обновить";
+            button2.Text = "Изменить";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
@@ -294,6 +250,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label2.ForeColor = SystemColors.ControlText;
             label2.Location = new Point(13, 79);
             label2.Name = "label2";
             label2.Size = new Size(83, 15);
@@ -315,7 +272,7 @@
             button1.Name = "button1";
             button1.Size = new Size(165, 23);
             button1.TabIndex = 32;
-            button1.Text = "Добавить";
+            button1.Text = "Заключить новый";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
@@ -323,7 +280,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.Location = new Point(13, 276);
+            label1.Location = new Point(13, 206);
             label1.Name = "label1";
             label1.Size = new Size(78, 15);
             label1.TabIndex = 30;
@@ -333,14 +290,15 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(659, 603);
+            BackColor = SystemColors.Window;
+            ClientSize = new Size(659, 525);
             Controls.Add(dataGridView1);
             Controls.Add(label3);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "Договор";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Договор";
+            Text = "Договора с организациями";
             Load += Договор_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panel1.ResumeLayout(false);
@@ -358,7 +316,6 @@
         private CheckBox checkBox1;
         private Label label5;
         private ComboBox кбНДоговора;
-        private Label label4;
         private DateTimePicker тбДатаНачала;
         private Button button3;
         private Panel panel1;
@@ -371,12 +328,9 @@
         private Label label1;
         private Label label6;
         private ComboBox кбНГ;
-        private ComboBox кбРазмерСкидки;
         private DateTimePicker тбДатаОкончания;
         private Label label7;
         internal Label label8;
-        private TextBox тбНаименование;
-        private Label label9;
         private Label label10;
         private ComboBox кбНС;
     }

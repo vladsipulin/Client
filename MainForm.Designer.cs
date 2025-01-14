@@ -210,7 +210,7 @@
             кбТаблицыБД.FormattingEnabled = true;
             кбТаблицыБД.Location = new Point(147, 76);
             кбТаблицыБД.Name = "кбТаблицыБД";
-            кбТаблицыБД.Size = new Size(200, 23);
+            кбТаблицыБД.Size = new Size(254, 23);
             кбТаблицыБД.TabIndex = 15;
             кбТаблицыБД.SelectionChangeCommitted += кбТаблицыБД_SelectionChangeCommitted;
             // 
@@ -246,7 +246,7 @@
             кбСтолбцыТаблицы.FormattingEnabled = true;
             кбСтолбцыТаблицы.Location = new Point(147, 121);
             кбСтолбцыТаблицы.Name = "кбСтолбцыТаблицы";
-            кбСтолбцыТаблицы.Size = new Size(200, 23);
+            кбСтолбцыТаблицы.Size = new Size(254, 23);
             кбСтолбцыТаблицы.TabIndex = 20;
             // 
             // label4
@@ -299,10 +299,10 @@
             // comboBox1
             // 
             comboBox1.FormattingEnabled = true;
-            comboBox1.Items.AddRange(new object[] { "Создать группу для организации", "Создать договор с организацией", "Заселить клиента по заявке", "Провести покупку услуги по заявке клиента", "Заселить группу организации" });
+            comboBox1.Items.AddRange(new object[] { "Создать группу для организации", "Управление договорами с организациями", "Заселить клиента по заявке", "Провести покупку услуги по заявке клиента", "Заселить группу организации" });
             comboBox1.Location = new Point(147, 173);
             comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(200, 23);
+            comboBox1.Size = new Size(254, 23);
             comboBox1.TabIndex = 27;
             comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             // 

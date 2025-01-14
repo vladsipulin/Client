@@ -9,22 +9,18 @@ namespace Client.Models
     internal class Dogovor
     {
         public int НДоговора { get; set; }
-        public int НГ { get; set; }
         public int НОрг { get; set; }
+        public int НГ { get; set; }
         public int НС { get; set; }
-        public string Наименование { get; set; }
-        public int НВелСкидки { get; set; }
         public string ДатаНачала { get; set; }
         public string ДатаОкончания { get; set; }
 
-        public Dogovor(int НДоговора = 0, int НГ = 0, int НОрг = 0, int НС = 0, string Наименование = "<Наименование>", int НВелСкидки = 0, DateTime ДатаНачала = default, DateTime ДатаОкончания = default)
+        public Dogovor(int НДоговора = 0, int НОрг = 0, int НГ = 0, int НС = 0, DateTime ДатаНачала = default, DateTime ДатаОкончания = default)
         {
             this.НДоговора = НДоговора;
             this.НГ = НГ;
             this.НОрг = НОрг;
             this.НС = НС;
-            this.Наименование = Наименование;
-            this.НВелСкидки = НВелСкидки;
             this.ДатаНачала = ДатаНачала.ToShortDateString();
             this.ДатаОкончания = ДатаОкончания.ToShortDateString();
         }
@@ -42,11 +38,9 @@ namespace Client.Models
             return new Dogovor(clone.НДоговора)
             {
                 НДоговора = clone.НДоговора,
-                НГ = clone.НГ,
                 НОрг = clone.НОрг,
+                НГ = clone.НГ,
                 НС = clone.НС,
-                Наименование = clone.Наименование,
-                НВелСкидки = clone.НВелСкидки,
                 ДатаНачала = clone.ДатаНачала,
                 ДатаОкончания = clone.ДатаОкончания,
             };
@@ -54,7 +48,7 @@ namespace Client.Models
 
         public override string ToString()
         {
-            return $"НДоговора: {НДоговора} НГ: {НГ} НОрг: {НОрг} НС: {НС} Наименование: {Наименование} НВелСкидки: {НВелСкидки} ДатаНачала: {ДатаНачала} ДатаОкончания: {ДатаОкончания}";
+            return $"НДоговора: {НДоговора} НОрг: {НОрг} НГ: {НГ} НС: {НС} ДатаНачала: {ДатаНачала} ДатаОкончания: {ДатаОкончания}";
         }
     }
 }

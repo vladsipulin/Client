@@ -226,6 +226,7 @@ namespace Client
                 dataGridView1.AllowUserToAddRows = false;
                 dataGridView1.AllowUserToDeleteRows = false;
                 dataGridView1.ReadOnly = true;
+                comboBox1.Visible = false;
 
                 button1.Visible = false;
                 button2.Visible = false;
@@ -298,9 +299,25 @@ namespace Client
                 button6.Visible = false;
                 button7.Visible = false;
                 button8.Visible = false;
+
                 показатьГостиничныеКомплексы.Visible = false;
                 показатьЗаселениеКлиента.Visible = false;
                 показатьЗаявкиКлиентов.Visible = false;
+
+                panel1.BackColor = Color.Moccasin;
+                label1.BackColor = Color.Moccasin;
+                label2.BackColor = Color.Moccasin;
+                label4.BackColor = Color.Moccasin;
+                label5.BackColor = Color.Moccasin;
+                label6.BackColor = Color.Moccasin;
+                keyLbl.BackColor = Color.Moccasin;
+                label1.ForeColor = Color.Black;
+                label2.ForeColor = Color.Black;
+                label4.ForeColor = Color.Black;
+                label5.ForeColor = Color.Black;
+                label6.ForeColor = Color.Black;
+                keyLbl.ForeColor = Color.Black;           
+
                 string sql = "SELECT TABLE_NAME AS 'id', TABLE_COMMENT AS 'Таблица' FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='hotel'";
                 ComboBoxDataForFill ИменаТаблиц = new ComboBoxDataForFill(sql, "Таблица", "id");
                 LoadCombo(ИменаТаблиц);

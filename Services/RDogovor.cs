@@ -70,26 +70,20 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "INSERT INTO Договор (НДоговора, НГ, НОрг, НС, Наименование, НВелСкидки, ДатаНачала, ДатаОкончания)" +
-                        " VALUES(@НДоговора, @НГ, @НОрг, @НС, @Наименование, @НВелСкидки, @ДатаНачала, @ДатаОкончания)";
+                    cmd.CommandText = "INSERT INTO ДоговорСОрганизацией (НДоговора, НОрг, НГ, НС, ДатаНачала, ДатаОкончания)" +
+                        " VALUES(@НДоговора, @НОрг, @НГ, @НС, @ДатаНачала, @ДатаОкончания)";
 
                     cmd.Parameters.Add(new MySqlParameter("@НДоговора", MySqlDbType.Int32)
                     { Value = objOfTable.НДоговора });
 
-                    cmd.Parameters.Add(new MySqlParameter("@НГ", MySqlDbType.Int32)
-                    { Value = objOfTable.НГ });
-
                     cmd.Parameters.Add(new MySqlParameter("@НОрг", MySqlDbType.Int32)
                     { Value = objOfTable.НОрг });
 
+                    cmd.Parameters.Add(new MySqlParameter("@НГ", MySqlDbType.Int32)
+                    { Value = objOfTable.НГ });
+
                     cmd.Parameters.Add(new MySqlParameter("@НС", MySqlDbType.Int32)
                     { Value = objOfTable.НС });
-
-                    cmd.Parameters.Add(new MySqlParameter("@Наименование", MySqlDbType.VarChar, 255)
-                    { Value = objOfTable.Наименование });
-
-                    cmd.Parameters.Add(new MySqlParameter("@НВелСкидки", MySqlDbType.Int32)
-                    { Value = objOfTable.НВелСкидки });
 
                     cmd.Parameters.Add(new MySqlParameter("@ДатаНачала", MySqlDbType.Date)
                     { Value = Convert.ToDateTime(objOfTable.ДатаНачала) });
@@ -123,7 +117,7 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM Договор";
+                    cmd.CommandText = "SELECT * FROM ДоговорСОрганизацией";
                     con.Open();
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
@@ -131,13 +125,11 @@ namespace Client.Services
                         {
                             var objOfTable = new Dogovor(reader.GetInt32(0));
                             objOfTable.НДоговора = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
-                            objOfTable.НГ = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
-                            objOfTable.НОрг = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
+                            objOfTable.НОрг = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
+                            objOfTable.НГ = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
                             objOfTable.НС = reader.IsDBNull(3) ? 0 : reader.GetInt32(3);
-                            objOfTable.Наименование = reader.IsDBNull(4) ? "null" : reader.GetString(4);
-                            objOfTable.НВелСкидки = reader.IsDBNull(5) ? 0 : reader.GetInt32(5);
-                            objOfTable.ДатаНачала = reader.IsDBNull(6) ? "null" : reader.GetDateTime(6).ToShortDateString();
-                            objOfTable.ДатаОкончания = reader.IsDBNull(7) ? "null" : reader.GetDateTime(7).ToShortDateString();
+                            objOfTable.ДатаНачала = reader.IsDBNull(4) ? "null" : reader.GetDateTime(4).ToShortDateString();
+                            objOfTable.ДатаОкончания = reader.IsDBNull(5) ? "null" : reader.GetDateTime(5).ToShortDateString();
                             list.Add(objOfTable);
                         }
                     }
@@ -183,7 +175,7 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT COUNT(*) FROM Договор WHERE НДоговора = @key";
+                    cmd.CommandText = "SELECT COUNT(*) FROM ДоговорСОрганизацией WHERE НДоговора = @key";
                     cmd.Parameters.Add(new MySqlParameter("@key", MySqlDbType.Int32) { Value = НДоговора });
 
                     con.Open();
@@ -203,7 +195,7 @@ namespace Client.Services
             }
         }
 
-        public async Task<Result<int>> Remove(int НДоговора)
+        public async Task<Result<int>> Remove(int НДоговора, int НОргОлд)
         {
             if (НДоговора <= 0)
                 throw new ArgumentException(nameof(НДоговора));
@@ -214,7 +206,7 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = $"CALL СделатьДоговорНедействительным({НДоговора})";
+                    cmd.CommandText = $"CALL СделатьДоговорНедействительным({НДоговора}, {НОргОлд})";
 
                     con.Open();
                     result = await cmd.ExecuteNonQueryAsync();
@@ -233,7 +225,7 @@ namespace Client.Services
             return new Result<int>(result);
         }
 
-        public async Task<Result<int>> Update(Dogovor objOfTable, int НДоговораОлд)
+        public async Task<Result<int>> Update(Dogovor objOfTable, int НДоговораОлд, int НОргОлд)
         {
             if (objOfTable is null)
                 throw new ArgumentNullException(nameof(objOfTable));
@@ -244,36 +236,33 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "UPDATE Договор" +
-                        " SET НДоговора = @val1, НГ = @val2, НОрг = @val3, НС = @val4, Наименование = @val5, НВелСкидки = @val6, ДатаНачала=@val7, ДатаОкончания=@val8 " +
-                        " WHERE НДоговора = @val9";
+                    cmd.CommandText = "UPDATE ДоговорСОрганизацией" +
+                        " SET НДоговора = @val1, НОрг = @val2, НГ = @val3, НС = @val4, ДатаНачала=@val5, ДатаОкончания=@val6 " +
+                        " WHERE НДоговора = @val7 AND НОрг = @val8";
 
                     cmd.Parameters.Add(new MySqlParameter("@val1", MySqlDbType.Int32)
                     { Value = objOfTable.НДоговора });
 
                     cmd.Parameters.Add(new MySqlParameter("@val2", MySqlDbType.Int32)
-                    { Value = objOfTable.НГ });
+                    { Value = objOfTable.НОрг });
 
                     cmd.Parameters.Add(new MySqlParameter("@val3", MySqlDbType.Int32)
-                    { Value = objOfTable.НОрг });
+                    { Value = objOfTable.НГ });
 
                     cmd.Parameters.Add(new MySqlParameter("@val4", MySqlDbType.Int32)
                     { Value = objOfTable.НС });
 
-                    cmd.Parameters.Add(new MySqlParameter("@val5", MySqlDbType.VarChar, 255)
-                    { Value = objOfTable.Наименование });
-
-                    cmd.Parameters.Add(new MySqlParameter("@val6", MySqlDbType.Int32)
-                    { Value = objOfTable.НВелСкидки });
-
-                    cmd.Parameters.Add(new MySqlParameter("@val7", MySqlDbType.Date)
+                    cmd.Parameters.Add(new MySqlParameter("@val5", MySqlDbType.Date)
                     { Value = Convert.ToDateTime(objOfTable.ДатаНачала) });
 
-                    cmd.Parameters.Add(new MySqlParameter("@val8", MySqlDbType.Date)
+                    cmd.Parameters.Add(new MySqlParameter("@val6", MySqlDbType.Date)
                     { Value = Convert.ToDateTime(objOfTable.ДатаОкончания) });
 
-                    cmd.Parameters.Add(new MySqlParameter("@val9", MySqlDbType.Int32)
+                    cmd.Parameters.Add(new MySqlParameter("@val7", MySqlDbType.Int32)
                     { Value = НДоговораОлд });
+
+                    cmd.Parameters.Add(new MySqlParameter("@val8", MySqlDbType.Int32)
+                    { Value = НОргОлд });
 
                     con.Open();
                     result = await cmd.ExecuteNonQueryAsync();
