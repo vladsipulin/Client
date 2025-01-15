@@ -17,8 +17,8 @@ namespace Client
 
         private async void loginButton_Click(object sender, EventArgs e)
         {
-            //UserAuth user = new UserAuth(0, тбЛогин.Text, тбПароль.Text);
-            UserAuth user = new UserAuth(0, "admin", "admin");
+            UserAuth user = new UserAuth(0, тбЛогин.Text, тбПароль.Text);
+            //UserAuth user = new UserAuth(0, "admin", "admin");
             string userAddInfo = String.Empty;
 
             _repo = new Authorization();
@@ -41,7 +41,8 @@ namespace Client
                     }
                 }
 
-                if (IsUserExists) {
+                if (IsUserExists)
+                {
                     try
                     {
                         Convert.ToInt32(userAddInfo);
@@ -85,6 +86,12 @@ namespace Client
         {
             RegistrationForm regf = new RegistrationForm();
             regf.ShowDialog();
+        }
+
+        private void AuthorizationForm_Load(object sender, EventArgs e)
+        {
+            тбЛогин.Text = "admin";
+            тбПароль.Text = "admin";
         }
     }
 }

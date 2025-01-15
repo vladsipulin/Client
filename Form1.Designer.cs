@@ -115,6 +115,7 @@
             Name = "AuthorizationForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Авторизация";
+            Load += AuthorizationForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }

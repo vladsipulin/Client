@@ -397,12 +397,11 @@ namespace Client
 
                 RequestClientAppartmnts current = new RequestClientAppartmnts(НКомнаты, НК, НЭ, НГ, clientId, ДатаОплаты, ДатаЗаселения, ДатаВыезда, СтоимостьОплаты);
 
-                if (тбСтатусЗаявки.Text.Equals("Не расмотренно"))
-                {
+                //if (тбСтатус.Text.Equals("Ожидание"))
+                //{
                     тбСтатус.Text = "Отменено клиентом";
-                    тбСтатус.ForeColor = Color.DarkRed;
                     Result<int> result;
-                    result = await _repo.Remove(current, "Отменено клиентом", НКомнаты, НК, НЭ, НГ);
+                    result = await _repo.Remove(current, "Отменено клиентом", НКомнаты, НК, НЭ, НГ, ДатаЗаселения, ДатаВыезда);
 
                     if (result)
                     {
@@ -424,11 +423,11 @@ namespace Client
                     {
                         MessageBox.Show(result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                }
+                /*}
                 else
                 {
                     MessageBox.Show("Отмена заявки невозможна после её рассмотрения", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                }*/
             }
             catch
             {

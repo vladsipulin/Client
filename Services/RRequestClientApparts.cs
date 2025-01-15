@@ -162,7 +162,7 @@ namespace Client.Services
             return new Result<List<RequestClientAppartmnts>>(list);
         }
 
-        public async Task<Result<int>> Remove(RequestClientAppartmnts objOfTable, string Статус, int НКомнатыОлд, int НКОлд, int НЭОлд, int НГОлд)
+        public async Task<Result<int>> Remove(RequestClientAppartmnts objOfTable, string Статус, int НКомнатыОлд, int НКОлд, int НЭОлд, int НГОлд, DateTime ДЗ, DateTime ДВ)
         {
             if (objOfTable is null)
                 throw new ArgumentNullException(nameof(objOfTable));
@@ -180,7 +180,9 @@ namespace Client.Services
                         AND НК = @val03 
                         AND НЭ = @val04 
                         AND НГ = @val05 
-                        AND НКл = @val06";
+                        AND НКл = @val06
+                        AND ДатаЗаселения = @val07
+                        AND ДатаВыезда = @val08";
 
                     // Параметры для обновления
                     cmd.Parameters.Add(new MySqlParameter("@val2", MySqlDbType.VarChar, 255) { Value = Статус });
@@ -191,6 +193,8 @@ namespace Client.Services
                     cmd.Parameters.Add(new MySqlParameter("@val04", MySqlDbType.Int32) { Value = НЭОлд });
                     cmd.Parameters.Add(new MySqlParameter("@val05", MySqlDbType.Int32) { Value = НГОлд });
                     cmd.Parameters.Add(new MySqlParameter("@val06", MySqlDbType.Int32) { Value = objOfTable.НКл });
+                    cmd.Parameters.Add(new MySqlParameter("@val07", MySqlDbType.Date) { Value = ДЗ });
+                    cmd.Parameters.Add(new MySqlParameter("@val08", MySqlDbType.Date) { Value = ДВ });
 
                     await con.OpenAsync();
                     result = await cmd.ExecuteNonQueryAsync();

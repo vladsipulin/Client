@@ -269,7 +269,7 @@
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "ЗаселениеКлиента";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "ЗаселениеКлиента";
+            Text = "Управление заявками клиентов на заселение";
             Load += ЗаселениеКлиента_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panel1.ResumeLayout(false);

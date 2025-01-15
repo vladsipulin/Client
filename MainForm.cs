@@ -496,9 +496,9 @@ namespace Client
         {
             if (comboBox1.SelectedIndex == 0)
             {
-                Группа gr = new Группа();
-                gr.lbWhoLogged.Text = keyLbl.Text;
-                gr.ShowDialog();
+                Группа obj = new Группа();
+                obj.lbWhoLogged.Text = keyLbl.Text;
+                obj.ShowDialog();
             }
             else if (comboBox1.SelectedIndex == 1)
             {
@@ -509,6 +509,12 @@ namespace Client
             else if (comboBox1.SelectedIndex == 2)
             {
                 ЗаселениеКлиента obj = new ЗаселениеКлиента();
+                obj.lbWhoLogged.Text = keyLbl.Text;
+                obj.ShowDialog();
+            }
+            else if (comboBox1.SelectedIndex == 4)
+            {
+                ЗаселениеГруппы obj = new ЗаселениеГруппы();
                 obj.lbWhoLogged.Text = keyLbl.Text;
                 obj.ShowDialog();
             }
