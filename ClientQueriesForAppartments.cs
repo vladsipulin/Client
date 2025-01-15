@@ -144,7 +144,7 @@ namespace Client
 
             int НЭ = (int)кбНЭ.SelectedValue;
             int ВместимостьКомнаты = (int)кбВместимостьКомнаты.SelectedValue;
-            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость";
+            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость AND Доступность='Да'";
             ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
@@ -216,7 +216,7 @@ namespace Client
 
             int? НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
             int? ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
-            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость";
+            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость AND Доступность='Да'";
             ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
@@ -344,7 +344,7 @@ namespace Client
 
             int? НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
             int? ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
-            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость";
+            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость AND Доступность='Да'";
             ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
@@ -397,7 +397,7 @@ namespace Client
             кбВместимостьКомнаты.ValueMember = Вместимость.ValueMember;
 
             int? ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
-            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость";
+            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость AND Доступность='Да'";
             ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
@@ -474,7 +474,7 @@ namespace Client
             int? НК = (int?)(кбНК.SelectedValue ?? 0);
             int? НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
             int? ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
-            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость";
+            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость AND Доступность='Да'";
             ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });

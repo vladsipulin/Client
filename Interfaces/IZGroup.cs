@@ -19,5 +19,7 @@ namespace Client.Interfaces
         //обновление
         Task<Result<int>> Update(ZGroup objOfTable, int НЗаселенияГруппыОлд);
         Task<int> FindExistingNumZaselenie(int НЗаселенияГруппы);
+        Task<DataTable> GetZaselenieDetails(int НЗаселенияГруппы);
+
     }
 }

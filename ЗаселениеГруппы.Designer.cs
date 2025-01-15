@@ -57,8 +57,23 @@
             кбНДоговора = new ComboBox();
             button1 = new Button();
             label1 = new Label();
-            dataGridView1 = new DataGridView();
             label3 = new Label();
+            кбНГ = new ComboBox();
+            кбНК = new ComboBox();
+            кбНЭ = new ComboBox();
+            кбНКомнаты = new ComboBox();
+            кбВместимостьКомнаты = new ComboBox();
+            label13 = new Label();
+            label14 = new Label();
+            label15 = new Label();
+            label16 = new Label();
+            label17 = new Label();
+            label18 = new Label();
+            tbRoomPrice = new TextBox();
+            button3 = new Button();
+            dataGridView1 = new DataGridView();
+            button4 = new Button();
+            button5 = new Button();
             panel1.SuspendLayout();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -366,15 +381,6 @@
             label1.TabIndex = 30;
             label1.Text = "Дата оплаты:";
             // 
-            // dataGridView1
-            // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(16, 381);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new Size(956, 189);
-            dataGridView1.TabIndex = 60;
-            // 
             // label3
             // 
             label3.AutoSize = true;
@@ -385,14 +391,171 @@
             label3.TabIndex = 59;
             label3.Text = "Выбор комнат в заявку бронирования:";
             // 
+            // кбНГ
+            // 
+            кбНГ.FormattingEnabled = true;
+            кбНГ.Location = new Point(102, 388);
+            кбНГ.Name = "кбНГ";
+            кбНГ.Size = new Size(143, 23);
+            кбНГ.TabIndex = 69;
+            кбНГ.SelectionChangeCommitted += кбНГ_SelectionChangeCommitted;
+            // 
+            // кбНК
+            // 
+            кбНК.FormattingEnabled = true;
+            кбНК.Location = new Point(102, 416);
+            кбНК.Name = "кбНК";
+            кбНК.Size = new Size(143, 23);
+            кбНК.TabIndex = 68;
+            кбНК.SelectionChangeCommitted += кбНК_SelectionChangeCommitted;
+            // 
+            // кбНЭ
+            // 
+            кбНЭ.FormattingEnabled = true;
+            кбНЭ.Location = new Point(102, 445);
+            кбНЭ.Name = "кбНЭ";
+            кбНЭ.Size = new Size(143, 23);
+            кбНЭ.TabIndex = 67;
+            кбНЭ.SelectionChangeCommitted += кбНЭ_SelectionChangeCommitted;
+            // 
+            // кбНКомнаты
+            // 
+            кбНКомнаты.FormattingEnabled = true;
+            кбНКомнаты.Location = new Point(423, 416);
+            кбНКомнаты.Name = "кбНКомнаты";
+            кбНКомнаты.Size = new Size(143, 23);
+            кбНКомнаты.TabIndex = 66;
+            // 
+            // кбВместимостьКомнаты
+            // 
+            кбВместимостьКомнаты.FormattingEnabled = true;
+            кбВместимостьКомнаты.Location = new Point(423, 387);
+            кбВместимостьКомнаты.Name = "кбВместимостьКомнаты";
+            кбВместимостьКомнаты.Size = new Size(143, 23);
+            кбВместимостьКомнаты.TabIndex = 65;
+            кбВместимостьКомнаты.SelectionChangeCommitted += кбВместимостьКомнаты_SelectionChangeCommitted;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(275, 419);
+            label13.Name = "label13";
+            label13.Size = new Size(97, 15);
+            label13.TabIndex = 64;
+            label13.Text = "Номер комнаты";
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Location = new Point(275, 390);
+            label14.Name = "label14";
+            label14.Size = new Size(132, 15);
+            label14.TabIndex = 63;
+            label14.Text = "Вместимость комнаты";
+            // 
+            // label15
+            // 
+            label15.AutoSize = true;
+            label15.Location = new Point(22, 448);
+            label15.Name = "label15";
+            label15.Size = new Size(34, 15);
+            label15.TabIndex = 62;
+            label15.Text = "Этаж";
+            // 
+            // label16
+            // 
+            label16.AutoSize = true;
+            label16.Location = new Point(22, 419);
+            label16.Name = "label16";
+            label16.Size = new Size(47, 15);
+            label16.TabIndex = 61;
+            label16.Text = "Корпус";
+            // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Location = new Point(22, 391);
+            label17.Name = "label17";
+            label17.Size = new Size(65, 15);
+            label17.TabIndex = 60;
+            label17.Text = "Гостиница";
+            // 
+            // label18
+            // 
+            label18.AutoSize = true;
+            label18.Location = new Point(275, 448);
+            label18.Name = "label18";
+            label18.Size = new Size(117, 15);
+            label18.TabIndex = 71;
+            label18.Text = "Цена за 1 ночь, руб:";
+            // 
+            // tbRoomPrice
+            // 
+            tbRoomPrice.Location = new Point(423, 445);
+            tbRoomPrice.Name = "tbRoomPrice";
+            tbRoomPrice.Size = new Size(143, 23);
+            tbRoomPrice.TabIndex = 70;
+            // 
+            // button3
+            // 
+            button3.Location = new Point(611, 387);
+            button3.Name = "button3";
+            button3.Size = new Size(171, 23);
+            button3.TabIndex = 72;
+            button3.Text = "Забронировать комнату";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
+            // 
+            // dataGridView1
+            // 
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Location = new Point(16, 486);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowTemplate.Height = 25;
+            dataGridView1.Size = new Size(956, 142);
+            dataGridView1.TabIndex = 73;
+            // 
+            // button4
+            // 
+            button4.Location = new Point(611, 416);
+            button4.Name = "button4";
+            button4.Size = new Size(171, 23);
+            button4.TabIndex = 74;
+            button4.Text = "Изменить сведения";
+            button4.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            button5.Location = new Point(611, 445);
+            button5.Name = "button5";
+            button5.Size = new Size(171, 23);
+            button5.TabIndex = 75;
+            button5.Text = "Убрать из заселения";
+            button5.UseVisualStyleBackColor = true;
+            // 
             // ЗаселениеГруппы
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
-            ClientSize = new Size(988, 582);
-            Controls.Add(panel1);
+            ClientSize = new Size(988, 640);
+            Controls.Add(button5);
+            Controls.Add(button4);
             Controls.Add(dataGridView1);
+            Controls.Add(button3);
+            Controls.Add(кбНГ);
+            Controls.Add(кбНК);
+            Controls.Add(кбНЭ);
+            Controls.Add(кбНКомнаты);
+            Controls.Add(кбВместимостьКомнаты);
+            Controls.Add(label13);
+            Controls.Add(label14);
+            Controls.Add(label15);
+            Controls.Add(label16);
+            Controls.Add(label17);
+            Controls.Add(label18);
+            Controls.Add(tbRoomPrice);
+            Controls.Add(panel1);
             Controls.Add(label3);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "ЗаселениеГруппы";
@@ -430,7 +593,6 @@
         private ComboBox кбНДоговора;
         private Button button1;
         private Label label1;
-        private DataGridView dataGridView1;
         private Label label3;
         private Label label4;
         private ComboBox кбНС;
@@ -442,5 +604,21 @@
         private ComboBox кбСтатус;
         private GroupBox groupBox2;
         private ComboBox кбВыборСтатуса;
+        private ComboBox кбНГ;
+        private ComboBox кбНК;
+        private ComboBox кбНЭ;
+        private ComboBox кбНКомнаты;
+        private ComboBox кбВместимостьКомнаты;
+        private Label label13;
+        private Label label14;
+        private Label label15;
+        private Label label16;
+        private Label label17;
+        private Label label18;
+        private TextBox tbRoomPrice;
+        private Button button3;
+        private DataGridView dataGridView1;
+        private Button button4;
+        private Button button5;
     }
 }

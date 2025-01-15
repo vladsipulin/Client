@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -294,6 +295,26 @@ namespace Client.Services
             {
                 return -3; // Общая ошибка
             }
+        }
+
+        public async Task<DataTable> GetZaselenieDetails(int НЗаселенияГруппы)
+        {
+            var table = new DataTable();
+
+            using (var con = GetConnection())
+            using (var cmd = con.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM `комнатывзаселениигруппы` WHERE НЗаселенияГруппы = @НЗаселенияГруппы";
+                cmd.Parameters.Add(new MySqlParameter("@НЗаселенияГруппы", MySqlDbType.Int32) { Value = НЗаселенияГруппы });
+                con.Open();
+
+                using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    table.Load(reader);
+                }
+            }
+
+            return table;
         }
     }
 }
