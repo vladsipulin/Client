@@ -388,9 +388,9 @@
             label3.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
             label3.Location = new Point(16, 347);
             label3.Name = "label3";
-            label3.Size = new Size(287, 20);
+            label3.Size = new Size(385, 20);
             label3.TabIndex = 59;
-            label3.Text = "Выбор комнат в заявку бронирования:";
+            label3.Text = "Бронирование комнат по номеру заселения группы:";
             // 
             // кбНГ
             // 
