@@ -518,7 +518,8 @@
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new Size(956, 141);
             dataGridView1.TabIndex = 73;
-            dataGridView1.RowHeaderMouseClick += dataGridView1_RowHeaderMouseClick;
+            dataGridView1.CellClick += dataGridView1_CellClick;
+            dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
             // 
             // button4
             // 

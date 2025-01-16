@@ -144,10 +144,10 @@ namespace Client.Services
             return new Result<List<ZGroupRoom>>(list);
         }
 
-        public async Task<Result<int>> Remove(int НЗаселенияГруппы)
+        public async Task<Result<int>> Remove(ZGroupRoom objOfTable)
         {
-            if (НЗаселенияГруппы <= 0)
-                throw new ArgumentException(nameof(НЗаселенияГруппы));
+            if (objOfTable is null)
+                throw new ArgumentNullException(nameof(objOfTable));
 
             int result = 0;
             try
@@ -155,10 +155,19 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "DELETE FROM КомнатыВЗаселенииГруппы WHERE НЗаселенияГруппы = @val1";
+                    cmd.CommandText = "DELETE FROM КомнатыВЗаселенииГруппы " +
+                        "WHERE НЗаселенияГруппы = @val1 AND НГ = @val2 AND НК = @val3 AND НЭ = @val4 AND НКомнаты = @val5";
 
                     cmd.Parameters.Add(new MySqlParameter("@val1", MySqlDbType.Int32)
-                    { Value = НЗаселенияГруппы });
+                    { Value = objOfTable.НЗаселенияГруппы });
+                    cmd.Parameters.Add(new MySqlParameter("@val2", MySqlDbType.Int32)
+                    { Value = objOfTable.НГ });
+                    cmd.Parameters.Add(new MySqlParameter("@val3", MySqlDbType.Int32)
+                    { Value = objOfTable.НК });
+                    cmd.Parameters.Add(new MySqlParameter("@val4", MySqlDbType.Int32)
+                    { Value = objOfTable.НЭ });
+                    cmd.Parameters.Add(new MySqlParameter("@val5", MySqlDbType.Int32)
+                    { Value = objOfTable.НКомнаты });
 
                     con.Open();
                     result = await cmd.ExecuteNonQueryAsync();
@@ -177,7 +186,7 @@ namespace Client.Services
             return new Result<int>(result);
         }
 
-        public async Task<Result<int>> Update(ZGroupRoom objOfTable)
+        public async Task<Result<int>> Update(ZGroupRoom objOfTable, int НЗГОлд, int НГОлд, int НКОлд, int НЭОлд, int НКомОлд)
         {
             if (objOfTable is null)
                 throw new ArgumentNullException(nameof(objOfTable));
@@ -190,9 +199,8 @@ namespace Client.Services
                 {
 
                     cmd.CommandText = "UPDATE КомнатыВЗаселенииГруппы" +
-                        " SET НГ = @val2, НК = @val3, НЭ = @val4," +
-                        " НКомнаты = @val5" +
-                        " WHERE НЗаселенияГруппы = @val1";
+                        " SET НГ = @val2, НК = @val3, НЭ = @val4, НКомнаты = @val5" +
+                        " WHERE НЗаселенияГруппы = @val01 AND НГ = @val02 AND НК = @val03 AND НЭ = @val04 AND НКомнаты = @val05";
 
                     cmd.Parameters.Add(new MySqlParameter("@val2", MySqlDbType.Int32)
                     { Value = objOfTable.НГ });
@@ -206,8 +214,20 @@ namespace Client.Services
                     cmd.Parameters.Add(new MySqlParameter("@val5", MySqlDbType.Int32)
                     { Value = objOfTable.НКомнаты });
 
-                    cmd.Parameters.Add(new MySqlParameter("@val1", MySqlDbType.Int32)
-                    { Value = objOfTable.НЗаселенияГруппы });
+                    cmd.Parameters.Add(new MySqlParameter("@val01", MySqlDbType.Int32)
+                    { Value = НЗГОлд });
+
+                    cmd.Parameters.Add(new MySqlParameter("@val02", MySqlDbType.Int32)
+                    { Value = НГОлд });
+
+                    cmd.Parameters.Add(new MySqlParameter("@val03", MySqlDbType.Int32)
+                    { Value = НКОлд });
+
+                    cmd.Parameters.Add(new MySqlParameter("@val04", MySqlDbType.Int32)
+                    { Value = НЭОлд });
+
+                    cmd.Parameters.Add(new MySqlParameter("@val05", MySqlDbType.Int32)
+                    { Value = НКомОлд });
 
                     con.Open();
                     result = await cmd.ExecuteNonQueryAsync();

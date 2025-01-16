@@ -116,6 +116,7 @@ namespace Client
                     };
 
             this.BackColor = System.Drawing.Color.White;
+            SetupDataGridView();
 
             sql = "SELECT Название, НГ FROM `ГостиничныйКомплекс`";
             ComboBoxDataForFill Гостиница = new ComboBoxDataForFill(sql, "Название", "НГ");
@@ -651,6 +652,49 @@ namespace Client
                 LoadCombo(Сотрудник, кбНС);
 
                 SetControlsFromDataRow(номерЗаселения, номерSource, controlsMapping);
+
+                sql = $"SELECT * FROM КомнатыВЗаселенииГруппы";
+                ComboBoxDataForFill НомерЗаселения_КвЗГ = new ComboBoxDataForFill(sql, "НЗаселенияГруппы", "НЗаселенияГруппы");
+                LoadCombo(НомерЗаселения_КвЗГ, кбНЗГ);
+
+                if (кбНЗГ.SelectedValue != null)
+                {
+                    bool найденоСоответствие = false;
+                    foreach (var item in кбНЗГ.Items)
+                    {
+                        DataRowView row = item as DataRowView;
+                        if (row != null && row["НЗаселенияГруппы"].ToString() == кбНЗаселенияГруппы.SelectedValue.ToString())
+                        {
+                            найденоСоответствие = true;
+                            break;
+                        }
+                    }
+
+                    if (найденоСоответствие)
+                    {
+                        номерЗаселения_КвЗГ = (int)кбНЗаселенияГруппы.SelectedValue;
+                        номерSource_КвЗГ = кбНЗГ.DataSource as DataTable;
+                        controlsMapping_КвЗГ = new Dictionary<string, Control>
+                    {
+                        { "НГ", кбНГ },
+                        { "НК", кбНК },
+                        { "НЭ", кбНЭ },
+                        { "НКомнаты", кбНКомнаты }
+                    };
+
+                        LoadDataIntoDataGridView();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Комнаты в этом заселении группы отсутствуют. Данные не были загружены в таблицу", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"Комнаты в этом заселении группы отсутствуют. Данные не были загружены в таблицу", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                    sql = $"SELECT * FROM ЗаселениеГруппы";
+                }
             }
             else
             {
@@ -665,6 +709,7 @@ namespace Client
         private void кбВыборСтатуса_SelectionChangeCommitted(object sender, EventArgs e)
         {
             previousItem = кбВыборСтатуса.Text;
+            dataGridView1.DataSource = null;
         }
 
         private async void button2_Click(object sender, EventArgs e)
@@ -1046,6 +1091,9 @@ namespace Client
                         MessageBox.Show($"Комната №{кбНКомнаты.Text} добавлена\n" +
                             $"в заселение № {кбНЗаселенияГруппы.SelectedValue} группы №{кбНГр.Text}\n", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                        //обновление выводимой итоговой стоимости заказа
+                        UpdateComboBoxes();
+
                         //перерисовка таблицы
                         try
                         {
@@ -1085,11 +1133,21 @@ namespace Client
                                                                             Convert.ToInt32(кбНЭ.SelectedValue), Convert.ToInt32(кбНКомнаты.Text));
 
                     Result<int> result;
-                    result = await _repo2.Update(current);
+                    DataGridViewRow selectedRow = dataGridView1.CurrentRow;
+                    int НЗГ_dgv = (int)selectedRow.Cells["НЗаселенияГруппы"].Value;
+                    int НГ_dgv = (int)selectedRow.Cells["НГ"].Value;
+                    int НК_dgv = (int)selectedRow.Cells["НК"].Value;
+                    int НЭ_dgv = (int)selectedRow.Cells["НЭ"].Value;
+                    int НКомнаты_dgv = (int)selectedRow.Cells["НКомнаты"].Value;
+
+                    result = await _repo2.Update(current, НЗГ_dgv, НГ_dgv, НК_dgv, НЭ_dgv, НКомнаты_dgv);
 
                     if (result)
                     {
                         MessageBox.Show($"Комната №{кбНКомнаты.Text} в заселении №{кбНЗаселенияГруппы.SelectedValue} группы №{кбНГр.Text} успешно изменена!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        //обновление выводимой итоговой стоимости заказа
+                        UpdateComboBoxes();
 
                         //перерисовка таблицы
                         try
@@ -1129,11 +1187,14 @@ namespace Client
                                                         Convert.ToInt32(кбНЭ.SelectedValue), Convert.ToInt32(кбНКомнаты.Text));
 
                     Result<int> result;
-                    result = await _repo2.Remove((int)кбНЗаселенияГруппы.SelectedValue);
+                    result = await _repo2.Remove(current);
 
                     if (result)
                     {
                         MessageBox.Show($"Комната №{кбНКомнаты.Text} из заселения №{кбНЗаселенияГруппы.SelectedValue} группы №{кбНГр.SelectedValue}\nуспешно убрана!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        //обновление выводимой итоговой стоимости заказа
+                        UpdateComboBoxes();
 
                         //перерисовка таблицы
                         try
@@ -1330,11 +1391,31 @@ namespace Client
             }
         }
 
-        private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0) return;
+            // Убедимся, что клик произошёл не на заголовке столбца или строке
+            if (e.RowIndex >= 0)
+            {
+                // Устанавливаем выделение всей строки
+                dataGridView1.Rows[e.RowIndex].Selected = true;
+            }
+        }
 
-            DataGridViewRow selectedRow = dataGridView1.Rows[e.RowIndex];
+        // Настройка DataGridView для выделения всей строки
+        private void SetupDataGridView()
+        {
+            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView1.MultiSelect = false; // Опционально, если нужно выделять только одну строку
+        }
+
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count == 0)
+            {
+                return;
+            }
+
+            DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
 
             int? НГ = selectedRow.Cells["НГ"].Value as int?;
 
@@ -1436,6 +1517,45 @@ namespace Client
             {
                 MessageBox.Show("Ошибка вывода цены комнаты за одну ночь: DataSource не является DataTable.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void UpdateComboBoxes()
+        {
+            sql = $"SELECT * FROM ЗаселениеГруппы";
+            ComboBoxDataForFill НомерЗаселения = new ComboBoxDataForFill(sql, "НЗаселенияГруппы", "НЗаселенияГруппы");
+            LoadCombo(НомерЗаселения, кбНЗаселенияГруппы);
+
+            номерЗаселения = (int)кбНЗаселенияГруппы.SelectedValue;
+            номерSource = кбНЗаселенияГруппы.DataSource as DataTable;
+
+            // Загружаем связанные НГр
+            sql = "SELECT * FROM ДоговорСОрганизацией WHERE НДоговора IN (SELECT НДоговора FROM ЗаселениеГруппы WHERE НЗаселенияГруппы = @НЗаселенияГруппы)";
+            ComboBoxDataForFill Договор = new ComboBoxDataForFill(sql, "НДоговора", "НДоговора");
+            Договор.paramsForSQLQuery.Add(new MySqlParameter("@НЗаселенияГруппы", MySqlDbType.Int32) { Value = номерЗаселения });
+            LoadCombo(Договор, кбНДоговора);
+
+            int номерДоговора = (int)кбНДоговора.SelectedValue;
+
+            // Загружаем связанные НОрг
+            sql = "SELECT НОрг, Наименование FROM Организация WHERE НОрг IN (SELECT НОрг FROM ДоговорСОрганизацией WHERE НДоговора = @НДоговора)";
+            ComboBoxDataForFill Организации = new ComboBoxDataForFill(sql, "Наименование", "НОрг");
+            Организации.paramsForSQLQuery.Add(new MySqlParameter("@НДоговора", MySqlDbType.Int32) { Value = номерДоговора });
+            LoadCombo(Организации, кбНОрг);
+
+            int номерОрганизации = (int)кбНОрг.SelectedValue;
+
+            // Загружаем связанные НГр
+            sql = "SELECT НГр FROM Группа WHERE НОрг = @НОрг";
+            ComboBoxDataForFill Группы = new ComboBoxDataForFill(sql, "НГр", "НГр");
+            Группы.paramsForSQLQuery.Add(new MySqlParameter("@НОрг", MySqlDbType.Int32) { Value = номерОрганизации });
+            LoadCombo(Группы, кбНГр);
+
+            sql = "SELECT НС, ФИО FROM Сотрудник WHERE НС IN (SELECT НС FROM ЗаселениеГруппы WHERE НЗаселенияГруппы = @НЗаселенияГруппы)";
+            ComboBoxDataForFill Сотрудник = new ComboBoxDataForFill(sql, "ФИО", "НС");
+            Сотрудник.paramsForSQLQuery.Add(new MySqlParameter("@НЗаселенияГруппы", MySqlDbType.Int32) { Value = номерЗаселения });
+            LoadCombo(Сотрудник, кбНС);
+
+            SetControlsFromDataRow(номерЗаселения, номерSource, controlsMapping);
         }
     }
 }

@@ -16,9 +16,9 @@ namespace Client.Interfaces
         //добавление
         Task<Result<int>> Add(ZGroupRoom objOfTable);
         //удаление
-        Task<Result<int>> Remove(int НЗаселенияГруппы);
+        Task<Result<int>> Remove(ZGroupRoom objOfTable);
         //обновление
-        Task<Result<int>> Update(ZGroupRoom objOfTable);
+        Task<Result<int>> Update(ZGroupRoom objOfTable, int НЗГОлд, int НГОлд, int НКОлд, int НЭОлд, int НКомОлд);
 
     }
 }
