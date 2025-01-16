@@ -74,6 +74,7 @@
             dataGridView1 = new DataGridView();
             button4 = new Button();
             button5 = new Button();
+            кбНЗГ = new ComboBox();
             panel1.SuspendLayout();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -140,18 +141,18 @@
             // groupBox2
             // 
             groupBox2.Controls.Add(кбВыборСтатуса);
-            groupBox2.Location = new Point(754, 89);
+            groupBox2.Location = new Point(746, 89);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(180, 63);
+            groupBox2.Size = new Size(188, 59);
             groupBox2.TabIndex = 61;
             groupBox2.TabStop = false;
-            groupBox2.Text = "Выбор заявок со статусом";
+            groupBox2.Text = "Выбор заселений со статусом";
             // 
             // кбВыборСтатуса
             // 
             кбВыборСтатуса.FormattingEnabled = true;
             кбВыборСтатуса.Items.AddRange(new object[] { "Заселить", "Выселить", "Ожидание", "Отменено" });
-            кбВыборСтатуса.Location = new Point(6, 26);
+            кбВыборСтатуса.Location = new Point(8, 22);
             кбВыборСтатуса.Name = "кбВыборСтатуса";
             кбВыборСтатуса.Size = new Size(168, 23);
             кбВыборСтатуса.TabIndex = 71;
@@ -333,9 +334,9 @@
             // 
             // button2
             // 
-            button2.Location = new Point(754, 171);
+            button2.Location = new Point(746, 171);
             button2.Name = "button2";
-            button2.Size = new Size(180, 23);
+            button2.Size = new Size(188, 23);
             button2.TabIndex = 33;
             button2.Text = "Изменить сведения";
             button2.UseVisualStyleBackColor = true;
@@ -508,12 +509,16 @@
             // 
             // dataGridView1
             // 
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToDeleteRows = false;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(16, 486);
+            dataGridView1.Location = new Point(16, 487);
             dataGridView1.Name = "dataGridView1";
+            dataGridView1.ReadOnly = true;
             dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new Size(956, 142);
+            dataGridView1.Size = new Size(956, 141);
             dataGridView1.TabIndex = 73;
+            dataGridView1.RowHeaderMouseClick += dataGridView1_RowHeaderMouseClick;
             // 
             // button4
             // 
@@ -523,6 +528,7 @@
             button4.TabIndex = 74;
             button4.Text = "Изменить сведения";
             button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
             // 
             // button5
             // 
@@ -532,6 +538,15 @@
             button5.TabIndex = 75;
             button5.Text = "Убрать из заселения";
             button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click;
+            // 
+            // кбНЗГ
+            // 
+            кбНЗГ.FormattingEnabled = true;
+            кбНЗГ.Location = new Point(829, 388);
+            кбНЗГ.Name = "кбНЗГ";
+            кбНЗГ.Size = new Size(121, 23);
+            кбНЗГ.TabIndex = 76;
             // 
             // ЗаселениеГруппы
             // 
@@ -539,6 +554,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
             ClientSize = new Size(988, 640);
+            Controls.Add(кбНЗГ);
             Controls.Add(button5);
             Controls.Add(button4);
             Controls.Add(dataGridView1);
@@ -620,5 +636,6 @@
         private DataGridView dataGridView1;
         private Button button4;
         private Button button5;
+        private ComboBox кбНЗГ;
     }
 }

@@ -98,11 +98,12 @@ namespace Client.Services
                             objOfTable.НДоговора = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
                             objOfTable.НОрг = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
                             objOfTable.НГр = reader.IsDBNull(3) ? 0 : reader.GetInt32(3);
-                            objOfTable.ДатаОплаты = reader.IsDBNull(4) ? "null" : reader.GetDateTime(4).ToShortDateString();
-                            objOfTable.ДатаЗаселения = reader.IsDBNull(5) ? "null" : reader.GetDateTime(5).ToShortDateString();
-                            objOfTable.ДатаВыезда = reader.IsDBNull(6) ? "null" : reader.GetDateTime(6).ToShortDateString();
-                            objOfTable.СтоимостьОплаты = reader.IsDBNull(7) ? 0 : reader.GetInt32(7);
-                            objOfTable.Статус = reader.IsDBNull(8) ? "null" : reader.GetString(8);
+                            objOfTable.НС = reader.IsDBNull(4) ? 0 : reader.GetInt32(4);
+                            objOfTable.ДатаОплаты = reader.IsDBNull(5) ? "null" : reader.GetDateTime(5).ToShortDateString();
+                            objOfTable.ДатаЗаселения = reader.IsDBNull(6) ? "null" : reader.GetDateTime(6).ToShortDateString();
+                            objOfTable.ДатаВыезда = reader.IsDBNull(7) ? "null" : reader.GetDateTime(7).ToShortDateString();
+                            objOfTable.СтоимостьОплаты = reader.IsDBNull(8) ? 0 : reader.GetInt32(8);
+                            objOfTable.Статус = reader.IsDBNull(9) ? "null" : reader.GetString(9);
                             list.Add(objOfTable);
                         }
                     }
@@ -297,24 +298,5 @@ namespace Client.Services
             }
         }
 
-        public async Task<DataTable> GetZaselenieDetails(int НЗаселенияГруппы)
-        {
-            var table = new DataTable();
-
-            using (var con = GetConnection())
-            using (var cmd = con.CreateCommand())
-            {
-                cmd.CommandText = "SELECT * FROM `комнатывзаселениигруппы` WHERE НЗаселенияГруппы = @НЗаселенияГруппы";
-                cmd.Parameters.Add(new MySqlParameter("@НЗаселенияГруппы", MySqlDbType.Int32) { Value = НЗаселенияГруппы });
-                con.Open();
-
-                using (var reader = await cmd.ExecuteReaderAsync())
-                {
-                    table.Load(reader);
-                }
-            }
-
-            return table;
-        }
     }
 }

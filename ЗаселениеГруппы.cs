@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -25,16 +26,17 @@ namespace Client
         private IZGroup _repo;
         string sql;
         int номерЗаселения = 0;
+
+        private IZGroupRoom _repo2;
         int номерЗаселения_КвЗГ = 0;
         Dictionary<string, Control> controlsMapping_КвЗГ;
         DataTable номерSource_КвЗГ;
 
-        bool isDataLoadingNow = false;
-
-        //новые поля
         int selectedValue;
         Dictionary<string, Control> controlsMapping;
         DataTable номерSource;
+
+        int index = 0;
 
         private void LoadCombo(ComboBoxDataForFill obj, ComboBox sender)
         {
@@ -96,8 +98,10 @@ namespace Client
         private void ЗаселениеГруппы_Load(object sender, EventArgs e)
         {
             _repo = new RZGroup();
+            _repo2 = new RZGroupRoom();
 
             checkBox1.Checked = true;
+            кбНЗГ.Visible = false;
             controlsMapping = new Dictionary<string, Control>
                     {
                         { "НДоговора", кбНДоговора },
@@ -117,15 +121,27 @@ namespace Client
             ComboBoxDataForFill Гостиница = new ComboBoxDataForFill(sql, "Название", "НГ");
             LoadCombo(Гостиница, кбНГ);
 
-            int НГ = (int)кбНГ.SelectedValue;
+            int? НГ = (int?)(кбНГ.SelectedValue ?? 0);
+
+            if (НГ == 0)
+            {
+                MessageBox.Show("Данные для гостиницы отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
 
             sql = "SELECT * FROM `Корпус` WHERE НГ=@НГ";
             ComboBoxDataForFill Корпус = new ComboBoxDataForFill(sql, "НК", "НК");
             Корпус.paramsForSQLQuery.Add(new MySqlParameter("@НГ", MySqlDbType.Int32) { Value = НГ });
             LoadCombo(Корпус, кбНК);
 
-            //int НК = Convert.ToInt32(кбНК.Text);
-            int НК = (int)кбНК.SelectedValue;
+            int? НК = (int?)(кбНК.SelectedValue ?? 0);
+
+            if (НК == 0)
+            {
+                MessageBox.Show("Данные для корпуса отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
             sql = "SELECT * FROM `ЭтажиИКорпусы` WHERE НК=@НК";
             ComboBoxDataForFill Этаж = new ComboBoxDataForFill(sql, "НЭ", "НЭ");
             Этаж.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
@@ -135,14 +151,37 @@ namespace Client
             ComboBoxDataForFill Вместимость = new ComboBoxDataForFill(sql, "Вместимость", "Вместимость");
             LoadCombo(Вместимость, кбВместимостьКомнаты);
 
-            int НЭ = (int)кбНЭ.SelectedValue;
-            int ВместимостьКомнаты = (int)кбВместимостьКомнаты.SelectedValue;
+            int? НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
+
+            if (НЭ == 0)
+            {
+                MessageBox.Show("Данные для этажей отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+            int? ВместимостьКомнаты = ((int?)(кбВместимостьКомнаты.SelectedValue) ?? 0);
+
+            if (ВместимостьКомнаты == 0)
+            {
+                MessageBox.Show("Данные для вместимости комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+
             sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость AND Доступность='Да'";
-            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
+            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НКомнаты");
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@Вместимость", MySqlDbType.Int32) { Value = ВместимостьКомнаты });
             LoadCombo(Комната, кбНКомнаты);
+
+            int? НКомнаты = (int?)(кбНКомнаты.SelectedValue ?? 0);
+
+            if (НКомнаты == 0)
+            {
+                MessageBox.Show("Данные для комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
 
             if (кбНКомнаты.DataSource is DataTable dataTable)
             {
@@ -242,6 +281,18 @@ namespace Client
                 кбВыборСтатуса.Enabled = false;
                 кбНЗаселенияГруппы.Enabled = false;
 
+                //нижняя половина формы
+                dataGridView1.Enabled = false;
+                кбНГ.Enabled = false;
+                кбНК.Enabled = false;
+                кбНЭ.Enabled = false;
+                кбНКомнаты.Enabled = false;
+                кбВместимостьКомнаты.Enabled = false;
+                tbRoomPrice.Enabled = false;
+                button3.Enabled = false;
+                button4.Enabled = false;
+                button5.Enabled = false;
+
                 // Загружаем список договоров
                 sql = "SELECT * FROM ДоговорСОрганизацией";
                 ComboBoxDataForFill ДоговорСОрганизацией = new ComboBoxDataForFill(sql, "НДоговора", "НДоговора");
@@ -296,6 +347,18 @@ namespace Client
                 кбВыборСтатуса.Enabled = true;
                 кбНЗаселенияГруппы.Enabled = true;
 
+                //нижняя половина формы
+                dataGridView1.Enabled = true;
+                кбНГ.Enabled = true;
+                кбНК.Enabled = true;
+                кбНЭ.Enabled = true;
+                кбНКомнаты.Enabled = true;
+                кбВместимостьКомнаты.Enabled = true;
+                tbRoomPrice.Enabled = true;
+                button3.Enabled = true;
+                button4.Enabled = true;
+                button5.Enabled = true;
+
                 try
                 {
 
@@ -333,46 +396,50 @@ namespace Client
                     Сотрудник.paramsForSQLQuery.Add(new MySqlParameter("@НЗаселенияГруппы", MySqlDbType.Int32) { Value = номерЗаселения });
                     LoadCombo(Сотрудник, кбНС);
 
-                    isDataLoadingNow = true;
                     SetControlsFromDataRow(номерЗаселения, номерSource, controlsMapping);
-                    isDataLoadingNow = false;
 
+                    // Работаем со второй частью формы - комнаты в заселении группы
                     sql = $"SELECT * FROM КомнатыВЗаселенииГруппы";
                     ComboBoxDataForFill НомерЗаселения_КвЗГ = new ComboBoxDataForFill(sql, "НЗаселенияГруппы", "НЗаселенияГруппы");
-                    LoadCombo(НомерЗаселения_КвЗГ, кбНЗаселенияГруппы);
+                    LoadCombo(НомерЗаселения_КвЗГ, кбНЗГ);
 
-                    if (кбНЗаселенияГруппы.SelectedValue != null)
+                    if (кбНЗГ.SelectedValue != null)
                     {
-                        номерЗаселения_КвЗГ = (int)кбНЗаселенияГруппы.SelectedValue;
-                        номерSource_КвЗГ = кбНЗаселенияГруппы.DataSource as DataTable;
-                        controlsMapping_КвЗГ = new Dictionary<string, Control>
+                        bool найденоСоответствие = false;
+                        foreach (var item in кбНЗГ.Items)
                         {
-                            { "НГ", кбНДоговора },
-                            { "НК", кбНОрг },
-                            { "НЭ", кбНГр },
-                            { "НКомнаты", кбНС }
-                        };
-
-                        SetControlsFromDataRow(номерЗаселения_КвЗГ, номерSource_КвЗГ, controlsMapping_КвЗГ);
-
-                        try
-                        {
-                            // Получение выбранного значения
-                            // Запрос данных из базы данных
-                            var data = await _repo.GetZaselenieDetails(номерЗаселения);
-                            // Привязка данных к DataGridView
-                            dataGridView1.DataSource = data;
+                            DataRowView row = item as DataRowView;
+                            if (row != null && row["НЗаселенияГруппы"].ToString() == кбНЗаселенияГруппы.SelectedValue.ToString())
+                            {
+                                найденоСоответствие = true;
+                                break;
+                            }
                         }
-                        catch (Exception ex)
+
+                        if (найденоСоответствие)
                         {
-                            MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            номерЗаселения_КвЗГ = (int)кбНЗаселенияГруппы.SelectedValue;
+                            номерSource_КвЗГ = кбНЗГ.DataSource as DataTable;
+                            controlsMapping_КвЗГ = new Dictionary<string, Control>
+                            {
+                                { "НГ", кбНГ },
+                                { "НК", кбНК },
+                                { "НЭ", кбНЭ },
+                                { "НКомнаты", кбНКомнаты }
+                            };
+
+                            LoadDataIntoDataGridView();
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Комнаты в этом заселении группы отсутствуют. Данные не были загружены в таблицу", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                     else
                     {
-                        MessageBox.Show($"Комнаты в заселении №{кбНЗаселенияГруппы.Text} отсутствуют. Данные не были загружены в таблицу", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        НомерЗаселения.sql = $"SELECT * FROM ЗаселениеГруппы";
-                        LoadCombo(НомерЗаселения, кбНЗаселенияГруппы);
+                        MessageBox.Show($"Комнаты в этом заселении группы отсутствуют. Данные не были загружены в таблицу", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                        sql = $"SELECT * FROM ЗаселениеГруппы";
                     }
                 }
                 catch
@@ -436,16 +503,6 @@ namespace Client
             }
         }
 
-        private void тбДатаЗаселения_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void тбДатаВыезда_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void кбНДоговора_SelectionChangeCommitted(object sender, EventArgs e)
         {
             int номерДоговора = (int)кбНДоговора.SelectedValue;
@@ -465,14 +522,14 @@ namespace Client
             Группы.paramsForSQLQuery.Add(new MySqlParameter("@НОрг", MySqlDbType.Int32) { Value = номерОрганизации });
             LoadCombo(Группы, кбНГр);
 
-            isDataLoadingNow = true;
+
             SetControlsFromDataRow(номерДоговора, номерSource, controlsMapping);
-            isDataLoadingNow = false;
 
         }
 
         private async void кбНЗаселенияГруппы_SelectionChangeCommitted(object sender, EventArgs e)
         {
+            dataGridView1.DataSource = null;
             номерЗаселения = (int)кбНЗаселенияГруппы.SelectedValue;
             //номерSource = кбНЗаселенияГруппы.DataSource as DataTable;
 
@@ -503,21 +560,51 @@ namespace Client
             Сотрудник.paramsForSQLQuery.Add(new MySqlParameter("@НЗаселенияГруппы", MySqlDbType.Int32) { Value = номерЗаселения });
             LoadCombo(Сотрудник, кбНС);
 
-            isDataLoadingNow = true;
             SetControlsFromDataRow(номерЗаселения, номерSource, controlsMapping);
-            isDataLoadingNow = false;
 
-            try
+            //Работаем со второй частью формы 
+
+            sql = $"SELECT * FROM КомнатыВЗаселенииГруппы";
+            ComboBoxDataForFill НомерЗаселения_КвЗГ = new ComboBoxDataForFill(sql, "НЗаселенияГруппы", "НЗаселенияГруппы");
+            LoadCombo(НомерЗаселения_КвЗГ, кбНЗГ);
+
+            if (кбНЗГ.SelectedValue != null)
             {
-                // Получение выбранного значения
-                // Запрос данных из базы данных
-                var data = await _repo.GetZaselenieDetails(номерЗаселения);
-                // Привязка данных к DataGridView
-                dataGridView1.DataSource = data;
+                bool найденоСоответствие = false;
+                foreach (var item in кбНЗГ.Items)
+                {
+                    DataRowView row = item as DataRowView;
+                    if (row != null && row["НЗаселенияГруппы"].ToString() == кбНЗаселенияГруппы.SelectedValue.ToString())
+                    {
+                        найденоСоответствие = true;
+                        break;
+                    }
+                }
+
+                if (найденоСоответствие)
+                {
+                    номерЗаселения_КвЗГ = (int)кбНЗаселенияГруппы.SelectedValue;
+                    номерSource_КвЗГ = кбНЗГ.DataSource as DataTable;
+                    controlsMapping_КвЗГ = new Dictionary<string, Control>
+                    {
+                        { "НГ", кбНГ },
+                        { "НК", кбНК },
+                        { "НЭ", кбНЭ },
+                        { "НКомнаты", кбНКомнаты }
+                    };
+
+                    LoadDataIntoDataGridView();
+                }
+                else
+                {
+                    MessageBox.Show($"Комнаты в этом заселении группы отсутствуют. Данные не были загружены в таблицу", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Комнаты в этом заселении группы отсутствуют. Данные не были загружены в таблицу", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                sql = $"SELECT * FROM ЗаселениеГруппы";
             }
 
         }
@@ -563,9 +650,7 @@ namespace Client
                 Сотрудник.paramsForSQLQuery.Add(new MySqlParameter("@НЗаселенияГруппы", MySqlDbType.Int32) { Value = номерЗаселения });
                 LoadCombo(Сотрудник, кбНС);
 
-                isDataLoadingNow = true;
                 SetControlsFromDataRow(номерЗаселения, номерSource, controlsMapping);
-                isDataLoadingNow = false;
             }
             else
             {
@@ -624,15 +709,27 @@ namespace Client
 
         private void кбНГ_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            int НГ = (int)кбНГ.SelectedValue;
+            int? НГ = (int?)(кбНГ.SelectedValue ?? 0);
+
+            if (НГ == 0)
+            {
+                MessageBox.Show("Данные для гостиницы отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
 
             sql = "SELECT * FROM `Корпус` WHERE НГ=@НГ";
             ComboBoxDataForFill Корпус = new ComboBoxDataForFill(sql, "НК", "НК");
             Корпус.paramsForSQLQuery.Add(new MySqlParameter("@НГ", MySqlDbType.Int32) { Value = НГ });
             LoadCombo(Корпус, кбНК);
 
-            //int НК = Convert.ToInt32(кбНК.Text);
-            int НК = (int)кбНК.SelectedValue;
+            int? НК = (int?)(кбНК.SelectedValue ?? 0);
+
+            if (НК == 0)
+            {
+                MessageBox.Show("Данные для корпуса отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
             sql = "SELECT * FROM `ЭтажиИКорпусы` WHERE НК=@НК";
             ComboBoxDataForFill Этаж = new ComboBoxDataForFill(sql, "НЭ", "НЭ");
             Этаж.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
@@ -642,14 +739,36 @@ namespace Client
             ComboBoxDataForFill Вместимость = new ComboBoxDataForFill(sql, "Вместимость", "Вместимость");
             LoadCombo(Вместимость, кбВместимостьКомнаты);
 
-            int НЭ = (int)кбНЭ.SelectedValue;
-            int ВместимостьКомнаты = (int)кбВместимостьКомнаты.SelectedValue;
+            int? НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
+
+            if (НЭ == 0)
+            {
+                MessageBox.Show("Данные для этажей отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+            int? ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
+
+            if (ВместимостьКомнаты == 0)
+            {
+                MessageBox.Show("Данные для вместимости комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
             sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость AND Доступность='Да'";
-            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
+            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НКомнаты");
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@Вместимость", MySqlDbType.Int32) { Value = ВместимостьКомнаты });
             LoadCombo(Комната, кбНКомнаты);
+
+            int? НКомнаты = (int?)(кбНКомнаты.SelectedValue ?? 0);
+
+            if (НКомнаты == 0)
+            {
+                MessageBox.Show("Данные для комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
 
             if (кбНКомнаты.DataSource is DataTable dataTable)
             {
@@ -685,6 +804,12 @@ namespace Client
         {
             int? НК = (int?)(кбНК.SelectedValue ?? 0);
 
+            if (НК == 0)
+            {
+                MessageBox.Show("Данные для корпуса отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
             sql = "SELECT * FROM `ЭтажиИКорпусы` WHERE НК=@НК";
             ComboBoxDataForFill Этаж = new ComboBoxDataForFill(sql, "НЭ", "НЭ");
             Этаж.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
@@ -694,14 +819,36 @@ namespace Client
             ComboBoxDataForFill Вместимость = new ComboBoxDataForFill(sql, "Вместимость", "Вместимость");
             LoadCombo(Вместимость, кбВместимостьКомнаты);
 
-            int НЭ = (int)кбНЭ.SelectedValue;
-            int ВместимостьКомнаты = (int)кбВместимостьКомнаты.SelectedValue;
+            int? НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
+
+            if (НЭ == 0)
+            {
+                MessageBox.Show("Данные для этажей отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+            int? ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
+
+            if (ВместимостьКомнаты == 0)
+            {
+                MessageBox.Show("Данные для вместимости комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
             sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость AND Доступность='Да'";
-            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
+            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НКомнаты");
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@Вместимость", MySqlDbType.Int32) { Value = ВместимостьКомнаты });
             LoadCombo(Комната, кбНКомнаты);
+
+            int? НКомнаты = (int?)(кбНКомнаты.SelectedValue ?? 0);
+
+            if (НКомнаты == 0)
+            {
+                MessageBox.Show("Данные для комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
 
             if (кбНКомнаты.DataSource is DataTable dataTable)
             {
@@ -736,19 +883,47 @@ namespace Client
         private void кбНЭ_SelectionChangeCommitted(object sender, EventArgs e)
         {
             int? НК = (int?)(кбНК.SelectedValue ?? 0);
+
+            if (НК == 0)
+            {
+                MessageBox.Show("Данные для корпуса отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
             int? НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
+
+            if (НЭ == 0)
+            {
+                MessageBox.Show("Данные для этажей отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
 
             sql = "SELECT DISTINCT Вместимость FROM `Комната`";
             ComboBoxDataForFill Вместимость = new ComboBoxDataForFill(sql, "Вместимость", "Вместимость");
             LoadCombo(Вместимость, кбВместимостьКомнаты);
 
-            int ВместимостьКомнаты = (int)кбВместимостьКомнаты.SelectedValue;
+            int? ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
+
+            if (ВместимостьКомнаты == 0)
+            {
+                MessageBox.Show("Данные для вместимости комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
             sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость AND Доступность='Да'";
-            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
+            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НКомнаты");
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@Вместимость", MySqlDbType.Int32) { Value = ВместимостьКомнаты });
             LoadCombo(Комната, кбНКомнаты);
+
+            int? НКомнаты = (int?)(кбНКомнаты.SelectedValue ?? 0);
+
+            if (НКомнаты == 0)
+            {
+                MessageBox.Show("Данные для комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
 
             if (кбНКомнаты.DataSource is DataTable dataTable)
             {
@@ -783,8 +958,28 @@ namespace Client
         private void кбВместимостьКомнаты_SelectionChangeCommitted(object sender, EventArgs e)
         {
             int? НК = (int?)(кбНК.SelectedValue ?? 0);
+
+            if (НК == 0)
+            {
+                MessageBox.Show("Данные для корпуса отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
             int? НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
+
+            if (НЭ == 0)
+            {
+                MessageBox.Show("Данные для этажей отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
             int? ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
+
+            if (ВместимостьКомнаты == 0)
+            {
+                MessageBox.Show("Данные для вместимости комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
 
             sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ AND Вместимость=@Вместимость AND Доступность='Да'";
             ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НЭ");
@@ -792,6 +987,14 @@ namespace Client
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
             Комната.paramsForSQLQuery.Add(new MySqlParameter("@Вместимость", MySqlDbType.Int32) { Value = ВместимостьКомнаты });
             LoadCombo(Комната, кбНКомнаты);
+
+            int? НКомнаты = (int?)(кбНКомнаты.SelectedValue ?? 0);
+
+            if (НКомнаты == 0)
+            {
+                MessageBox.Show("Данные для комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
 
             if (кбНКомнаты.DataSource is DataTable dataTable)
             {
@@ -823,9 +1026,416 @@ namespace Client
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private async void button3_Click(object sender, EventArgs e)
         {
+            try
+            {
 
+                if (кбНЗаселенияГруппы.SelectedValue != null)
+                {
+                    кбНЗГ.SelectedValue = кбНЗаселенияГруппы.SelectedValue;
+                    номерЗаселения_КвЗГ = (int)кбНЗаселенияГруппы.SelectedValue;
+                    ZGroupRoom current = new ZGroupRoom((int)кбНЗаселенияГруппы.SelectedValue, (int)кбНГ.SelectedValue, Convert.ToInt32(кбНК.SelectedValue),
+                                                    Convert.ToInt32(кбНЭ.SelectedValue), Convert.ToInt32(кбНКомнаты.Text));
+
+                    Result<int> result;
+                    result = await _repo2.Add(current);
+
+                    if (result)
+                    {
+                        MessageBox.Show($"Комната №{кбНКомнаты.Text} добавлена\n" +
+                            $"в заселение № {кбНЗаселенияГруппы.SelectedValue} группы №{кбНГр.Text}\n", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        //перерисовка таблицы
+                        try
+                        {
+                            var data = await _repo2.GetByRequest((int)кбНЗаселенияГруппы.SelectedValue);
+                            dataGridView1.DataSource = data;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+
+                    }
+                    if (!result)
+                    {
+                        MessageBox.Show($"Ошибка бронирования комнаты: " + result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Ошибка: сначала создайте запись заселения группы перед бронированием комнат!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Вы не заполнили все поля формы!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async void button4_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (кбНЗГ.SelectedValue != null)
+                {
+
+                    ZGroupRoom current = new ZGroupRoom((int)кбНЗаселенияГруппы.SelectedValue, (int)кбНГ.SelectedValue, Convert.ToInt32(кбНК.SelectedValue),
+                                                                            Convert.ToInt32(кбНЭ.SelectedValue), Convert.ToInt32(кбНКомнаты.Text));
+
+                    Result<int> result;
+                    result = await _repo2.Update(current);
+
+                    if (result)
+                    {
+                        MessageBox.Show($"Комната №{кбНКомнаты.Text} в заселении №{кбНЗаселенияГруппы.SelectedValue} группы №{кбНГр.Text} успешно изменена!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        //перерисовка таблицы
+                        try
+                        {
+                            var data = await _repo2.GetByRequest(номерЗаселения_КвЗГ);
+                            dataGridView1.DataSource = data;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    if (!result)
+                    {
+                        MessageBox.Show("Ошибка обновления данных: " + result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                }
+                else
+                {
+                    MessageBox.Show("Ошибка: отсутствует запись о бронировании комнаты по номеру заселения группы!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Вы не заполнили все поля формы!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async void button5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (кбНЗГ.SelectedValue != null)
+                {
+                    ZGroupRoom current = new ZGroupRoom((int)кбНЗаселенияГруппы.SelectedValue, (int)кбНГ.SelectedValue, Convert.ToInt32(кбНК.SelectedValue),
+                                                        Convert.ToInt32(кбНЭ.SelectedValue), Convert.ToInt32(кбНКомнаты.Text));
+
+                    Result<int> result;
+                    result = await _repo2.Remove((int)кбНЗаселенияГруппы.SelectedValue);
+
+                    if (result)
+                    {
+                        MessageBox.Show($"Комната №{кбНКомнаты.Text} из заселения №{кбНЗаселенияГруппы.SelectedValue} группы №{кбНГр.SelectedValue}\nуспешно убрана!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        //перерисовка таблицы
+                        try
+                        {
+                            var data = await _repo2.GetByRequest(номерЗаселения_КвЗГ);
+                            dataGridView1.DataSource = data;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    if (!result)
+                    {
+                        MessageBox.Show(result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Ошибка: отсутствует запись о бронировании комнаты по номеру заселения группы!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Вы не заполнили все поля формы!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        async void LoadDataIntoDataGridView()
+        {
+            sql = "SELECT * FROM `Корпус`";
+            ComboBoxDataForFill Корпус = new ComboBoxDataForFill(sql, "НК", "НК");
+            LoadCombo(Корпус, кбНК);
+
+            sql = "SELECT * FROM `ЭтажиИКорпусы`";
+            ComboBoxDataForFill Этаж = new ComboBoxDataForFill(sql, "НЭ", "НЭ");
+            LoadCombo(Этаж, кбНЭ);
+
+            sql = "SELECT * FROM `Комната`";
+            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НКомнаты");
+            LoadCombo(Комната, кбНКомнаты);
+
+            sql = "SELECT DISTINCT НКомнаты, Вместимость FROM `Комната`";
+            ComboBoxDataForFill Вместимость = new ComboBoxDataForFill(sql, "Вместимость", "НКомнаты");
+            LoadCombo(Вместимость, кбВместимостьКомнаты);
+
+            SetControlsFromDataRow(номерЗаселения_КвЗГ, номерSource_КвЗГ, controlsMapping_КвЗГ);
+
+
+            int? НГ = (int?)(кбНГ.SelectedValue ?? 0);
+
+            if (НГ == 0)
+            {
+                MessageBox.Show("Данные для гостиницы отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+            int? НК = (int?)(кбНК.SelectedValue ?? 0);
+
+            if (НК == 0)
+            {
+                MessageBox.Show("Данные для корпуса отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+            int? НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
+
+            if (НЭ == 0)
+            {
+                MessageBox.Show("Данные для этажей отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+            int? ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
+
+            if (ВместимостьКомнаты == 0)
+            {
+                MessageBox.Show("Данные для вместимости комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+            int? НКомнаты = (int?)(кбНКомнаты.SelectedValue ?? 0);
+
+            if (НКомнаты == 0)
+            {
+                MessageBox.Show("Данные для комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+            sql = "SELECT * FROM `Корпус` WHERE НГ=@НГ";
+            Корпус.sql = sql;
+            Корпус.paramsForSQLQuery.Add(new MySqlParameter("@НГ", MySqlDbType.Int32) { Value = НГ });
+            LoadCombo(Корпус, кбНК);
+
+            кбНК.SelectedValue = НК;
+
+            НК = (int?)(кбНК.SelectedValue ?? 0);
+
+            if (НК == 0)
+            {
+                MessageBox.Show("Данные для корпуса отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+
+            sql = "SELECT * FROM `ЭтажиИКорпусы` WHERE НК=@НК";
+            Этаж.sql = sql;
+            Этаж.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            LoadCombo(Этаж, кбНЭ);
+
+            кбНЭ.SelectedValue = НЭ;
+
+            НЭ = (int?)(кбНЭ.SelectedValue ?? 0);
+
+            if (НЭ == 0)
+            {
+                MessageBox.Show("Данные для этажей отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ";
+            Комната.sql = sql;
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
+            LoadCombo(Комната, кбНКомнаты);
+
+            кбНКомнаты.SelectedValue = НКомнаты;
+
+            НКомнаты = (int?)(кбНКомнаты.SelectedValue ?? 0);
+
+            if (НКомнаты == 0)
+            {
+                MessageBox.Show("Данные для комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+            sql = "SELECT DISTINCT НКомнаты, Вместимость FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ";
+            Вместимость.sql = sql;
+            Вместимость.paramsForSQLQuery.Add(new MySqlParameter("@НКомнаты", MySqlDbType.Int32) { Value = НКомнаты });
+            Вместимость.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            Вместимость.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
+            LoadCombo(Вместимость, кбВместимостьКомнаты);
+
+            кбВместимостьКомнаты.SelectedValue = НКомнаты;
+
+            ВместимостьКомнаты = (int?)(кбВместимостьКомнаты.SelectedValue ?? 0);
+
+            if (ВместимостьКомнаты == 0)
+            {
+                MessageBox.Show("Данные для вместимости комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+            if (кбНКомнаты.DataSource is DataTable dataTable)
+            {
+                float pricePerNight;
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    int? drНКоманты = Convert.ToInt32(row["НКомнаты"]);
+                    int? drНК = Convert.ToInt32(row["НК"]);
+                    int? drНЭ = Convert.ToInt32(row["НЭ"]);
+                    if (drНКоманты == Convert.ToInt32(кбНКомнаты.Text)
+                        & drНК == Convert.ToInt32(кбНК.Text)
+                        & drНЭ == Convert.ToInt32(кбНЭ.Text))
+                    {
+                        if (row["Цена1Ночь"] != DBNull.Value)
+                        {
+                            pricePerNight = (float)row["Цена1Ночь"];
+                            tbRoomPrice.Text = pricePerNight.ToString();
+                            break;
+                        }
+                        else
+                            pricePerNight = 0;
+                    }
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("Ошибка вывода цены комнаты за одну ночь: DataSource не является DataTable.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            try
+            {
+                // Получение выбранного значения
+                // Запрос данных из базы данных
+                var data = await _repo2.GetByRequest(номерЗаселения_КвЗГ);
+                // Привязка данных к DataGridView
+                dataGridView1.DataSource = data;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            DataGridViewRow selectedRow = dataGridView1.Rows[e.RowIndex];
+
+            int? НГ = selectedRow.Cells["НГ"].Value as int?;
+
+            if (НГ == null || НГ == 0)
+            {
+                MessageBox.Show("Данные для гостиницы отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            кбНГ.SelectedValue = НГ;
+
+            sql = "SELECT * FROM `Корпус` WHERE НГ=@НГ";
+            ComboBoxDataForFill Корпус = new ComboBoxDataForFill(sql, "НК", "НК");
+            Корпус.paramsForSQLQuery.Add(new MySqlParameter("@НГ", MySqlDbType.Int32) { Value = НГ });
+            LoadCombo(Корпус, кбНК);
+
+            int? НК = selectedRow.Cells["НК"].Value as int?;
+
+            if (НК == null || НК == 0)
+            {
+                MessageBox.Show("Данные для корпуса отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            кбНК.SelectedValue = НК;
+
+            sql = "SELECT * FROM `ЭтажиИКорпусы` WHERE НК=@НК";
+            ComboBoxDataForFill Этаж = new ComboBoxDataForFill(sql, "НЭ", "НЭ");
+            Этаж.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            LoadCombo(Этаж, кбНЭ);
+
+            sql = "SELECT DISTINCT НКомнаты, Вместимость FROM `Комната`";
+            ComboBoxDataForFill Вместимость = new ComboBoxDataForFill(sql, "Вместимость", "НКомнаты");
+            LoadCombo(Вместимость, кбВместимостьКомнаты);
+
+            int? НЭ = selectedRow.Cells["НЭ"].Value as int?;
+
+            if (НЭ == null || НЭ == 0)
+            {
+                MessageBox.Show("Данные для этажей отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            кбНЭ.SelectedValue = НЭ;
+
+            sql = "SELECT * FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ";
+            ComboBoxDataForFill Комната = new ComboBoxDataForFill(sql, "НКомнаты", "НКомнаты");
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            Комната.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
+            LoadCombo(Комната, кбНКомнаты);
+
+            int? НКомнаты = selectedRow.Cells["НКомнаты"].Value as int?;
+
+            if (НКомнаты == null || НКомнаты == 0)
+            {
+                MessageBox.Show("Данные для комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            кбНКомнаты.SelectedValue = НКомнаты;
+
+            sql = "SELECT DISTINCT НКомнаты, Вместимость FROM `Комната` WHERE НК=@НК AND НЭ=@НЭ";
+            Вместимость.sql = sql;
+            Вместимость.paramsForSQLQuery.Add(new MySqlParameter("@НКомнаты", MySqlDbType.Int32) { Value = НКомнаты });
+            Вместимость.paramsForSQLQuery.Add(new MySqlParameter("@НК", MySqlDbType.Int32) { Value = НК });
+            Вместимость.paramsForSQLQuery.Add(new MySqlParameter("@НЭ", MySqlDbType.Int32) { Value = НЭ });
+            LoadCombo(Вместимость, кбВместимостьКомнаты);
+
+            if (кбВместимостьКомнаты.Text.Equals(""))
+            {
+                MessageBox.Show("Данные для вместимости комнат отсутствуют. Продолжение невозможно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // Прекращаем выполнение
+            }
+
+            кбВместимостьКомнаты.SelectedValue = НКомнаты;
+
+            if (кбНКомнаты.DataSource is DataTable dataTable)
+            {
+                float pricePerNight = 0;
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    int? drНКомнаты = row["НКомнаты"] as int?;
+                    int? drНК = row["НК"] as int?;
+                    int? drНЭ = row["НЭ"] as int?;
+                    if (drНКомнаты == НКомнаты && drНК == НК && drНЭ == НЭ)
+                    {
+                        pricePerNight = row["Цена1Ночь"] != DBNull.Value ? Convert.ToSingle(row["Цена1Ночь"]) : 0;
+                        tbRoomPrice.Text = pricePerNight.ToString();
+                        break;
+                    }
+                }
+
+                if (pricePerNight == 0)
+                {
+                    MessageBox.Show("Цена комнаты за одну ночь не найдена.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Ошибка вывода цены комнаты за одну ночь: DataSource не является DataTable.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
