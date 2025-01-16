@@ -226,8 +226,10 @@ namespace Client
                 dataGridView1.AllowUserToAddRows = false;
                 dataGridView1.AllowUserToDeleteRows = false;
                 dataGridView1.ReadOnly = true;
+                //начало 'бизнес-формы'
                 comboBox1.Visible = false;
-
+                label5.Visible = false;
+                //конец 'бизнес-формы'
                 button1.Visible = false;
                 button2.Visible = false;
                 clientsButton.Visible = false;
