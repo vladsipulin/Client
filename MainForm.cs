@@ -227,11 +227,22 @@ namespace Client
                 dataGridView1.AllowUserToDeleteRows = false;
                 dataGridView1.ReadOnly = true;
                 //начало 'бизнес-формы'
-                comboBox1.Visible = false;
-                label5.Visible = false;
+                comboBox1.Items.Clear();
+                comboBox1.Items.Add("Заявка на службу быта");
+                comboBox1.Items.Add("Профиль клиента");
+                comboBox1.Items.Add("Статус заявки на заселение");
+                comboBox1.Items.Add("Забронировать номер в гостиинце");
+                comboBox1.Items.Add("Отзыв на заселение");
+                comboBox1.Items.Add("Отзыв на услугу");
                 //конец 'бизнес-формы'
                 button1.Visible = false;
                 button2.Visible = false;
+                button3.Visible = false;
+                button4.Visible = false;
+                button5.Visible = false;
+                button6.Visible = false;
+                button7.Visible = false;
+                button8.Visible = false;
                 clientsButton.Visible = false;
                 показатьГостиничныеКомплексы.Visible = false;
                 показатьЗаселениеКлиента.Visible = false;
@@ -302,6 +313,13 @@ namespace Client
                 button7.Visible = false;
                 button8.Visible = false;
 
+                comboBox1.Items.Clear();
+                comboBox1.Items.Add("Управление группами от организаций");
+                comboBox1.Items.Add("Управление договорами с организациями");
+                comboBox1.Items.Add("Управление заявками клиентов на заселения");
+                comboBox1.Items.Add("Провести покупки услуг по заявкам клиентов");
+                comboBox1.Items.Add("Управление заселением групп от организаций");
+
                 показатьГостиничныеКомплексы.Visible = false;
                 показатьЗаселениеКлиента.Visible = false;
                 показатьЗаявкиКлиентов.Visible = false;
@@ -309,7 +327,6 @@ namespace Client
                 panel1.BackColor = Color.Moccasin;
                 label1.BackColor = Color.Moccasin;
                 label2.BackColor = Color.Moccasin;
-                label4.BackColor = Color.Moccasin;
                 label5.BackColor = Color.Moccasin;
                 label6.BackColor = Color.Moccasin;
                 keyLbl.BackColor = Color.Moccasin;
@@ -496,30 +513,79 @@ namespace Client
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedIndex == 0)
+            if(!Equals(lbWhoLogged.Text, "Клиент:"))
             {
-                Группа obj = new Группа();
-                obj.lbWhoLogged.Text = keyLbl.Text;
-                obj.ShowDialog();
+                if (comboBox1.SelectedIndex == 0)
+                {
+                    Группа obj = new Группа();
+                    obj.lbWhoLogged.Text = keyLbl.Text;
+                    obj.ShowDialog();
+                }
+                else if (comboBox1.SelectedIndex == 1)
+                {
+                    Договор obj = new Договор();
+                    obj.lbWhoLogged.Text = keyLbl.Text;
+                    obj.ShowDialog();
+                }
+                else if (comboBox1.SelectedIndex == 2)
+                {
+                    ЗаселениеКлиента obj = new ЗаселениеКлиента();
+                    obj.lbWhoLogged.Text = keyLbl.Text;
+                    obj.ShowDialog();
+                }
+                else if (comboBox1.SelectedIndex == 3)
+                {
+                    УчетПокупокУслугКлиентов obj = new УчетПокупокУслугКлиентов();
+                    obj.lbWhoLogged.Text = keyLbl.Text;
+                    obj.ShowDialog();
+                }
+                else if (comboBox1.SelectedIndex == 4)
+                {
+                    ЗаселениеГруппы obj = new ЗаселениеГруппы();
+                    obj.lbWhoLogged.Text = keyLbl.Text;
+                    obj.ShowDialog();
+                }
             }
-            else if (comboBox1.SelectedIndex == 1)
+            else
             {
-                Договор obj = new Договор();
-                obj.lbWhoLogged.Text = keyLbl.Text;
-                obj.ShowDialog();
+                if (comboBox1.SelectedIndex == 0)
+                {
+                    ReqOnServiceForm rsf = new ReqOnServiceForm();
+                    rsf.lbWhoLogged.Text = keyLbl.Text;
+                    rsf.ShowDialog();
+                }
+                else if (comboBox1.SelectedIndex == 1)
+                {
+                    UserProfile userProfile = new UserProfile();
+                    userProfile.keyLbl.Text = keyLbl.Text;
+                    userProfile.ShowDialog();
+                }
+                else if (comboBox1.SelectedIndex == 2)
+                {
+                    ReqStatusApps rsa = new ReqStatusApps();
+                    rsa.keyLbl.Text = keyLbl.Text;
+                    rsa.ShowDialog();
+                }
+                else if (comboBox1.SelectedIndex == 3)
+                {
+                    ClientQueriesForAppartments queryForApps = new ClientQueriesForAppartments();
+                    queryForApps.lbWhoLogged.Text = keyLbl.Text;
+                    queryForApps.ShowDialog();
+                }
+                else if (comboBox1.SelectedIndex == 4)
+                {
+                    ReviewRoom rsf = new ReviewRoom();
+                    rsf.lbWhoLogged.Text = keyLbl.Text;
+                    rsf.ShowDialog();
+                }
+                else if (comboBox1.SelectedIndex == 5)
+                {
+                    ReviewService rsf = new ReviewService();
+                    rsf.lbWhoLogged.Text = keyLbl.Text;
+                    rsf.ShowDialog();
+                }
             }
-            else if (comboBox1.SelectedIndex == 2)
-            {
-                ЗаселениеКлиента obj = new ЗаселениеКлиента();
-                obj.lbWhoLogged.Text = keyLbl.Text;
-                obj.ShowDialog();
-            }
-            else if (comboBox1.SelectedIndex == 4)
-            {
-                ЗаселениеГруппы obj = new ЗаселениеГруппы();
-                obj.lbWhoLogged.Text = keyLbl.Text;
-                obj.ShowDialog();
-            }
+            
         }
     }
 }
