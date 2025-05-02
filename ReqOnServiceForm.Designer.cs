@@ -2,15 +2,8 @@
 {
     partial class ReqOnServiceForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +15,6 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             кбНСл = new ComboBox();
@@ -38,6 +27,7 @@
             label7 = new Label();
             тбСрокОплаты = new DateTimePicker();
             panel1 = new Panel();
+            dgvSelectedServices = new DataGridView();
             label5 = new Label();
             тбЦенаСлужбы = new TextBox();
             lbWhoLogged = new Label();
@@ -47,6 +37,7 @@
             тбКолво = new TextBox();
             button1 = new Button();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvSelectedServices).BeginInit();
             SuspendLayout();
             // 
             // кбНСл
@@ -56,7 +47,7 @@
             кбНСл.Name = "кбНСл";
             кбНСл.Size = new Size(143, 23);
             кбНСл.TabIndex = 26;
-            кбНСл.SelectionChangeCommitted += кбНСл_SelectionChangeCommitted;
+            кбНСл.Visible = false;
             // 
             // label2
             // 
@@ -66,72 +57,81 @@
             label2.Size = new Size(83, 15);
             label2.TabIndex = 25;
             label2.Text = "Служба быта:";
+            label2.Visible = false;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            label1.Font = new Font("Segoe UI", 20F, FontStyle.Bold, GraphicsUnit.Point);
             label1.ForeColor = Color.MidnightBlue;
             label1.Location = new Point(19, 31);
             label1.Margin = new Padding(10);
             label1.Name = "label1";
-            label1.Size = new Size(375, 32);
+            label1.Size = new Size(422, 37);
             label1.TabIndex = 24;
             label1.Text = "Оформление заявки на услугу";
             // 
             // кбНКл
             // 
             кбНКл.AutoSize = true;
-            кбНКл.Location = new Point(31, 153);
+            кбНКл.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            кбНКл.Location = new Point(439, 275);
             кбНКл.Name = "кбНКл";
-            кбНКл.Size = new Size(95, 15);
+            кбНКл.Size = new Size(122, 21);
             кбНКл.TabIndex = 32;
             кбНКл.Text = "Номер клиента:";
             // 
             // тбНКл
             // 
-            тбНКл.Location = new Point(181, 150);
+            тбНКл.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            тбНКл.Location = new Point(582, 272);
             тбНКл.Name = "тбНКл";
-            тбНКл.Size = new Size(143, 23);
+            тбНКл.Size = new Size(200, 29);
             тбНКл.TabIndex = 31;
             // 
             // label9
             // 
             label9.AutoSize = true;
-            label9.Font = new Font("Segoe UI", 9F, FontStyle.Bold | FontStyle.Underline, GraphicsUnit.Point);
-            label9.Location = new Point(33, 305);
+            label9.Font = new Font("Segoe UI", 12F, FontStyle.Bold | FontStyle.Underline, GraphicsUnit.Point);
+            label9.Location = new Point(33, 412);
             label9.Name = "label9";
-            label9.Size = new Size(127, 15);
+            label9.Size = new Size(179, 21);
             label9.TabIndex = 30;
             label9.Text = "Сумма за услугу, руб:";
             // 
             // тбСумма
             // 
-            тбСумма.Location = new Point(181, 302);
+            тбСумма.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            тбСумма.Location = new Point(218, 409);
             тбСумма.Name = "тбСумма";
-            тбСумма.Size = new Size(143, 23);
+            тбСумма.ReadOnly = true;
+            тбСумма.Size = new Size(200, 29);
             тбСумма.TabIndex = 29;
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(33, 215);
+            label7.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label7.Location = new Point(33, 361);
             label7.Name = "label7";
-            label7.Size = new Size(82, 15);
+            label7.Size = new Size(105, 21);
             label7.TabIndex = 27;
             label7.Text = "Срок оплаты:";
             // 
             // тбСрокОплаты
             // 
-            тбСрокОплаты.Location = new Point(181, 209);
+            тбСрокОплаты.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            тбСрокОплаты.Location = new Point(218, 355);
             тбСрокОплаты.Name = "тбСрокОплаты";
-            тбСрокОплаты.Size = new Size(143, 23);
+            тбСрокОплаты.Size = new Size(200, 29);
             тбСрокОплаты.TabIndex = 28;
             // 
             // panel1
             // 
             panel1.BackColor = Color.LightSteelBlue;
+            panel1.Controls.Add(dgvSelectedServices);
+            panel1.Controls.Add(label4);
             panel1.Controls.Add(label5);
             panel1.Controls.Add(тбЦенаСлужбы);
             panel1.Controls.Add(lbWhoLogged);
@@ -145,8 +145,17 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(687, 187);
+            panel1.Size = new Size(794, 310);
             panel1.TabIndex = 33;
+            // 
+            // dgvSelectedServices
+            // 
+            dgvSelectedServices.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvSelectedServices.Location = new Point(31, 80);
+            dgvSelectedServices.Name = "dgvSelectedServices";
+            dgvSelectedServices.RowTemplate.Height = 40;
+            dgvSelectedServices.Size = new Size(751, 180);
+            dgvSelectedServices.TabIndex = 42;
             // 
             // label5
             // 
@@ -156,6 +165,7 @@
             label5.Size = new Size(85, 15);
             label5.TabIndex = 41;
             label5.Text = "Цена службы:";
+            label5.Visible = false;
             // 
             // тбЦенаСлужбы
             // 
@@ -163,12 +173,13 @@
             тбЦенаСлужбы.Name = "тбЦенаСлужбы";
             тбЦенаСлужбы.Size = new Size(143, 23);
             тбЦенаСлужбы.TabIndex = 40;
+            тбЦенаСлужбы.Visible = false;
             // 
             // lbWhoLogged
             // 
             lbWhoLogged.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lbWhoLogged.AutoSize = true;
-            lbWhoLogged.Location = new Point(407, 18);
+            lbWhoLogged.Location = new Point(501, 18);
             lbWhoLogged.Name = "lbWhoLogged";
             lbWhoLogged.Size = new Size(59, 15);
             lbWhoLogged.TabIndex = 39;
@@ -177,28 +188,31 @@
             // 
             // тбДатаЗаявки
             // 
-            тбДатаЗаявки.Location = new Point(519, 40);
+            тбДатаЗаявки.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            тбДатаЗаявки.Location = new Point(582, 39);
             тбДатаЗаявки.Name = "тбДатаЗаявки";
-            тбДатаЗаявки.Size = new Size(143, 23);
+            тбДатаЗаявки.Size = new Size(200, 29);
             тбДатаЗаявки.TabIndex = 35;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(439, 45);
+            label3.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label3.Location = new Point(462, 44);
             label3.Name = "label3";
-            label3.Size = new Size(74, 15);
+            label3.Size = new Size(99, 21);
             label3.TabIndex = 34;
             label3.Text = "Дата заявки:";
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(33, 260);
+            label4.Location = new Point(33, 280);
             label4.Name = "label4";
             label4.Size = new Size(93, 15);
             label4.TabIndex = 37;
             label4.Text = "Количество, ед:";
+            label4.Visible = false;
             // 
             // тбКолво
             // 
@@ -206,14 +220,15 @@
             тбКолво.Name = "тбКолво";
             тбКолво.Size = new Size(143, 23);
             тбКолво.TabIndex = 36;
-            тбКолво.TextChanged += textBox1_TextChanged;
+            тбКолво.Visible = false;
             // 
             // button1
             // 
             button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button1.Location = new Point(519, 347);
+            button1.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point);
+            button1.Location = new Point(562, 482);
             button1.Name = "button1";
-            button1.Size = new Size(143, 35);
+            button1.Size = new Size(231, 50);
             button1.TabIndex = 38;
             button1.Text = "Оформить заявку";
             button1.UseVisualStyleBackColor = true;
@@ -223,9 +238,8 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(687, 394);
+            ClientSize = new Size(794, 548);
             Controls.Add(button1);
-            Controls.Add(label4);
             Controls.Add(panel1);
             Controls.Add(тбКолво);
             Controls.Add(label9);
@@ -239,6 +253,7 @@
             Load += ReqOnService_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvSelectedServices).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -263,5 +278,6 @@
         internal Label lbWhoLogged;
         private Label label5;
         private TextBox тбЦенаСлужбы;
+        private DataGridView dgvSelectedServices;
     }
 }

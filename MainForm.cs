@@ -492,9 +492,9 @@ namespace Client
 
         private void button6_Click(object sender, EventArgs e)
         {
-            ReqOnServiceForm rsf = new ReqOnServiceForm();
-            rsf.lbWhoLogged.Text = keyLbl.Text;
-            rsf.ShowDialog();
+            //ReqOnServiceForm rsf = new ReqOnServiceForm();
+            //rsf.lbWhoLogged.Text = keyLbl.Text;
+            //rsf.ShowDialog();
         }
 
         private void button8_Click(object sender, EventArgs e)
@@ -550,9 +550,9 @@ namespace Client
             {
                 if (comboBox1.SelectedIndex == 0)
                 {
-                    ReqOnServiceForm rsf = new ReqOnServiceForm();
-                    rsf.lbWhoLogged.Text = keyLbl.Text;
-                    rsf.ShowDialog();
+                    //ReqOnServiceForm rsf = new ReqOnServiceForm();
+                    //rsf.lbWhoLogged.Text = keyLbl.Text;
+                    //rsf.ShowDialog();
                 }
                 else if (comboBox1.SelectedIndex == 1)
                 {
