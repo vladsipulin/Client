@@ -55,7 +55,8 @@ namespace Client
                     catch
                     {
                         MessageBox.Show("Добро пожаловать в систему, клиент", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        MainForm mf = new MainForm();
+                        Terminal_MainForm mf = new Terminal_MainForm();
+                        //MainForm mf = new MainForm();
                         mf.lbWhoLogged.Text = "Клиент:";
                         mf.keyLbl.Text = user.НКл.ToString();
                         mf.Show();
@@ -90,8 +91,10 @@ namespace Client
 
         private void AuthorizationForm_Load(object sender, EventArgs e)
         {
-            тбЛогин.Text = "admin";
-            тбПароль.Text = "admin";
+            //тбЛогин.Text = "admin";
+            //тбПароль.Text = "admin";
+            тбЛогин.Text = "sipulin_vi";
+            тбПароль.Text = "123";
         }
     }
 }

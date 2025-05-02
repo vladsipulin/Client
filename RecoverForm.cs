@@ -34,15 +34,17 @@ namespace Client
             {
                 try
                 {
-                    MailAddress from = new MailAddress("vladsipulin@mail.ru", "Гостиничный комплекс");
+                    MailAddress from = new MailAddress("vladsipulin@mail.ru", "База отдыха «Обуховка»");
                     MailAddress to = new MailAddress(clientmail);
                     MailMessage m = new MailMessage(from, to);
                     m.Subject = subject;
                     m.Body = body;
-                    SmtpClient smtp = new SmtpClient("smtp.mail.ru", 587);
-                    smtp.Credentials = new NetworkCredential("vladsipulin@mail.ru", "bPqbjmw61PcTD1NEw6nT");
+                    SmtpClient smtp = new SmtpClient("smtp.mail.ru", 587); 
+                    smtp.Credentials = new NetworkCredential("vladsipulin@mail.ru", "Dx0i5QtBtp1EmzPXE76A");
+                    //smtp.Credentials = new NetworkCredential("vladsipulin@mail.ru", "bPqbjmw61PcTD1NEw6nT");
                     smtp.EnableSsl = true;
                     smtp.Send(m);
+                    MessageBox.Show("Код восстановления успешно отправлен по адресу: " + clientmail, "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch
                 {
@@ -64,7 +66,6 @@ namespace Client
                     string username = result.ФИО;
                     _ur = new UserRecover(mail, username);
                     SendEmail(mail, "Код для восстановления пароля", "Здравствуйте, " + username + ".\nВаш код для восстановления пароля: " + code + "");
-                    MessageBox.Show("Код восстановления успешно отправлен по адресу: " + mail, "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     тбКВ.Enabled = true;
                     тбНП.Enabled = true;
                     changePassBtn.Enabled = true;
