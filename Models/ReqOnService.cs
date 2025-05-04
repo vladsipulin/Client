@@ -19,8 +19,9 @@ namespace Client.Models
         public int RowNumber { get; set; }
         public int НЗаявкиОлд { get; set; }
         public int НКлОлд { get; set; }
+        public bool ПокупкаСовершена { get; set; } 
 
-        public ReqOnService(int НЗаявки = 0, int НСл = 0, DateTime СрокОплаты = default, int НКл = 0, int Количество_Ед = 0, float Сумма = 0, DateTime ДатаЗаявки = default)
+        public ReqOnService(int НЗаявки = 0, int НСл = 0, DateTime СрокОплаты = default, int НКл = 0, int Количество_Ед = 0, float Сумма = 0, DateTime ДатаЗаявки = default, bool ПокупкаСовершена = false)
         {
             this.НЗаявки = НЗаявки;
             this.НСл = НСл;
@@ -29,6 +30,7 @@ namespace Client.Models
             this.Количество_Ед = Количество_Ед;
             this.Сумма = Сумма;
             this.ДатаЗаявки = ДатаЗаявки.ToShortDateString();
+            this.ПокупкаСовершена = ПокупкаСовершена;
         }
 
         /// <summary>

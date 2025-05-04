@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,8 +70,8 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "INSERT INTO ЗаявкаНаУслугу (НЗаявки, НСл, СрокОплаты, НКл, Количество_Ед, Сумма, ДатаЗаявки)" +
-                        " VALUES(@НЗаявки, @НСл, @СрокОплаты, @НКл, @Количество_Ед, @Сумма, @ДатаЗаявки)";
+                    cmd.CommandText = "INSERT INTO ЗаявкаНаУслугу (НЗаявки, НСл, СрокОплаты, НКл, Количество_Ед, Сумма, ДатаЗаявки, ПокупкаСовершена)" +
+                        " VALUES(@НЗаявки, @НСл, @СрокОплаты, @НКл, @Количество_Ед, @Сумма, @ДатаЗаявки, @ПокупкаСовершена)";
 
                     cmd.Parameters.Add(new MySqlParameter("@НЗаявки", MySqlDbType.Int32)
                     { Value = objOfTable.НЗаявки });
@@ -92,6 +93,9 @@ namespace Client.Services
 
                     cmd.Parameters.Add(new MySqlParameter("@ДатаЗаявки", MySqlDbType.Date)
                     { Value = Convert.ToDateTime(objOfTable.ДатаЗаявки) });
+
+                    cmd.Parameters.Add(new MySqlParameter("@ПокупкаСовершена", DbType.Boolean)
+                    { Value = objOfTable.ПокупкаСовершена });
 
                     con.Open();
                     result = await cmd.ExecuteNonQueryAsync();

@@ -32,13 +32,14 @@ namespace Client
         {
             flowLayoutPanel1 = new FlowLayoutPanel();
             BTN_OPEN_SERVICEBOOK = new Button();
-            BTN_OPEN_CALLBACK_FORM = new Button();
+            BTN_OPEN_RETURNPAYMENT = new Button();
             label6 = new Label();
             keyLbl = new Label();
             lbWhoLogged = new Label();
             BTN_OPEN_CART = new Button();
             BTN_RETURN = new Button();
             panel1 = new Panel();
+            BTN_OPEN_CALLBACK_FORM = new Button();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -52,7 +53,7 @@ namespace Client
             flowLayoutPanel1.Location = new Point(0, 0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
             flowLayoutPanel1.Padding = new Padding(200, 0, 100, 0);
-            flowLayoutPanel1.Size = new Size(749, 323);
+            flowLayoutPanel1.Size = new Size(977, 312);
             flowLayoutPanel1.TabIndex = 2;
             flowLayoutPanel1.Visible = false;
             // 
@@ -65,21 +66,21 @@ namespace Client
             BTN_OPEN_SERVICEBOOK.Name = "BTN_OPEN_SERVICEBOOK";
             BTN_OPEN_SERVICEBOOK.Size = new Size(260, 123);
             BTN_OPEN_SERVICEBOOK.TabIndex = 0;
-            BTN_OPEN_SERVICEBOOK.Text = "Заказать услугу";
+            BTN_OPEN_SERVICEBOOK.Text = "Заказать услуги";
             BTN_OPEN_SERVICEBOOK.UseVisualStyleBackColor = false;
             BTN_OPEN_SERVICEBOOK.Click += BTN_OPEN_SERVICEBOOK_Click;
             // 
-            // BTN_OPEN_CALLBACK_FORM
+            // BTN_OPEN_RETURNPAYMENT
             // 
-            BTN_OPEN_CALLBACK_FORM.BackColor = Color.White;
-            BTN_OPEN_CALLBACK_FORM.FlatAppearance.BorderColor = SystemColors.Control;
-            BTN_OPEN_CALLBACK_FORM.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold, GraphicsUnit.Point);
-            BTN_OPEN_CALLBACK_FORM.Location = new Point(330, 0);
-            BTN_OPEN_CALLBACK_FORM.Name = "BTN_OPEN_CALLBACK_FORM";
-            BTN_OPEN_CALLBACK_FORM.Size = new Size(260, 123);
-            BTN_OPEN_CALLBACK_FORM.TabIndex = 1;
-            BTN_OPEN_CALLBACK_FORM.Text = "Обратная связь";
-            BTN_OPEN_CALLBACK_FORM.UseVisualStyleBackColor = false;
+            BTN_OPEN_RETURNPAYMENT.BackColor = Color.White;
+            BTN_OPEN_RETURNPAYMENT.FlatAppearance.BorderColor = SystemColors.Control;
+            BTN_OPEN_RETURNPAYMENT.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            BTN_OPEN_RETURNPAYMENT.Location = new Point(558, 0);
+            BTN_OPEN_RETURNPAYMENT.Name = "BTN_OPEN_RETURNPAYMENT";
+            BTN_OPEN_RETURNPAYMENT.Size = new Size(261, 123);
+            BTN_OPEN_RETURNPAYMENT.TabIndex = 1;
+            BTN_OPEN_RETURNPAYMENT.Text = "Возврат средств за услуги";
+            BTN_OPEN_RETURNPAYMENT.UseVisualStyleBackColor = false;
             // 
             // label6
             // 
@@ -88,7 +89,7 @@ namespace Client
             label6.BackColor = Color.LightSteelBlue;
             label6.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
             label6.ForeColor = SystemColors.ActiveCaptionText;
-            label6.Location = new Point(575, 36);
+            label6.Location = new Point(803, 36);
             label6.Name = "label6";
             label6.Size = new Size(108, 15);
             label6.TabIndex = 10;
@@ -101,7 +102,7 @@ namespace Client
             keyLbl.BackColor = Color.LightSteelBlue;
             keyLbl.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
             keyLbl.ForeColor = SystemColors.ActiveCaptionText;
-            keyLbl.Location = new Point(689, 36);
+            keyLbl.Location = new Point(917, 36);
             keyLbl.Name = "keyLbl";
             keyLbl.Size = new Size(44, 15);
             keyLbl.TabIndex = 11;
@@ -122,11 +123,11 @@ namespace Client
             BTN_OPEN_CART.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             BTN_OPEN_CART.BackColor = Color.White;
             BTN_OPEN_CART.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            BTN_OPEN_CART.Location = new Point(624, 25);
+            BTN_OPEN_CART.Location = new Point(822, 25);
             BTN_OPEN_CART.Name = "BTN_OPEN_CART";
-            BTN_OPEN_CART.Size = new Size(90, 55);
+            BTN_OPEN_CART.Size = new Size(120, 55);
             BTN_OPEN_CART.TabIndex = 13;
-            BTN_OPEN_CART.Text = "Корзина";
+            BTN_OPEN_CART.Text = "Подтвердить заказ";
             BTN_OPEN_CART.UseVisualStyleBackColor = false;
             BTN_OPEN_CART.Click += BTN_OPEN_CART_Click;
             // 
@@ -145,18 +146,32 @@ namespace Client
             // panel1
             // 
             panel1.Anchor = AnchorStyles.None;
-            panel1.Controls.Add(BTN_OPEN_SERVICEBOOK);
             panel1.Controls.Add(BTN_OPEN_CALLBACK_FORM);
-            panel1.Location = new Point(108, 133);
+            panel1.Controls.Add(BTN_OPEN_SERVICEBOOK);
+            panel1.Controls.Add(BTN_OPEN_RETURNPAYMENT);
+            panel1.Location = new Point(98, 100);
             panel1.Name = "panel1";
-            panel1.Size = new Size(592, 123);
+            panel1.Size = new Size(822, 127);
             panel1.TabIndex = 15;
+            // 
+            // BTN_OPEN_CALLBACK_FORM
+            // 
+            BTN_OPEN_CALLBACK_FORM.BackColor = Color.White;
+            BTN_OPEN_CALLBACK_FORM.FlatAppearance.BorderColor = SystemColors.Control;
+            BTN_OPEN_CALLBACK_FORM.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            BTN_OPEN_CALLBACK_FORM.Location = new Point(281, 0);
+            BTN_OPEN_CALLBACK_FORM.Name = "BTN_OPEN_CALLBACK_FORM";
+            BTN_OPEN_CALLBACK_FORM.Size = new Size(260, 123);
+            BTN_OPEN_CALLBACK_FORM.TabIndex = 2;
+            BTN_OPEN_CALLBACK_FORM.Text = "Обратная связь по качеству обслуживания";
+            BTN_OPEN_CALLBACK_FORM.UseVisualStyleBackColor = false;
+            BTN_OPEN_CALLBACK_FORM.Click += BTN_OPEN_CALLBACK_FORM_Click;
             // 
             // Terminal_MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(749, 323);
+            ClientSize = new Size(977, 312);
             Controls.Add(panel1);
             Controls.Add(BTN_OPEN_CART);
             Controls.Add(BTN_RETURN);
@@ -177,12 +192,13 @@ namespace Client
 
         private FlowLayoutPanel flowLayoutPanel1;
         private Button BTN_OPEN_SERVICEBOOK;
-        private Button BTN_OPEN_CALLBACK_FORM;
+        private Button BTN_OPEN_RETURNPAYMENT;
         internal Label label6;
         internal Label keyLbl;
         internal Label lbWhoLogged;
         private Button BTN_OPEN_CART;
         private Button BTN_RETURN;
         private Panel panel1;
+        private Button BTN_OPEN_CALLBACK_FORM;
     }
 }

@@ -9,6 +9,8 @@ using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -50,8 +52,6 @@ namespace Client
         {
             inactivityTimer.Stop();
             this.Close();
-            Terminal_MainForm mainForm = new Terminal_MainForm();
-            mainForm.Show();
         }
 
         private void ReqOnService_Load(object sender, EventArgs e)
@@ -71,10 +71,13 @@ namespace Client
 
             // Установка текущей даты
             тбДатаЗаявки.Value = DateTime.Now;
-            
 
             // Пересчёт суммы
             UpdateTotalSum();
+
+            // По Уставу компании срок оплаты составляет не более двух суток с момента оплаты
+            тбСрокОплаты.Enabled = false;
+            тбСрокОплаты.Value = DateTime.Now.AddDays(2); 
         }
 
         private void SetupDataGridView()
@@ -131,6 +134,7 @@ namespace Client
             {
                 HeaderText = "",
                 Text = "+",
+                Name = "PlusButton",
                 Width = 50,
                 UseColumnTextForButtonValue = true,
                 HeaderCell = { Style = { Font = new Font("Segoe UI", 12F) } }
@@ -141,6 +145,7 @@ namespace Client
             {
                 HeaderText = "",
                 Text = "−",
+                Name = "MinusButton",
                 Width = 50,
                 UseColumnTextForButtonValue = true,
                 HeaderCell = { Style = { Font = new Font("Segoe UI", 12F) } }
@@ -181,16 +186,16 @@ namespace Client
         {
             if (e.RowIndex < 0) return;
 
-            int serviceId = Convert.ToInt32(dgvSelectedServices.Rows[e.RowIndex].Cells["НСл"].Value);
-            DataRow row = servicesData.AsEnumerable().First(r => Convert.ToInt32(r["НСл"]) == serviceId);
-            var service = selectedServices.First(s => s.Id == serviceId);
-
             try
             {
+                int serviceId = Convert.ToInt32(dgvSelectedServices.Rows[e.RowIndex].Cells["НСл"].Value);
+                DataRow row = servicesData.AsEnumerable().First(r => Convert.ToInt32(r["НСл"]) == serviceId);
+                var service = selectedServices.First(s => s.Id == serviceId);
+
                 int currentQuantity = serviceQuantities.ContainsKey(serviceId) ? serviceQuantities[serviceId] : 1;
                 int maxQuantity = service.Quantity; // Максимальное количество из переданных данных
 
-                if (e.ColumnIndex == dgvSelectedServices.Columns[4].Index) // Кнопка "+"
+                if (e.ColumnIndex == dgvSelectedServices.Columns["PlusButton"].Index) // Кнопка "+"
                 {
                     if (currentQuantity < maxQuantity)
                     {
@@ -203,7 +208,7 @@ namespace Client
                         MessageBox.Show($"Максимальное количество для услуги {row["Наименование"]}: {maxQuantity}.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
-                else if (e.ColumnIndex == dgvSelectedServices.Columns[5].Index) // Кнопка "−"
+                else if (e.ColumnIndex == dgvSelectedServices.Columns["MinusButton"].Index) // Кнопка "−"
                 {
                     if (currentQuantity > 1)
                     {
@@ -243,6 +248,59 @@ namespace Client
             }
         }
 
+        public static async void SendEmail(string clientmail, string subject, string body)
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    MailAddress from = new MailAddress("vladsipulin@mail.ru", "База отдыха «Обуховка»");
+                    MailAddress to = new MailAddress(clientmail);
+                    MailMessage m = new MailMessage(from, to);
+                    m.Subject = subject;
+                    m.Body = body;
+                    SmtpClient smtp = new SmtpClient("smtp.mail.ru", 587);
+                    smtp.Credentials = new NetworkCredential("vladsipulin@mail.ru", "Dx0i5QtBtp1EmzPXE76A");
+                    smtp.EnableSsl = true;
+                    smtp.Send(m);
+                    //MessageBox.Show("На вашу электронную почту " + clientmail + " отправлены реквизиты для оплаты заявки на услуги", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch
+                {
+                    MessageBox.Show("Ошибка при попытке отправки письма", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            });
+        }
+
+        private async Task<string> GetClientEmailAsync(int clientId)
+        {
+            try
+            {
+                string connectionString = ConfigurationManager.ConnectionStrings["MySqlConn"].ConnectionString;
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    string query = "SELECT Email FROM Клиент WHERE НКл = @clientId";
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@clientId", clientId);
+                        var result = await command.ExecuteScalarAsync();
+                        return result?.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при получении email клиента: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+        }
+
+        private bool CheckOnlineCashServiceAvailability()
+        {
+            return false; // Пока не реализован способ оплаты через сервис онлайн оплаты
+        }
+
         private async void button1_Click(object sender, EventArgs e)
         {
             try
@@ -267,13 +325,63 @@ namespace Client
                     }
                 }
 
-                // Создаём отдельную заявку для каждой услуги
+                // Формируем содержание заказа
+                string servicesSummary = string.Join("\n", servicesData.AsEnumerable().Select(row =>
+                {
+                    int serviceId = Convert.ToInt32(row["НСл"]);
+                    int quantity = serviceQuantities.ContainsKey(serviceId) ? serviceQuantities[serviceId] : 1;
+                    return $"Услуга: {row["Наименование"]}, Количество: {quantity}, Сумма: {Convert.ToSingle(row["Цена"]) * quantity:F2} руб.";
+                }));
+
+                // Отправка письма, если выбран онлайн-платёж
+                if (RADIOBTN_ONLINEPAY.Checked)
+                {
+                    string clientEmail = await GetClientEmailAsync(clientId);
+                    if (string.IsNullOrWhiteSpace(clientEmail))
+                    {
+                        MessageBox.Show("Не удалось получить email клиента.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    string subject = $"Заявка #{номерЗаявки} - Реквизиты для оплаты";
+                    string body = $@"Уважаемый клиент,
+
+Ваша заявка #{номерЗаявки} успешно оформлена. Ниже приведено содержание заказа и реквизиты для оплаты.
+
+**Содержание заказа:**
+{servicesSummary}
+
+**Общая сумма:** {тбСумма.Text} руб.
+
+**Реквизиты для оплаты:**
+Получатель: Общество с ограниченной ответственностью «Ивановка»
+Банк: Филиал ПАО Банк ВТБ в г. Воронеже
+Расчетный счет: 4070281020625000210
+Корреспондентский счет: 30101810100000000835
+БИК: 042007835
+ИНН: 3128066522
+КПП: 312801001
+ОГРН: 1083128002198
+
+Пожалуйста, произведите оплату до {тбСрокОплаты.Value:dd.MM.yyyy}. После оплаты сохраните подтверждение.
+
+С уважением,
+База отдыха «Обуховка»";
+
+                    SendEmail(clientEmail, subject, body);
+                }
+
+                // Упаковываем данные с каждой строки dataGridView (servicesData) в объект класса ReqOnService
+                // и вносим их в БД, создав объект класса Result 
                 foreach (DataRow row in servicesData.Rows)
                 {
                     int serviceId = Convert.ToInt32(row["НСл"]);
                     int quantity = serviceQuantities.ContainsKey(serviceId) ? serviceQuantities[serviceId] : 1;
                     float price = Convert.ToSingle(row["Цена"]);
                     float sum = price * quantity;
+
+                    // Устанавливаем ПокупкаСовершена: true для онлайн-платежа при доступной кассе, иначе false
+                    bool покупкаСовершена = RADIOBTN_ONLINEPAY.Checked;
 
                     ReqOnService request = new ReqOnService(
                         номерЗаявки,
@@ -282,7 +390,8 @@ namespace Client
                         clientId,
                         quantity,
                         sum,
-                        тбДатаЗаявки.Value
+                        тбДатаЗаявки.Value,
+                        покупкаСовершена
                     );
 
                     Result<int> result = await _repo.Add(request);
@@ -294,13 +403,22 @@ namespace Client
                 }
 
                 // Формируем итоговые данные для сообщения
-                string servicesSummary = string.Join("\n", servicesData.AsEnumerable().Select(row =>
+                if (RADIOBTN_ONLINEPAY.Checked)
                 {
-                    int serviceId = Convert.ToInt32(row["НСл"]);
-                    int quantity = serviceQuantities.ContainsKey(serviceId) ? serviceQuantities[serviceId] : 1;
-                    return $"Услуга: {row["Наименование"]}, Количество: {quantity}, Сумма: {Convert.ToSingle(row["Цена"]) * quantity:F2} руб.";
-                }));
-                MessageBox.Show($"Заявка #{номерЗаявки} успешно создана!\n\nИтоговые данные:\n{servicesSummary}\n\nОбщая сумма: {тбСумма.Text} руб.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    bool isCashRegisterAvailable = CheckOnlineCashServiceAvailability();
+                    if (isCashRegisterAvailable)
+                    {
+                        MessageBox.Show($"Заявка #{номерЗаявки} успешно создана!\n\nИтоговые данные:\n{servicesSummary}\n\nОбщая сумма: {тбСумма.Text} руб.\n\nОплата подтверждена через онлайн-кассу.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Заявка #{номерЗаявки} успешно создана!\n\nИтоговые данные:\n{servicesSummary}\n\nОбщая сумма: {тбСумма.Text} руб.\n\nОнлайн-касса недоступна. Реквизиты для оплаты отправлены на ваш email.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else // RADIOBTN_CASHPAY.Checked
+                {
+                    MessageBox.Show($"Заявка #{номерЗаявки} успешно создана!\n\nИтоговые данные:\n{servicesSummary}\n\nОбщая сумма: {тбСумма.Text} руб.\n\nПожалуйста, подойдите к портье для оплаты. Помните про срок оплаты, иначе будет начислен штраф в соответствии с Уставом.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
 
                 this.Close();
             }
@@ -308,6 +426,10 @@ namespace Client
             {
                 MessageBox.Show($"Ошибка при создании заявки: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void RADIOBTN_ONLINEPAY_CheckedChanged(object sender, EventArgs e)
+        {
         }
     }
 }
