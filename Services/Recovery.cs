@@ -46,9 +46,10 @@ namespace Client.Services
                     {
                         while (reader.Read())
                         {
-                            var userInDB = new UserRecover(reader.GetString(6), reader.GetString(1));
+                            var userInDB = new UserRecover(reader.GetString(5), reader.GetString(1), reader.GetInt32(0));
                             userWritten.ЭлПочта = userInDB.ЭлПочта; 
                             userWritten.ФИО = userInDB.ФИО;
+                            userWritten.Id = userInDB.Id;
                         }
                     }
                 }

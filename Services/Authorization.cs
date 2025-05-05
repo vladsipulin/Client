@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Client.Interfaces;
 using Client.Models;
@@ -11,185 +9,18 @@ using Client.Utils;
 
 namespace Client.Services
 {
-    internal class Authorization : IUserAuth
+    internal class Authorization : IUserAuth, IUserRecover
     {
         public Authorization()
-        { }
+        {
+        }
 
         private MySqlConnection GetConnection()
         {
             var cs = ConfigurationManager.ConnectionStrings["MySqlConn"].ToString();
             var builder = new MySqlConnectionStringBuilder(cs);
-            //чтоб избежать проблем с русским языком
             builder.CharacterSet = "utf8";
             return new MySqlConnection(builder.ConnectionString);
-        }
-
-        public async Task<Result<List<UserAuth>>> GetUser()
-        {
-            var list = new List<UserAuth>();
-
-            try
-            {
-                using (var con = GetConnection())
-                using (var cmd = con.CreateCommand())
-                {
-                    cmd.CommandText = "SELECT НКл, клиент.Логин, клиент.Пароль, Пол FROM `клиент` UNION SELECT НС, сотрудник.Логин, сотрудник.Пароль, НД FROM `сотрудник`;";
-                    con.Open();
-                    using (var reader = await cmd.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            var user = new UserAuth(reader.GetInt32(0));
-                            user.НКл = reader.IsDBNull(0) ? 0 : reader.GetInt32(0); 
-                            user.Логин = reader.IsDBNull(1) ? "null" : reader.GetString(1);
-                            user.Пароль = reader.IsDBNull(2) ? "null" : reader.GetString(2);
-                            user.UserType = reader.IsDBNull(3) ? "null" : reader.GetString(3);
-                            list.Add(user);
-                        }
-                    }
-                }
-
-            }
-            catch (MySqlException ex)
-            {
-                return new Result<List<UserAuth>>(GetUserFriendlyErrorMessage(ex));
-            }
-            catch (Exception ex)
-            {
-                return new Result<List<UserAuth>>(ex.Message);
-            }
-
-            return new Result<List<UserAuth>>(list);
-        }
-
-        public async Task<Result<int>> AddUser(UserAuth UserAuth)
-        {
-            if (UserAuth is null)
-                throw new ArgumentNullException(nameof(DbClient));
-
-            int result = 0;
-            try
-            {
-                using (var con = GetConnection())
-                using (var cmd = con.CreateCommand())
-                {
-                    cmd.CommandText = "INSERT INTO Клиент (НКл, ФИО, Пол, ДатаРождения, Логин, Пароль, Email)" +
-                        " VALUES(@НКл, @ФИО, @Пол, @ДатаРождения, @Логин, @Пароль, @Email)";
-
-                    cmd.Parameters.Add(new MySqlParameter("@НКл", MySqlDbType.Int32)
-                    { Value = UserAuth.НКл });
-
-                    cmd.Parameters.Add(new MySqlParameter("@ФИО", MySqlDbType.VarChar, 200)
-                    { Value = UserAuth.ФИО ?? (object)System.DBNull.Value });
-
-                    cmd.Parameters.Add(new MySqlParameter("@Пол", MySqlDbType.VarChar, 300)
-                    { Value = UserAuth.Пол ?? (object)System.DBNull.Value });
-
-                    cmd.Parameters.Add(new MySqlParameter("@ДатаРождения", MySqlDbType.Date)
-                    { Value = Convert.ToDateTime(UserAuth.ДатаРождения) });
-
-                    cmd.Parameters.Add(new MySqlParameter("@Логин", MySqlDbType.VarChar, 255)
-                    { Value = UserAuth.Логин ?? (object)System.DBNull.Value });
-
-                    cmd.Parameters.Add(new MySqlParameter("@Пароль", MySqlDbType.VarChar, 255)
-                    { Value = UserAuth.Пароль ?? (object)System.DBNull.Value });
-
-                    cmd.Parameters.Add(new MySqlParameter("@Email", MySqlDbType.VarChar, 255)
-                    { Value = UserAuth.Email ?? (object)System.DBNull.Value });
-
-                    con.Open();
-                    result = await cmd.ExecuteNonQueryAsync();
-                }
-
-            }
-            catch (MySqlException ex)
-            {
-                return new Result<int>(GetUserFriendlyErrorMessage(ex));
-            }
-            catch (Exception ex)
-            {
-                return new Result<int>(ex.Message);
-            }
-
-            return new Result<int>(result);
-        }
-
-        public async Task<Result<int>> RemoveUser(int id)
-        {
-            if (id <= 0)
-                throw new ArgumentException(nameof(id));
-
-            int result = 0;
-            try
-            {
-                using (var con = GetConnection())
-                using (var cmd = con.CreateCommand())
-                {
-                    cmd.CommandText = "DELETE FROM Клиент WHERE НКл =@НКл";
-
-                    cmd.Parameters.Add(new MySqlParameter("@НКл", MySqlDbType.Int32)
-                    { Value = id });
-
-                    con.Open();
-                    result = await cmd.ExecuteNonQueryAsync();
-                }
-
-            }
-            catch (MySqlException ex)
-            {
-                return new Result<int>(GetUserFriendlyErrorMessage(ex));
-            }
-            catch (Exception ex)
-            {
-                return new Result<int>(ex.Message);
-            }
-
-            return new Result<int>(result);
-        }
-
-        public async Task<Result<int>> UpdateUser(UserAuth UserAuth, int НКлОлд)
-        {
-            if (UserAuth is null)
-                throw new ArgumentNullException(nameof(UserAuth));
-
-            int result = 0;
-            try
-            {
-                using (var con = GetConnection())
-                using (var cmd = con.CreateCommand())
-                {
-                    cmd.CommandText = "UPDATE Клиент" +
-                        " SET НКл = @НКл, Логин = @Логин, Пароль = @Пароль" +
-                        " WHERE НКл =@НКлОлд";
-
-                    cmd.Parameters.Add(new MySqlParameter("@НКл", MySqlDbType.Int32)
-                    { Value = UserAuth.НКл });
-
-                    cmd.Parameters.Add(new MySqlParameter("@Логин", MySqlDbType.VarChar, 255)
-                    { Value = UserAuth.ФИО ?? (object)System.DBNull.Value });
-
-                    cmd.Parameters.Add(new MySqlParameter("@Пароль", MySqlDbType.VarChar, 255)
-                    { Value = UserAuth.Пароль ?? (object)System.DBNull.Value });
-
-                    cmd.Parameters.Add(new MySqlParameter("@НКлОлд", MySqlDbType.Int32)
-                    { Value = НКлОлд });
-
-                    con.Open();
-                    result = await cmd.ExecuteNonQueryAsync();
-                }
-
-            }
-            catch (MySqlException ex)
-            {
-                return new Result<int>(GetUserFriendlyErrorMessage(ex));
-            }
-            catch (Exception ex)
-            {
-                return new Result<int>(ex.Message);
-            }
-
-            return new Result<int>(result);
         }
 
         private string GetUserFriendlyErrorMessage(MySqlException ex)
@@ -198,11 +29,11 @@ namespace Client.Services
             switch (ex.Number)
             {
                 case 0:
-                    if (ex.InnerException.Message.Contains("Unknown"))
+                    if (ex.InnerException?.Message.Contains("Unknown") == true)
                     {
                         message = "Неверное название схемы или таблицы.";
                     }
-                    else if (ex.InnerException.Message.Contains("Access"))
+                    else if (ex.InnerException?.Message.Contains("Access") == true)
                     {
                         message = "Неверное имя или пароль доступа.";
                     }
@@ -212,18 +43,341 @@ namespace Client.Services
                     }
                     break;
                 case 1042:
-                    message = "Сервер по указанному адресу не доступен." +
-                        "\nОшибка ожидания.";
+                    message = "Сервер по указанному адресу не доступен.\nОшибка ожидания.";
                     break;
                 case 1045:
-                    message = "Неверное имя пользователя или пароль, " +
-                        "\nпожалуйста, попробуйте еще раз.";
+                    message = "Неверное имя пользователя или пароль, \nпожалуйста, попробуйте еще раз.";
                     break;
                 default:
                     message = ex.Message;
                     break;
             }
             return message;
+        }
+
+        public async Task<Result<List<UserRecover>>> GetClient()
+        {
+            var list = new List<UserRecover>();
+
+            try
+            {
+                using (var con = GetConnection())
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT НКл, Email, ФИО
+                        FROM Клиент";
+                    await con.OpenAsync();
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var user = new UserRecover(
+                                Id: reader.GetInt32(0),
+                                ЭлПочта: reader.IsDBNull(1) ? null : reader.GetString(1),
+                                ФИО: reader.IsDBNull(2) ? null : reader.GetString(2),
+                                UserType: "Клиент"
+                            );
+                            list.Add(user);
+                        }
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                return new Result<List<UserRecover>>(GetUserFriendlyErrorMessage(ex));
+            }
+            catch (Exception ex)
+            {
+                return new Result<List<UserRecover>>(ex.Message);
+            }
+
+            return new Result<List<UserRecover>>(list);
+        }
+
+        public async Task<Result<List<UserRecover>>> GetEmployer()
+        {
+            var list = new List<UserRecover>();
+
+            try
+            {
+                using (var con = GetConnection())
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT НС, Логин, Пароль, ФИО, Email
+                        FROM Портье";
+                    await con.OpenAsync();
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var user = new UserRecover(
+                                Id: reader.GetInt32(0),
+                                Логин: reader.IsDBNull(1) ? null : reader.GetString(1),
+                                Пароль: reader.IsDBNull(2) ? null : reader.GetString(2),
+                                ФИО: reader.IsDBNull(3) ? null : reader.GetString(3),
+                                ЭлПочта: reader.IsDBNull(4) ? null : reader.GetString(4),
+                                UserType: "Портье"
+                            );
+                            list.Add(user);
+                        }
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                return new Result<List<UserRecover>>(GetUserFriendlyErrorMessage(ex));
+            }
+            catch (Exception ex)
+            {
+                return new Result<List<UserRecover>>(ex.Message);
+            }
+
+            return new Result<List<UserRecover>>(list);
+        }
+
+        public async Task<Result<int>> AddUser(UserRecover userAuth)
+        {
+            if (userAuth is null)
+                throw new ArgumentNullException(nameof(userAuth));
+
+            try
+            {
+                using (var con = GetConnection())
+                using (var cmd = con.CreateCommand())
+                {
+                    if (userAuth.UserType == "Клиент")
+                    {
+                        if (string.IsNullOrEmpty(userAuth.Логин) || string.IsNullOrEmpty(userAuth.Пароль))
+                            return new Result<int>("Логин и Пароль обязательны для клиента.");
+
+                        cmd.CommandText = @"
+                            INSERT INTO Клиент (НКл, ФИО, Пол, ДатаРождения, Логин, Пароль, Email)
+                            VALUES (@НКл, @ФИО, @Пол, @ДатаРождения, @Логин, @Пароль, @Email)";
+                    }
+                    else if (userAuth.UserType == "Портье")
+                    {
+                        cmd.CommandText = @"
+                            INSERT INTO Портье (НС, ФИО, Пол, ДатаРождения, Логин, Пароль, Email)
+                            VALUES (@НС, @ФИО, @Пол, @ДатаРождения, @Логин, @Пароль, @Email)";
+                        cmd.Parameters.AddWithValue("@НС", userAuth.Id);
+                    }
+                    else
+                    {
+                        return new Result<int>("Не указан тип пользователя (Клиент или Портье).");
+                    }
+
+                    cmd.Parameters.AddWithValue("@НКл", userAuth.Id);
+                    cmd.Parameters.AddWithValue("@ФИО", (object)userAuth.ФИО ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Пол", DBNull.Value); // Поле Пол отсутствует в UserRecover
+                    cmd.Parameters.AddWithValue("@ДатаРождения", DBNull.Value); // Поле ДатаРождения отсутствует в UserRecover
+                    cmd.Parameters.AddWithValue("@Логин", (object)userAuth.Логин ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Пароль", (object)userAuth.Пароль ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Email", (object)userAuth.ЭлПочта ?? DBNull.Value);
+
+                    await con.OpenAsync();
+                    int result = await cmd.ExecuteNonQueryAsync();
+                    return new Result<int>(result);
+                }
+            }
+            catch (MySqlException ex)
+            {
+                return new Result<int>(GetUserFriendlyErrorMessage(ex));
+            }
+            catch (Exception ex)
+            {
+                return new Result<int>(ex.Message);
+            }
+        }
+
+        public async Task<Result<int>> RemoveUser(int id)
+        {
+            if (id <= 0)
+                throw new ArgumentException(nameof(id));
+
+            try
+            {
+                using (var con = GetConnection())
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        DELETE FROM Клиент WHERE НКл = @Id;
+                        DELETE FROM Портье WHERE НС = @Id;";
+                    cmd.Parameters.AddWithValue("@Id", id);
+
+                    await con.OpenAsync();
+                    int result = await cmd.ExecuteNonQueryAsync();
+                    return new Result<int>(result);
+                }
+            }
+            catch (MySqlException ex)
+            {
+                return new Result<int>(GetUserFriendlyErrorMessage(ex));
+            }
+            catch (Exception ex)
+            {
+                return new Result<int>(ex.Message);
+            }
+        }
+
+        public async Task<Result<int>> UpdateUser(UserRecover userAuth, int НКлОлд)
+        {
+            if (userAuth is null)
+                throw new ArgumentNullException(nameof(userAuth));
+
+            try
+            {
+                using (var con = GetConnection())
+                using (var cmd = con.CreateCommand())
+                {
+                    if (userAuth.UserType == "Клиент")
+                    {
+                        if (string.IsNullOrEmpty(userAuth.Логин) || string.IsNullOrEmpty(userAuth.Пароль))
+                            return new Result<int>("Логин и Пароль обязательны для клиента.");
+
+                        cmd.CommandText = @"
+                            UPDATE Клиент
+                            SET НКл = @НКл, ФИО = @ФИО, Пол = @Пол, ДатаРождения = @ДатаРождения,
+                                Логин = @Логин, Пароль = @Пароль, Email = @Email
+                            WHERE НКл = @НКлОлд";
+                    }
+                    else if (userAuth.UserType == "Портье")
+                    {
+                        cmd.CommandText = @"
+                            UPDATE Портье
+                            SET НС = @НС, ФИО = @ФИО, Пол = @Пол, ДатаРождения = @ДатаРождения,
+                                Логин = @Логин, Пароль = @Пароль, Email = @Email
+                            WHERE НС = @НКлОлд";
+                        cmd.Parameters.AddWithValue("@НС", userAuth.Id);
+                    }
+                    else
+                    {
+                        return new Result<int>("Не указан тип пользователя (Клиент или Портье).");
+                    }
+
+                    cmd.Parameters.AddWithValue("@НКл", userAuth.Id);
+                    cmd.Parameters.AddWithValue("@ФИО", (object)userAuth.ФИО ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Пол", DBNull.Value); // Поле Пол отсутствует в UserRecover
+                    cmd.Parameters.AddWithValue("@ДатаРождения", DBNull.Value); // Поле ДатаРождения отсутствует в UserRecover
+                    cmd.Parameters.AddWithValue("@Логин", (object)userAuth.Логин ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Пароль", (object)userAuth.Пароль ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Email", (object)userAuth.ЭлПочта ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@НКлОлд", НКлОлд);
+
+                    await con.OpenAsync();
+                    int result = await cmd.ExecuteNonQueryAsync();
+                    return new Result<int>(result);
+                }
+            }
+            catch (MySqlException ex)
+            {
+                return new Result<int>(GetUserFriendlyErrorMessage(ex));
+            }
+            catch (Exception ex)
+            {
+                return new Result<int>(ex.Message);
+            }
+        }
+
+        public UserRecover FindUser(string email)
+        {
+            try
+            {
+                using (var con = GetConnection())
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT НКл, Email, ФИО
+                        FROM Клиент
+                        WHERE Email = @Email
+                        UNION
+                        SELECT НС, Email, ФИО
+                        FROM Портье
+                        WHERE Email = @Email";
+                    cmd.Parameters.AddWithValue("@Email", email);
+
+                    con.Open();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new UserRecover(
+                                Id: reader.GetInt32(0),
+                                ЭлПочта: reader.IsDBNull(1) ? null : reader.GetString(1),
+                                ФИО: reader.IsDBNull(2) ? null : reader.GetString(2),
+                                UserType: reader.GetInt32(0) >= 1000 ? "Клиент" : "Портье" // Примерное определение типа
+                            );
+                        }
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                throw new Exception(GetUserFriendlyErrorMessage(ex));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return null;
+        }
+
+        public Result<UserRecover> UpdatePasswordOfUser(UserRecover userRec, string newPassword)
+        {
+            if (userRec is null)
+                return new Result<UserRecover>("Пользователь не указан.");
+
+            if (string.IsNullOrEmpty(newPassword))
+                return new Result<UserRecover>("Новый пароль не может быть пустым.");
+
+            try
+            {
+                using (var con = GetConnection())
+                using (var cmd = con.CreateCommand())
+                {
+                    if (userRec.UserType == "Клиент")
+                    {
+                        cmd.CommandText = @"
+                            UPDATE Клиент
+                            SET Пароль = @Пароль
+                            WHERE НКл = @Id";
+                    }
+                    else if (userRec.UserType == "Портье duel")
+                    {
+                        cmd.CommandText = @"
+                            UPDATE Портье
+                            SET Пароль = @Пароль
+                            WHERE НС = @Id";
+                    }
+                    else
+                    {
+                        return new Result<UserRecover>("Не указан тип пользователя (Клиент или Портье).");
+                    }
+
+                    string hashedPassword = PasswordHasher.HashPassword(newPassword, "TfbcZEIwOHJokZyDIvOqjg==");
+                    cmd.Parameters.AddWithValue("@Пароль", hashedPassword);
+                    cmd.Parameters.AddWithValue("@Id", userRec.Id);
+
+                    con.Open();
+                    int result = cmd.ExecuteNonQuery();
+                    if (result > 0)
+                    {
+                        userRec.Пароль = hashedPassword;
+                        return new Result<UserRecover>(userRec);
+                    }
+                    return new Result<UserRecover>("Пользователь не найден.");
+                }
+            }
+            catch (MySqlException ex)
+            {
+                return new Result<UserRecover>(GetUserFriendlyErrorMessage(ex));
+            }
+            catch (Exception ex)
+            {
+                return new Result<UserRecover>(ex.Message);
+            }
         }
     }
 }

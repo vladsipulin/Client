@@ -35,6 +35,7 @@
             loginButton = new Button();
             regButton = new Button();
             recoverButton = new Button();
+            button1 = new Button();
             SuspendLayout();
             // 
             // тбЛогин
@@ -100,11 +101,22 @@
             recoverButton.UseVisualStyleBackColor = true;
             recoverButton.Click += recoverButton_Click;
             // 
+            // button1
+            // 
+            button1.Location = new Point(254, 12);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 7;
+            button1.Text = "Я клиент...";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // AuthorizationForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(351, 349);
+            Controls.Add(button1);
             Controls.Add(recoverButton);
             Controls.Add(regButton);
             Controls.Add(loginButton);
@@ -129,5 +141,6 @@
         private Button loginButton;
         private Button regButton;
         private Button recoverButton;
+        private Button button1;
     }
 }

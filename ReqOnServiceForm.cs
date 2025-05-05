@@ -19,10 +19,13 @@ namespace Client
     public partial class ReqOnServiceForm : Form
     {
         private readonly List<ServiceData> selectedServices;
-        private readonly Dictionary<int, int> serviceQuantities = new Dictionary<int, int>(); // ID услуги -> Количество
+        private readonly Dictionary<int, int> serviceQuantities = new Dictionary<int, int>();
         private readonly System.Windows.Forms.Timer inactivityTimer = new System.Windows.Forms.Timer();
         private IReqOnService _repo;
         private DataTable servicesData;
+        private int? selectedOrgId = null; // Номер выбранной организации
+        private int? contractTypeId = null; // Номер типа договора
+        private int discountPercentage = 0; // Размер скидки в процентах
 
         public ReqOnServiceForm(List<ServiceData> selectedServices, string userId)
         {
@@ -31,15 +34,13 @@ namespace Client
             тбНКл.Text = userId;
             lbWhoLogged.Text = userId;
 
-            // Настройка таймера неактивности (1 минута)
-            inactivityTimer.Interval = 60000; // 1 минута
+            inactivityTimer.Interval = 60000;
             inactivityTimer.Tick += InactivityTimer_Tick;
             inactivityTimer.Start();
 
-            // Сбрасываем таймер при взаимодействии с формой
             MouseMove += ResetInactivityTimer;
             KeyPress += ResetInactivityTimer;
-            MouseClick += ResetInactivityTimer; // Для сенсорного ввода
+            MouseClick += ResetInactivityTimer;
         }
 
         private void ResetInactivityTimer(object sender, EventArgs e)
@@ -54,7 +55,7 @@ namespace Client
             this.Close();
         }
 
-        private void ReqOnService_Load(object sender, EventArgs e)
+        private async void ReqOnService_Load(object sender, EventArgs e)
         {
             _repo = new RReqOnService();
             this.BackColor = Color.White;
@@ -62,22 +63,192 @@ namespace Client
             тбНКл.Enabled = false;
             тбДатаЗаявки.Enabled = false;
             тбСумма.ReadOnly = true;
+            TB_DISCOUNT.ReadOnly = true;
 
-            // Настройка DataGridView
             SetupDataGridView();
-
-            // Загрузка данных из переданного списка
             LoadSelectedServices();
+            await LoadOrganizationsAsync();
 
-            // Установка текущей даты
             тбДатаЗаявки.Value = DateTime.Now;
-
-            // Пересчёт суммы
             UpdateTotalSum();
 
-            // По Уставу компании срок оплаты составляет не более двух суток с момента оплаты
             тбСрокОплаты.Enabled = false;
-            тбСрокОплаты.Value = DateTime.Now.AddDays(2); 
+            тбСрокОплаты.Value = DateTime.Now.AddDays(2);
+
+            // Настройка обработчиков событий
+            CHKBOX_FROM_ORGANIZATION.CheckedChanged += CHKBOX_FROM_ORGANIZATION_CheckedChanged;
+            CMBX_ORGANIZATION.SelectedIndexChanged += CMBX_ORGANIZATION_SelectedIndexChanged;
+        }
+
+        private async Task LoadOrganizationsAsync()
+        {
+            try
+            {
+                // Создаем объект ComboBoxDataForFill с SQL-запросом и настройками
+                var comboData = new ComboBoxDataForFill(
+                    sql: @"
+                SELECT o.НОрг, o.Наименование
+                FROM Организация o
+                JOIN ДоговорСОрганизацией do ON o.НОрг = do.НОрг
+                WHERE do.Действует = TRUE AND do.РасторгнутДосрочно = FALSE
+                ORDER BY o.Наименование",
+                    displayMember: "Наименование",
+                    valueMember: "НОрг"
+                );
+
+                // Вызываем метод LoadCombo для заполнения DataTable
+                LoadCombo(comboData);
+
+                // Привязываем данные к CMBX_ORGANIZATION
+                CMBX_ORGANIZATION.DataSource = comboData.dataSource;
+                CMBX_ORGANIZATION.DisplayMember = comboData.DisplayMember;
+                CMBX_ORGANIZATION.ValueMember = comboData.ValueMember;
+
+                // Отключаем CHKBOX_FROM_ORGANIZATION, если нет организаций
+                CHKBOX_FROM_ORGANIZATION.Enabled = CMBX_ORGANIZATION.Items.Count > 0;
+                if (CMBX_ORGANIZATION.Items.Count == 0)
+                {
+                    CHKBOX_FROM_ORGANIZATION.Checked = false;
+                    CMBX_ORGANIZATION.Enabled = false;
+                    TB_DISCOUNT.Text = "Скидка: 0%";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки списка организаций: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                CHKBOX_FROM_ORGANIZATION.Enabled = false;
+                CMBX_ORGANIZATION.Enabled = false;
+                TB_DISCOUNT.Text = "Скидка: 0%";
+            }
+        }
+
+        private void LoadCombo(ComboBoxDataForFill obj)
+        {
+            MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySqlConn"].ConnectionString);
+            MySqlCommand cmd = null;
+            MySqlDataAdapter da = null;
+            DataTable dt = null;
+
+            try
+            {
+                con.Open();
+                cmd = new MySqlCommand();
+                cmd.Connection = con;
+                cmd.CommandText = obj.sql;
+                foreach (MySqlParameter e in obj.paramsForSQLQuery)
+                {
+                    cmd.Parameters.Add(e);
+                }
+                da = new MySqlDataAdapter();
+                da.SelectCommand = cmd;
+                dt = new DataTable();
+                da.Fill(dt);
+
+                obj.dataSource = dt;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                if (con != null && con.State == ConnectionState.Open)
+                    con.Close();
+                cmd?.Dispose();
+                da?.Dispose();
+            }
+        }
+
+        class ComboBoxDataForFill
+        {
+            public string sql { get; set; }
+            public string DisplayMember { get; set; }
+            public string ValueMember { get; set; }
+            public DataTable dataSource { get; set; }
+            public List<MySqlParameter> paramsForSQLQuery { get; set; }
+
+            public ComboBoxDataForFill(string sql, string displayMember, string valueMember)
+            {
+                this.sql = sql;
+                DisplayMember = displayMember;
+                ValueMember = valueMember;
+                dataSource = new DataTable();
+                paramsForSQLQuery = new List<MySqlParameter>();
+            }
+        }
+
+        private async void CHKBOX_FROM_ORGANIZATION_CheckedChanged(object sender, EventArgs e)
+        {
+            CMBX_ORGANIZATION.Enabled = CHKBOX_FROM_ORGANIZATION.Checked && CMBX_ORGANIZATION.Items.Count > 0;
+            if (!CHKBOX_FROM_ORGANIZATION.Checked)
+            {
+                CMBX_ORGANIZATION.SelectedIndex = -1;
+                selectedOrgId = null;
+                contractTypeId = null;
+                discountPercentage = 0;
+                TB_DISCOUNT.Text = "Скидка: 0%";
+                UpdateTotalSum();
+            }
+        }
+
+        private async void CMBX_ORGANIZATION_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (CMBX_ORGANIZATION.SelectedIndex >= 0)
+            {
+                selectedOrgId = (int)CMBX_ORGANIZATION.SelectedValue;
+                var contractInfo = await GetContractInfoAsync(selectedOrgId.Value);
+                contractTypeId = contractInfo.НТипаДоговора;
+                discountPercentage = contractInfo.Скидка;
+                TB_DISCOUNT.Text = $"Скидка: {discountPercentage}%";
+                if (contractInfo.НТипаДоговора == null)
+                {
+                    MessageBox.Show("Для выбранной организации нет действующего договора.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                selectedOrgId = null;
+                contractTypeId = null;
+                discountPercentage = 0;
+                TB_DISCOUNT.Text = "Скидка: 0%";
+            }
+            UpdateTotalSum();
+        }
+
+        private async Task<(int? НТипаДоговора, int Скидка)> GetContractInfoAsync(int orgId)
+        {
+            try
+            {
+                string connectionString = ConfigurationManager.ConnectionStrings["MySqlConn"].ConnectionString;
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    string query = @"
+                        SELECT do.НТипаДоговора, td.Скидка
+                        FROM ДоговорСОрганизацией do
+                        JOIN ТипДоговора td ON do.НТипаДоговора = td.НТипаДоговора
+                        WHERE do.НОрг = @orgId AND do.Действует = TRUE AND do.РасторгнутДосрочно = FALSE
+                        LIMIT 1";
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@orgId", orgId);
+                        using (MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                int нТипаДоговора = reader.GetInt32("НТипаДоговора");
+                                int скидка = reader.GetInt32("Скидка");
+                                return (нТипаДоговора, скидка);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при получении данных договора: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return (null, 0);
         }
 
         private void SetupDataGridView()
@@ -85,18 +256,16 @@ namespace Client
             dgvSelectedServices.Columns.Clear();
             dgvSelectedServices.AutoGenerateColumns = false;
 
-            // Колонка для ID
             DataGridViewTextBoxColumn idColumn = new DataGridViewTextBoxColumn
             {
-                DataPropertyName = "НСл",
-                Name = "НСл",
+                DataPropertyName = "НУслуги",
+                Name = "НУслуги",
                 HeaderText = "Номер услуги",
                 Width = 60,
                 ReadOnly = true,
                 HeaderCell = { Style = { Font = new Font("Segoe UI", 12F) } }
             };
 
-            // Колонка для наименования
             DataGridViewTextBoxColumn nameColumn = new DataGridViewTextBoxColumn
             {
                 DataPropertyName = "Наименование",
@@ -107,7 +276,6 @@ namespace Client
                 HeaderCell = { Style = { Font = new Font("Segoe UI", 12F) } }
             };
 
-            // Колонка для цены
             DataGridViewTextBoxColumn priceColumn = new DataGridViewTextBoxColumn
             {
                 DataPropertyName = "Цена",
@@ -118,7 +286,6 @@ namespace Client
                 HeaderCell = { Style = { Font = new Font("Segoe UI", 12F) } }
             };
 
-            // Колонка для количества (только отображение)
             DataGridViewTextBoxColumn quantityColumn = new DataGridViewTextBoxColumn
             {
                 DataPropertyName = "Количество",
@@ -129,7 +296,6 @@ namespace Client
                 HeaderCell = { Style = { Font = new Font("Segoe UI", 12F) } }
             };
 
-            // Кнопка "+"
             DataGridViewButtonColumn plusButton = new DataGridViewButtonColumn
             {
                 HeaderText = "",
@@ -140,7 +306,6 @@ namespace Client
                 HeaderCell = { Style = { Font = new Font("Segoe UI", 12F) } }
             };
 
-            // Кнопка "−"
             DataGridViewButtonColumn minusButton = new DataGridViewButtonColumn
             {
                 HeaderText = "",
@@ -152,8 +317,6 @@ namespace Client
             };
 
             dgvSelectedServices.Columns.AddRange(new DataGridViewColumn[] { idColumn, nameColumn, priceColumn, quantityColumn, plusButton, minusButton });
-
-            // Обработчик нажатий на кнопки
             dgvSelectedServices.CellContentClick += DgvSelectedServices_CellContentClick;
         }
 
@@ -162,16 +325,15 @@ namespace Client
             try
             {
                 servicesData = new DataTable();
-                servicesData.Columns.Add("НСл", typeof(int));
+                servicesData.Columns.Add("НУслуги", typeof(int));
                 servicesData.Columns.Add("Наименование", typeof(string));
                 servicesData.Columns.Add("Цена", typeof(double));
                 servicesData.Columns.Add("Количество", typeof(int));
 
-                // Заполняем DataTable из переданных данных
                 foreach (var service in selectedServices)
                 {
                     servicesData.Rows.Add(service.Id, service.Name, service.Price, 1);
-                    serviceQuantities[service.Id] = 1; // Начальное количество
+                    serviceQuantities[service.Id] = 1;
                 }
 
                 dgvSelectedServices.DataSource = servicesData;
@@ -188,14 +350,14 @@ namespace Client
 
             try
             {
-                int serviceId = Convert.ToInt32(dgvSelectedServices.Rows[e.RowIndex].Cells["НСл"].Value);
-                DataRow row = servicesData.AsEnumerable().First(r => Convert.ToInt32(r["НСл"]) == serviceId);
+                int serviceId = Convert.ToInt32(dgvSelectedServices.Rows[e.RowIndex].Cells["НУслуги"].Value);
+                DataRow row = servicesData.AsEnumerable().First(r => Convert.ToInt32(r["НУслуги"]) == serviceId);
                 var service = selectedServices.First(s => s.Id == serviceId);
 
                 int currentQuantity = serviceQuantities.ContainsKey(serviceId) ? serviceQuantities[serviceId] : 1;
-                int maxQuantity = service.Quantity; // Максимальное количество из переданных данных
+                int maxQuantity = service.Quantity;
 
-                if (e.ColumnIndex == dgvSelectedServices.Columns["PlusButton"].Index) // Кнопка "+"
+                if (e.ColumnIndex == dgvSelectedServices.Columns["PlusButton"].Index)
                 {
                     if (currentQuantity < maxQuantity)
                     {
@@ -208,7 +370,7 @@ namespace Client
                         MessageBox.Show($"Максимальное количество для услуги {row["Наименование"]}: {maxQuantity}.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
-                else if (e.ColumnIndex == dgvSelectedServices.Columns["MinusButton"].Index) // Кнопка "−"
+                else if (e.ColumnIndex == dgvSelectedServices.Columns["MinusButton"].Index)
                 {
                     if (currentQuantity > 1)
                     {
@@ -218,7 +380,7 @@ namespace Client
                     }
                 }
 
-                dgvSelectedServices.Refresh(); // Обновляем отображение
+                dgvSelectedServices.Refresh();
                 UpdateTotalSum();
             }
             catch (Exception ex)
@@ -234,12 +396,13 @@ namespace Client
                 float totalSum = 0;
                 foreach (DataRow row in servicesData.Rows)
                 {
-                    int serviceId = Convert.ToInt32(row["НСл"]);
+                    int serviceId = Convert.ToInt32(row["НУслуги"]);
                     float price = Convert.ToSingle(row["Цена"]);
                     int quantity = serviceQuantities.ContainsKey(serviceId) ? serviceQuantities[serviceId] : 1;
                     totalSum += price * quantity;
                 }
-                тбСумма.Text = totalSum.ToString("F2");
+                float discountedSum = discountPercentage > 0 ? totalSum * (1 - discountPercentage / 100f) : totalSum;
+                тбСумма.Text = discountedSum.ToString("F2");
             }
             catch (Exception ex)
             {
@@ -260,10 +423,10 @@ namespace Client
                     m.Subject = subject;
                     m.Body = body;
                     SmtpClient smtp = new SmtpClient("smtp.mail.ru", 587);
-                    smtp.Credentials = new NetworkCredential("vladsipulin@mail.ru", "Dx0i5QtBtp1EmzPXE76A");
+                    smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["SmtpUsername"],
+                                                             ConfigurationManager.AppSettings["SmtpPassword"]);
                     smtp.EnableSsl = true;
                     smtp.Send(m);
-                    //MessageBox.Show("На вашу электронную почту " + clientmail + " отправлены реквизиты для оплаты заявки на услуги", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch
                 {
@@ -298,7 +461,7 @@ namespace Client
 
         private bool CheckOnlineCashServiceAvailability()
         {
-            return false; // Пока не реализован способ оплаты через сервис онлайн оплаты
+            return false;
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -311,8 +474,14 @@ namespace Client
                     return;
                 }
 
+                if (CHKBOX_FROM_ORGANIZATION.Checked && CMBX_ORGANIZATION.SelectedIndex < 0)
+                {
+                    MessageBox.Show("Выберите организацию.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 Random rand = new Random();
-                int номерЗаявки = 0; // Инициализация по умолчанию
+                int номерЗаявки = 0;
                 bool isUnique = false;
 
                 while (!isUnique)
@@ -325,15 +494,26 @@ namespace Client
                     }
                 }
 
-                // Формируем содержание заказа
+                float totalSum = 0;
+                foreach (DataRow row in servicesData.Rows)
+                {
+                    int serviceId = Convert.ToInt32(row["НУслуги"]);
+                    float price = Convert.ToSingle(row["Цена"]);
+                    int quantity = serviceQuantities.ContainsKey(serviceId) ? serviceQuantities[serviceId] : 1;
+                    totalSum += price * quantity;
+                }
+                float discountedSum = discountPercentage > 0 ? totalSum * (1 - discountPercentage / 100f) : totalSum;
+
                 string servicesSummary = string.Join("\n", servicesData.AsEnumerable().Select(row =>
                 {
-                    int serviceId = Convert.ToInt32(row["НСл"]);
+                    int serviceId = Convert.ToInt32(row["НУслуги"]);
                     int quantity = serviceQuantities.ContainsKey(serviceId) ? serviceQuantities[serviceId] : 1;
-                    return $"Услуга: {row["Наименование"]}, Количество: {quantity}, Сумма: {Convert.ToSingle(row["Цена"]) * quantity:F2} руб.";
+                    float price = Convert.ToSingle(row["Цена"]);
+                    float sum = price * quantity;
+                    float discountedPrice = discountPercentage > 0 ? sum * (1 - discountPercentage / 100f) : sum;
+                    return $"Услуга: {row["Наименование"]}, Количество: {quantity}, Сумма: {discountedPrice:F2} руб.";
                 }));
 
-                // Отправка письма, если выбран онлайн-платёж
                 if (RADIOBTN_ONLINEPAY.Checked)
                 {
                     string clientEmail = await GetClientEmailAsync(clientId);
@@ -346,78 +526,82 @@ namespace Client
                     string subject = $"Заявка #{номерЗаявки} - Реквизиты для оплаты";
                     string body = $@"Уважаемый клиент,
 
-Ваша заявка #{номерЗаявки} успешно оформлена. Ниже приведено содержание заказа и реквизиты для оплаты.
+                    Ваша заявка #{номерЗаявки} успешно оформлена. Ниже приведено содержание заказа и реквизиты для оплаты.
 
-**Содержание заказа:**
-{servicesSummary}
+                    **Содержание заказа:**
+                    {servicesSummary}
 
-**Общая сумма:** {тбСумма.Text} руб.
+                    **Общая сумма:** {discountedSum:F2} руб.{(discountPercentage > 0 ? $"\n**Скидка:** {discountPercentage}%" : "")}
 
-**Реквизиты для оплаты:**
-Получатель: Общество с ограниченной ответственностью «Ивановка»
-Банк: Филиал ПАО Банк ВТБ в г. Воронеже
-Расчетный счет: 4070281020625000210
-Корреспондентский счет: 30101810100000000835
-БИК: 042007835
-ИНН: 3128066522
-КПП: 312801001
-ОГРН: 1083128002198
+                    **Реквизиты для оплаты:**
+                    Получатель: Общество с ограниченной ответственностью «Ивановка»
+                    Банк: Филиал ПАО Банк ВТБ в г. Воронеже
+                    Расчетный счет: 4070281020625000210
+                    Корреспондентский счет: 30101810100000000835
+                    БИК: 042007835
+                    ИНН: 3128066522
+                    КПП: 312801001
+                    ОГРН: 1083128002198
 
-Пожалуйста, произведите оплату до {тбСрокОплаты.Value:dd.MM.yyyy}. После оплаты сохраните подтверждение.
+                    Пожалуйста, произведите оплату до {тбСрокОплаты.Value:dd.MM.yyyy}. После оплаты сохраните подтверждение.
 
-С уважением,
-База отдыха «Обуховка»";
+                    С уважением,
+                    База отдыха «Обуховка»";
 
                     SendEmail(clientEmail, subject, body);
                 }
 
-                // Упаковываем данные с каждой строки dataGridView (servicesData) в объект класса ReqOnService
-                // и вносим их в БД, создав объект класса Result 
                 foreach (DataRow row in servicesData.Rows)
                 {
-                    int serviceId = Convert.ToInt32(row["НСл"]);
+                    int serviceId = Convert.ToInt32(row["НУслуги"]);
                     int quantity = serviceQuantities.ContainsKey(serviceId) ? serviceQuantities[serviceId] : 1;
                     float price = Convert.ToSingle(row["Цена"]);
                     float sum = price * quantity;
+                    float discountedPrice = discountPercentage > 0 ? sum * (1 - discountPercentage / 100f) : sum;
 
-                    // Устанавливаем ПокупкаСовершена: true для онлайн-платежа при доступной кассе, иначе false
                     bool покупкаСовершена = RADIOBTN_ONLINEPAY.Checked;
+                    DateTime? датаОплаты = покупкаСовершена ? DateTime.Now : null;
 
                     ReqOnService request = new ReqOnService(
-                        номерЗаявки,
-                        serviceId,
-                        тбСрокОплаты.Value,
-                        clientId,
-                        quantity,
-                        sum,
-                        тбДатаЗаявки.Value,
-                        покупкаСовершена
+                        нЗаявки: номерЗаявки,
+                        нУслуги: serviceId,
+                        срокОплаты: тбСрокОплаты.Value,
+                        нКл: clientId,
+                        нТипаДоговора: CHKBOX_FROM_ORGANIZATION.Checked ? contractTypeId : null,
+                        нОрг: CHKBOX_FROM_ORGANIZATION.Checked ? selectedOrgId : null,
+                        количество_Ед: quantity,
+                        сумма: sum,
+                        датаЗаявки: тбДатаЗаявки.Value,
+                        покупкаСовершена: покупкаСовершена,
+                        нС: 0,
+                        датаОплаты: датаОплаты,
+                        размерШтрафа: 0f,
+                        суммаКОплате: discountedPrice
                     );
 
                     Result<int> result = await _repo.Add(request);
-                    if (!result)
+                    if (!result.HasValue)
                     {
                         MessageBox.Show($"Ошибка при создании заявки для услуги {row["Наименование"]}: {result.Error}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
 
-                // Формируем итоговые данные для сообщения
                 if (RADIOBTN_ONLINEPAY.Checked)
                 {
                     bool isCashRegisterAvailable = CheckOnlineCashServiceAvailability();
                     if (isCashRegisterAvailable)
                     {
-                        MessageBox.Show($"Заявка #{номерЗаявки} успешно создана!\n\nИтоговые данные:\n{servicesSummary}\n\nОбщая сумма: {тбСумма.Text} руб.\n\nОплата подтверждена через онлайн-кассу.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show($"Заявка #{номерЗаявки} успешно создана!\n\nИтоговые данные:\n{servicesSummary}\n\nОбщая сумма: {discountedSum:F2} руб.{(discountPercentage > 0 ? $"\nСкидка: {discountPercentage}%" : "")}\n\nОплата подтверждена через онлайн-кассу.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
-                        MessageBox.Show($"Заявка #{номерЗаявки} успешно создана!\n\nИтоговые данные:\n{servicesSummary}\n\nОбщая сумма: {тбСумма.Text} руб.\n\nОнлайн-касса недоступна. Реквизиты для оплаты отправлены на ваш email.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show($"Заявка #{номерЗаявки} успешно создана!\n\nИтоговые данные:\n{servicesSummary}\n\nОбщая сумма: {discountedSum:F2} руб.{(discountPercentage > 0 ? $"\nСкидка: {discountPercentage}%" : "")}\n\nОнлайн-касса недоступна. Реквизиты для оплаты отправлены на ваш email.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
-                else // RADIOBTN_CASHPAY.Checked
+                else
                 {
-                    MessageBox.Show($"Заявка #{номерЗаявки} успешно создана!\n\nИтоговые данные:\n{servicesSummary}\n\nОбщая сумма: {тбСумма.Text} руб.\n\nПожалуйста, подойдите к портье для оплаты. Помните про срок оплаты, иначе будет начислен штраф в соответствии с Уставом.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Заявка #{номерЗаявки} успешно создана!\n\nИтоговые данные:\n{servicesSummary}\n\nОбщая сумма: {discountedSum:F2} руб.{(discountPercentage > 0 ? $"\nСкидка: {discountPercentage}%" : "")}\n\nПожалуйста, подойдите к портье для оплаты. Помните про срок оплаты, иначе будет начислен штраф в соответствии с Уставом.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 this.Close();

@@ -11,12 +11,7 @@ namespace Client.Interfaces
     public interface IUserAuth
     {
         //получение всех
-        Task<Result<List<UserAuth>>> GetUser();
-        //добавление
-        Task<Result<int>> AddUser(UserAuth client);
-        //удаление
-        Task<Result<int>> RemoveUser(int id);
-        //обновление
-        Task<Result<int>> UpdateUser(UserAuth client, int НКлОлд);
+        Task<Result<List<UserRecover>>> GetEmployer();
+        Task<Result<List<UserRecover>>> GetClient();
     }
 }

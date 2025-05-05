@@ -1,59 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Client.Services;
 
 namespace Client.Models
 {
     public class UserAuth : DbClient
     {
-        //поля таблицы Клиент
-        public string Логин { get; set; }
-        public string Пароль { get; set; }
-        public string Email { get; set; }
         public string UserType { get; set; }
 
-        public UserAuth(int НКл = 0, string Логин = "<Логин>", string Пароль = "<Пароль>", string UserType = "<UserType>")
+        // Конструктор для создания нового пользователя с сырым паролем
+        public UserAuth(int НКл = 0, string Логин = "<Логин>", string Пароль = "<Пароль>", string Email = "<Email>", string UserType = "<UserType>")
         {
             this.НКл = НКл;
             this.Логин = Логин;
             this.Пароль = GetPasswordHash(Пароль);
+            this.Email = Email;
+            this.UserType = UserType;
+        }
+
+        // Конструктор для считывания данных из БД с уже хэшированным паролем
+        public UserAuth(int НКл, string Логин, string hashedPassword, string Email, string UserType, bool isHashed)
+        {
+            this.НКл = НКл;
+            this.Логин = Логин;
+            this.Пароль = hashedPassword; // Пароль уже хэшированный
+            this.Email = Email;
             this.UserType = UserType;
         }
 
         private string GetPasswordHash(string password)
         {
             string salt = "TfbcZEIwOHJokZyDIvOqjg==";
-            //Console.WriteLine($"Salt: {salt}");
-
-            string hashedPassword = PasswordHasher.HashPassword(password, salt);
-            //Console.WriteLine($"Hashed Password: {hashedPassword}");
-            return hashedPassword;
+            return PasswordHasher.HashPassword(password, salt);
         }
 
-        /// <summary>
-        /// Получение клонированного экземпляра
-        /// </summary>
-        /// <param name="userAuth">существующий экземпляр</param>
-        /// <returns>клон существующего сотрудника</returns>
         public static UserAuth GetClone(UserAuth userAuth)
         {
             if (userAuth is null)
                 throw new ArgumentNullException(nameof(userAuth));
 
-            return new UserAuth(userAuth.НКл)
+            return new UserAuth(userAuth.НКл, userAuth.Логин, userAuth.Пароль, userAuth.Email, userAuth.UserType, true)
             {
-                Логин = userAuth.Логин,
-                Пароль = userAuth.Пароль,
-                UserType = userAuth.UserType
+                ФИО = userAuth.ФИО,
+                Пол = userAuth.Пол,
+                ДатаРождения = userAuth.ДатаРождения
             };
         }
 
         public override string ToString()
         {
-            return $"{НКл}: login: {Логин} password: {Пароль} userType: {UserType}";
+            return $"{НКл}: login: {Логин} password: {Пароль} email: {Email} userType: {UserType}";
         }
     }
 }

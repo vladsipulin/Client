@@ -34,24 +34,24 @@ namespace Client
 
         private async void LoadData()
         {
-            //получаем
-            var result = await _repo.GetDbClients();
-            if (result)
-            {
-                //извлекаем
-                List<DbClient> clients = result.Value;
-                //пронумеровываем
-                int i = 1;
-                clients.ForEach(e => e.OrderNumber = i++);
-                //отображаем
-                _bsDbClients.DataSource = clients;
-                _bsDbClients.MoveFirst();
-                SetCurrentDbClient();
-            }
-            else
-            {
-                MessageBox.Show(result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            ////получаем
+            //var result = await _repo.GetDbClients();
+            //if (result)
+            //{
+            //    //извлекаем
+            //    List<DbClient> clients = result.Value;
+            //    //пронумеровываем
+            //    int i = 1;
+            //    clients.ForEach(e => e.OrderNumber = i++);
+            //    //отображаем
+            //    _bsDbClients.DataSource = clients;
+            //    _bsDbClients.MoveFirst();
+            //    SetCurrentDbClient();
+            //}
+            //else
+            //{
+            //    MessageBox.Show(result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
 
         }
 

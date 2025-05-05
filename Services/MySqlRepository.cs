@@ -29,40 +29,40 @@ namespace Client.Services
         {
             var list = new List<DbClient>();
 
-            try
-            {
-                using (var con = GetConnection())
-                using (var cmd = con.CreateCommand())
-                {
-                    cmd.CommandText = "SELECT * FROM Клиент";
-                    con.Open();
-                    using (var reader = await cmd.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            var client = new DbClient(reader.GetInt32(0));
-                            var clientPlus = new UserAuth(reader.GetInt32(0));
-                            client.НКл = reader.IsDBNull(0) ? 0 : reader.GetInt32(0); 
-                            client.ФИО = reader.IsDBNull(1) ? "null" : reader.GetString(1);
-                            client.Пол = reader.IsDBNull(2) ? "null" : reader.GetString(2);
-                            client.ДатаРождения = reader.IsDBNull(3) ? "null" : reader.GetDateTime(3).ToShortDateString();
-                            client.Логин = reader.IsDBNull(4) ? "null" : reader.GetString(4);
-                            client.Пароль = reader.IsDBNull(5) ? "null" : reader.GetString(5);
-                            client.Email = reader.IsDBNull(6) ? "null" : reader.GetString(6);
-                            list.Add(client);
-                        }
-                    }
-                }
+            //try
+            //{
+            //    using (var con = GetConnection())
+            //    using (var cmd = con.CreateCommand())
+            //    {
+            //        cmd.CommandText = "SELECT * FROM Клиент";
+            //        con.Open();
+            //        using (var reader = await cmd.ExecuteReaderAsync())
+            //        {
+            //            while (await reader.ReadAsync())
+            //            {
+            //                var client = new DbClient(reader.GetInt32(0));
+            //                var clientPlus = new UserRecover(reader.GetInt32(0));
+            //                client.НКл = reader.IsDBNull(0) ? 0 : reader.GetInt32(0); 
+            //                client.ФИО = reader.IsDBNull(1) ? "null" : reader.GetString(1);
+            //                client.Пол = reader.IsDBNull(2) ? "null" : reader.GetString(2);
+            //                client.ДатаРождения = reader.IsDBNull(3) ? "null" : reader.GetDateTime(3).ToShortDateString();
+            //                client.Логин = reader.IsDBNull(4) ? "null" : reader.GetString(4);
+            //                client.Пароль = reader.IsDBNull(5) ? "null" : reader.GetString(5);
+            //                client.Email = reader.IsDBNull(6) ? "null" : reader.GetString(6);
+            //                list.Add(client);
+            //            }
+            //        }
+            //    }
 
-            }
-            catch (MySqlException ex)
-            {
-                return new Result<List<DbClient>>(GetUserFriendlyErrorMessage(ex));
-            }
-            catch (Exception ex)
-            {
-                return new Result<List<DbClient>>(ex.Message);
-            }
+            //}
+            //catch (MySqlException ex)
+            //{
+            //    return new Result<List<DbClient>>(GetUserFriendlyErrorMessage(ex));
+            //}
+            //catch (Exception ex)
+            //{
+            //    return new Result<List<DbClient>>(ex.Message);
+            //}
 
             return new Result<List<DbClient>>(list);
         }

@@ -15,6 +15,7 @@ using Client.Models;
 using Client.Interfaces;
 using MySqlX.XDevAPI.Common;
 using Client.Utils;
+using System.Configuration;
 
 namespace Client
 {
@@ -39,8 +40,9 @@ namespace Client
                     MailMessage m = new MailMessage(from, to);
                     m.Subject = subject;
                     m.Body = body;
-                    SmtpClient smtp = new SmtpClient("smtp.mail.ru", 587); 
-                    smtp.Credentials = new NetworkCredential("vladsipulin@mail.ru", "Dx0i5QtBtp1EmzPXE76A");
+                    SmtpClient smtp = new SmtpClient("smtp.mail.ru", 587);
+                    smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["SmtpUsername"],
+                                                             ConfigurationManager.AppSettings["SmtpPassword"]);
                     //smtp.Credentials = new NetworkCredential("vladsipulin@mail.ru", "bPqbjmw61PcTD1NEw6nT");
                     smtp.EnableSsl = true;
                     smtp.Send(m);

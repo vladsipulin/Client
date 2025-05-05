@@ -6,21 +6,16 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Client.Services
 {
     internal class RReqOnService : IReqOnService
     {
-        public RReqOnService() { }
-
         private MySqlConnection GetConnection()
         {
             var cs = ConfigurationManager.ConnectionStrings["MySqlConn"].ToString();
             var builder = new MySqlConnectionStringBuilder(cs);
-            //чтоб избежать проблем с русским языком
             builder.CharacterSet = "utf8";
             return new MySqlConnection(builder.ConnectionString);
         }
@@ -31,11 +26,11 @@ namespace Client.Services
             switch (ex.Number)
             {
                 case 0:
-                    if (ex.InnerException.Message.Contains("Unknown"))
+                    if (ex.InnerException?.Message.Contains("Unknown") == true)
                     {
                         message = "Неверное название схемы или таблицы.";
                     }
-                    else if (ex.InnerException.Message.Contains("Access"))
+                    else if (ex.InnerException?.Message.Contains("Access") == true)
                     {
                         message = "Неверное имя или пароль доступа.";
                     }
@@ -45,12 +40,10 @@ namespace Client.Services
                     }
                     break;
                 case 1042:
-                    message = "Сервер по указанному адресу не доступен." +
-                        "\nОшибка ожидания.";
+                    message = "Сервер по указанному адресу не доступен.\nОшибка ожидания.";
                     break;
                 case 1045:
-                    message = "Неверное имя пользователя или пароль, " +
-                        "\nпожалуйста, попробуйте еще раз.";
+                    message = "Неверное имя пользователя или пароль, \nпожалуйста, попробуйте еще раз.";
                     break;
                 default:
                     message = ex.Message;
@@ -64,43 +57,41 @@ namespace Client.Services
             if (objOfTable is null)
                 throw new ArgumentNullException(nameof(objOfTable));
 
-            int result = 0;
             try
             {
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "INSERT INTO ЗаявкаНаУслугу (НЗаявки, НСл, СрокОплаты, НКл, Количество_Ед, Сумма, ДатаЗаявки, ПокупкаСовершена)" +
-                        " VALUES(@НЗаявки, @НСл, @СрокОплаты, @НКл, @Количество_Ед, @Сумма, @ДатаЗаявки, @ПокупкаСовершена)";
+                    cmd.CommandText = @"
+                        INSERT INTO ЗаявкаНаУслугу (
+                            НЗаявки, НУслуги, СрокОплаты, НКл, НТипаДоговора, НОрг,
+                            Количество_Ед, Сумма, ДатаЗаявки, ПокупкаСовершена, НС,
+                            ДатаОплаты, РазмерШтрафа, СуммаКОплате
+                        ) VALUES (
+                            @НЗаявки, @НУслуги, @СрокОплаты, @НКл, @НТипаДоговора, @НОрг,
+                            @Количество_Ед, @Сумма, @ДатаЗаявки, @ПокупкаСовершена, @НС,
+                            @ДатаОплаты, @РазмерШтрафа, @СуммаКОплате
+                        )";
 
-                    cmd.Parameters.Add(new MySqlParameter("@НЗаявки", MySqlDbType.Int32)
-                    { Value = objOfTable.НЗаявки });
+                    cmd.Parameters.AddWithValue("@НЗаявки", objOfTable.НЗаявки);
+                    cmd.Parameters.AddWithValue("@НУслуги", objOfTable.НУслуги);
+                    cmd.Parameters.AddWithValue("@СрокОплаты", objOfTable.СрокОплаты);
+                    cmd.Parameters.AddWithValue("@НКл", objOfTable.НКл);
+                    cmd.Parameters.AddWithValue("@НТипаДоговора", (object)objOfTable.НТипаДоговора ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@НОрг", (object)objOfTable.НОрг ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Количество_Ед", objOfTable.Количество_Ед);
+                    cmd.Parameters.AddWithValue("@Сумма", objOfTable.Сумма);
+                    cmd.Parameters.AddWithValue("@ДатаЗаявки", objOfTable.ДатаЗаявки);
+                    cmd.Parameters.AddWithValue("@ПокупкаСовершена", objOfTable.ПокупкаСовершена);
+                    cmd.Parameters.AddWithValue("@НС", objOfTable.НС);
+                    cmd.Parameters.AddWithValue("@ДатаОплаты", (object)objOfTable.ДатаОплаты ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@РазмерШтрафа", objOfTable.РазмерШтрафа);
+                    cmd.Parameters.AddWithValue("@СуммаКОплате", objOfTable.СуммаКОплате);
 
-                    cmd.Parameters.Add(new MySqlParameter("@НСл", MySqlDbType.Int32)
-                    { Value = objOfTable.НСл });
-
-                    cmd.Parameters.Add(new MySqlParameter("@СрокОплаты", MySqlDbType.Date)
-                    { Value = Convert.ToDateTime(objOfTable.СрокОплаты) });
-
-                    cmd.Parameters.Add(new MySqlParameter("@НКл", MySqlDbType.Int32)
-                    { Value = objOfTable.НКл });
-
-                    cmd.Parameters.Add(new MySqlParameter("@Количество_Ед", MySqlDbType.Int32)
-                    { Value = objOfTable.Количество_Ед });
-
-                    cmd.Parameters.Add(new MySqlParameter("@Сумма", MySqlDbType.Float)
-                    { Value = objOfTable.Сумма });
-
-                    cmd.Parameters.Add(new MySqlParameter("@ДатаЗаявки", MySqlDbType.Date)
-                    { Value = Convert.ToDateTime(objOfTable.ДатаЗаявки) });
-
-                    cmd.Parameters.Add(new MySqlParameter("@ПокупкаСовершена", DbType.Boolean)
-                    { Value = objOfTable.ПокупкаСовершена });
-
-                    con.Open();
-                    result = await cmd.ExecuteNonQueryAsync();
+                    await con.OpenAsync();
+                    int result = await cmd.ExecuteNonQueryAsync();
+                    return new Result<int>(result);
                 }
-
             }
             catch (MySqlException ex)
             {
@@ -110,8 +101,6 @@ namespace Client.Services
             {
                 return new Result<int>(ex.Message);
             }
-
-            return new Result<int>(result);
         }
 
         public async Task<Result<List<ReqOnService>>> Get()
@@ -124,24 +113,33 @@ namespace Client.Services
                 using (var cmd = con.CreateCommand())
                 {
                     cmd.CommandText = "SELECT * FROM ЗаявкаНаУслугу";
-                    con.Open();
+                    await con.OpenAsync();
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
                         {
-                            var objOfTable = new ReqOnService(reader.GetInt32(0));
-                            objOfTable.НЗаявки = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
-                            objOfTable.НСл = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
-                            objOfTable.СрокОплаты = reader.IsDBNull(2) ? "null" : reader.GetDateTime(2).ToShortDateString();
-                            objOfTable.НКл = reader.IsDBNull(3) ? 0 : reader.GetInt32(3);
-                            objOfTable.Количество_Ед = reader.IsDBNull(4) ? 0 : reader.GetInt32(4);
-                            objOfTable.Сумма = reader.IsDBNull(5) ? 0 : reader.GetFloat(5);
-                            objOfTable.ДатаЗаявки = reader.IsDBNull(6) ? "null" : reader.GetDateTime(6).ToShortDateString();     
+                            var objOfTable = new ReqOnService
+                            {
+                                НЗаявки = reader.GetInt32("НЗаявки"),
+                                НУслуги = reader.GetInt32("НУслуги"),
+                                СрокОплаты = reader.GetDateTime("СрокОплаты"),
+                                НКл = reader.GetInt32("НКл"),
+                                НТипаДоговора = reader.IsDBNull(reader.GetOrdinal("НТипаДоговора")) ? (int?)null : reader.GetInt32("НТипаДоговора"),
+                                НОрг = reader.IsDBNull(reader.GetOrdinal("НОрг")) ? (int?)null : reader.GetInt32("НОрг"),
+                                Количество_Ед = reader.GetInt32("Количество_Ед"),
+                                Сумма = reader.GetFloat("Сумма"),
+                                ДатаЗаявки = reader.GetDateTime("ДатаЗаявки"),
+                                ПокупкаСовершена = reader.GetBoolean("ПокупкаСовершена"),
+                                НС = reader.GetInt32("НС"),
+                                ДатаОплаты = reader.IsDBNull(reader.GetOrdinal("ДатаОплаты")) ? (DateTime?)null : reader.GetDateTime("ДатаОплаты"),
+                                РазмерШтрафа = reader.GetFloat("РазмерШтрафа"),
+                                СуммаКОплате = reader.GetFloat("СуммаКОплате")
+                            };
                             list.Add(objOfTable);
                         }
                     }
                 }
-
+                return new Result<List<ReqOnService>>(list);
             }
             catch (MySqlException ex)
             {
@@ -151,8 +149,6 @@ namespace Client.Services
             {
                 return new Result<List<ReqOnService>>(ex.Message);
             }
-
-            return new Result<List<ReqOnService>>(list);
         }
 
         public async Task<int> GetIdByRequest(int НЗаявки)
@@ -163,34 +159,99 @@ namespace Client.Services
                 using (var cmd = con.CreateCommand())
                 {
                     cmd.CommandText = "SELECT COUNT(*) FROM ЗаявкаНаУслугу WHERE НЗаявки = @НЗаявки";
-                    cmd.Parameters.Add(new MySqlParameter("@НЗаявки", MySqlDbType.Int32) { Value = НЗаявки });
+                    cmd.Parameters.AddWithValue("@НЗаявки", НЗаявки);
 
-                    con.Open();
+                    await con.OpenAsync();
                     var result = await cmd.ExecuteScalarAsync();
-                    con.Close();
-
-                    return Convert.ToInt32(result) > 0 ? 1 : 0; // Если найдено, возвращаем 1, иначе 0
+                    return Convert.ToInt32(result) > 0 ? НЗаявки : 0;
                 }
             }
             catch (MySqlException)
             {
-                return -2; // Ошибка подключения
+                return -2;
             }
             catch (Exception)
             {
-                return -3; // Общая ошибка
+                return -3;
             }
         }
 
-
-        public Task<Result<int>> Remove(int НЗаявки, int НКл)
+        public async Task<Result<int>> Remove(int НЗаявки, int НУслуги, int НКл)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var con = GetConnection())
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM ЗаявкаНаУслугу WHERE НЗаявки = @НЗаявки AND НУслуги = @НУслуги AND НКл = @НКл";
+                    cmd.Parameters.AddWithValue("@НЗаявки", НЗаявки);
+                    cmd.Parameters.AddWithValue("@НУслуги", НУслуги);
+                    cmd.Parameters.AddWithValue("@НКл", НКл);
+
+                    await con.OpenAsync();
+                    int result = await cmd.ExecuteNonQueryAsync();
+                    return new Result<int>(result);
+                }
+            }
+            catch (MySqlException ex)
+            {
+                return new Result<int>(GetUserFriendlyErrorMessage(ex));
+            }
+            catch (Exception ex)
+            {
+                return new Result<int>(ex.Message);
+            }
         }
 
-        public Task<Result<int>> Update(ReqOnService objOfTable, int НЗаявкиОлд, int НКлОлд)
+        public async Task<Result<int>> Update(ReqOnService objOfTable, int НЗаявкиОлд, int НУслугиОлд, int НКлОлд)
         {
-            throw new NotImplementedException();
+            if (objOfTable is null)
+                throw new ArgumentNullException(nameof(objOfTable));
+
+            try
+            {
+                using (var con = GetConnection())
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        UPDATE ЗаявкаНаУслугу SET
+                            НЗаявки = @НЗаявки, НУслуги = @НУслуги, СрокОплаты = @СрокОплаты, НКл = @НКл,
+                            НТипаДоговора = @НТипаДоговора, НОрг = @НОрг, Количество_Ед = @Количество_Ед,
+                            Сумма = @Сумма, ДатаЗаявки = @ДатаЗаявки, ПокупкаСовершена = @ПокупкаСовершена,
+                            НС = @НС, ДатаОплаты = @ДатаОплаты, РазмерШтрафа = @РазмерШтрафа, СуммаКОплате = @СуммаКОплате
+                        WHERE НЗаявки = @НЗаявкиОлд AND НУслуги = @НУслугиОлд AND НКл = @НКлОлд";
+
+                    cmd.Parameters.AddWithValue("@НЗаявки", objOfTable.НЗаявки);
+                    cmd.Parameters.AddWithValue("@НУслуги", objOfTable.НУслуги);
+                    cmd.Parameters.AddWithValue("@СрокОплаты", objOfTable.СрокОплаты);
+                    cmd.Parameters.AddWithValue("@НКл", objOfTable.НКл);
+                    cmd.Parameters.AddWithValue("@НТипаДоговора", (object)objOfTable.НТипаДоговора ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@НОрг", (object)objOfTable.НОрг ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Количество_Ед", objOfTable.Количество_Ед);
+                    cmd.Parameters.AddWithValue("@Сумма", objOfTable.Сумма);
+                    cmd.Parameters.AddWithValue("@ДатаЗаявки", objOfTable.ДатаЗаявки);
+                    cmd.Parameters.AddWithValue("@ПокупкаСовершена", objOfTable.ПокупкаСовершена);
+                    cmd.Parameters.AddWithValue("@НС", objOfTable.НС);
+                    cmd.Parameters.AddWithValue("@ДатаОплаты", (object)objOfTable.ДатаОплаты ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@РазмерШтрафа", objOfTable.РазмерШтрафа);
+                    cmd.Parameters.AddWithValue("@СуммаКОплате", objOfTable.СуммаКОплате);
+                    cmd.Parameters.AddWithValue("@НЗаявкиОлд", НЗаявкиОлд);
+                    cmd.Parameters.AddWithValue("@НУслугиОлд", НУслугиОлд);
+                    cmd.Parameters.AddWithValue("@НКлОлд", НКлОлд);
+
+                    await con.OpenAsync();
+                    int result = await cmd.ExecuteNonQueryAsync();
+                    return new Result<int>(result);
+                }
+            }
+            catch (MySqlException ex)
+            {
+                return new Result<int>(GetUserFriendlyErrorMessage(ex));
+            }
+            catch (Exception ex)
+            {
+                return new Result<int>(ex.Message);
+            }
         }
     }
 }

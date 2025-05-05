@@ -39,6 +39,10 @@
             RADIOBTN_ONLINEPAY = new RadioButton();
             RADIOBTN_CASHPAY = new RadioButton();
             groupBox1 = new GroupBox();
+            CHKBOX_FROM_ORGANIZATION = new CheckBox();
+            CMBX_ORGANIZATION = new ComboBox();
+            TB_DISCOUNT = new TextBox();
+            LBL_DISCOUNT = new Label();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvSelectedServices).BeginInit();
             groupBox1.SuspendLayout();
@@ -285,11 +289,61 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Способ оплаты";
             // 
+            // CHKBOX_FROM_ORGANIZATION
+            // 
+            CHKBOX_FROM_ORGANIZATION.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            CHKBOX_FROM_ORGANIZATION.AutoSize = true;
+            CHKBOX_FROM_ORGANIZATION.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            CHKBOX_FROM_ORGANIZATION.Location = new Point(19, 350);
+            CHKBOX_FROM_ORGANIZATION.Name = "CHKBOX_FROM_ORGANIZATION";
+            CHKBOX_FROM_ORGANIZATION.Size = new Size(200, 25);
+            CHKBOX_FROM_ORGANIZATION.TabIndex = 43;
+            CHKBOX_FROM_ORGANIZATION.Text = "Я от организации";
+            CHKBOX_FROM_ORGANIZATION.UseVisualStyleBackColor = true;
+            // 
+            // CMBX_ORGANIZATION
+            // 
+            CMBX_ORGANIZATION.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            CMBX_ORGANIZATION.DropDownStyle = ComboBoxStyle.DropDownList;
+            CMBX_ORGANIZATION.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            CMBX_ORGANIZATION.FormattingEnabled = true;
+            CMBX_ORGANIZATION.Location = new Point(19, 377);
+            CMBX_ORGANIZATION.Name = "CMBX_ORGANIZATION";
+            CMBX_ORGANIZATION.Size = new Size(400, 29);
+            CMBX_ORGANIZATION.TabIndex = 44;
+            CMBX_ORGANIZATION.Enabled = false;
+            // 
+            // TB_DISCOUNT
+            // 
+            TB_DISCOUNT.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            TB_DISCOUNT.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            TB_DISCOUNT.Location = new Point(218, 412);
+            TB_DISCOUNT.Name = "TB_DISCOUNT";
+            TB_DISCOUNT.ReadOnly = true;
+            TB_DISCOUNT.Size = new Size(200, 29);
+            TB_DISCOUNT.TabIndex = 45;
+            TB_DISCOUNT.Text = "Скидка: 0%";
+            // 
+            // LBL_DISCOUNT
+            // 
+            LBL_DISCOUNT.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            LBL_DISCOUNT.AutoSize = true;
+            LBL_DISCOUNT.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            LBL_DISCOUNT.Location = new Point(19, 415);
+            LBL_DISCOUNT.Name = "LBL_DISCOUNT";
+            LBL_DISCOUNT.Size = new Size(67, 21);
+            LBL_DISCOUNT.TabIndex = 46;
+            LBL_DISCOUNT.Text = "Скидка:";
+            // 
             // ReqOnServiceForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(794, 556);
+            Controls.Add(LBL_DISCOUNT);
+            Controls.Add(TB_DISCOUNT);
+            Controls.Add(CMBX_ORGANIZATION);
+            Controls.Add(CHKBOX_FROM_ORGANIZATION);
             Controls.Add(groupBox1);
             Controls.Add(button1);
             Controls.Add(panel1);
@@ -336,5 +390,9 @@
         private RadioButton RADIOBTN_ONLINEPAY;
         private RadioButton RADIOBTN_CASHPAY;
         private GroupBox groupBox1;
+        private CheckBox CHKBOX_FROM_ORGANIZATION;
+        private ComboBox CMBX_ORGANIZATION;
+        private TextBox TB_DISCOUNT;
+        private Label LBL_DISCOUNT;
     }
 }

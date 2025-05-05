@@ -45,12 +45,12 @@ namespace Client.Models
         /// </summary>
         /// <param name="userAuth">существующий экземпляр</param>
         /// <returns>клон существующего сотрудника</returns>
-        public static UserAuth GetClone(UserAuth userAuth)
+        public static UserRecover GetClone(UserRecover userAuth)
         {
             if (userAuth is null)
                 throw new ArgumentNullException(nameof(userAuth));
 
-            return new UserAuth(userAuth.НКл)
+            return new UserRecover("","",userAuth.Id)
             {
                 Логин = userAuth.Логин,
                 Пароль = userAuth.Пароль

@@ -17,17 +17,17 @@ namespace Client
 
         private async void loginButton_Click(object sender, EventArgs e)
         {
-            UserAuth user = new UserAuth(0, тбЛогин.Text, тбПароль.Text);
+            UserRecover user = new UserRecover("<Email>","<ФИО>",0,тбЛогин.Text, тбПароль.Text);
             //UserAuth user = new UserAuth(0, "admin", "admin");
             string userAddInfo = String.Empty;
 
             _repo = new Authorization();
 
-            var result = await _repo.GetUser();
+            var result = await _repo.GetClient();
             if (result)
             {
                 //извлекаем
-                List<UserAuth> users = result.Value;
+                List<UserRecover> users = result.Value;
                 //пронумеровываем
                 bool IsUserExists = false;
                 foreach (var element in users)
@@ -36,29 +36,29 @@ namespace Client
                     {
                         IsUserExists = true;
                         userAddInfo = element.UserType;
-                        user.НКл = element.НКл;
+                        user.Id = element.Id;
                         break;
                     }
                 }
 
                 if (IsUserExists)
                 {
-                    try
+                    if (userAddInfo.Equals("Портье"))
                     {
                         Convert.ToInt32(userAddInfo);
                         MessageBox.Show("Добро пожаловать в систему, сотрудник", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         MainForm mf = new MainForm();
                         mf.lbWhoLogged.Text = "Сотрудник:";
-                        mf.keyLbl.Text = user.НКл.ToString();
+                        mf.keyLbl.Text = user.Id.ToString();
                         mf.Show();
                     }
-                    catch
+                    else
                     {
                         MessageBox.Show("Добро пожаловать в систему, клиент", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         Terminal_MainForm mf = new Terminal_MainForm();
                         //MainForm mf = new MainForm();
                         mf.lbWhoLogged.Text = "Клиент:";
-                        mf.keyLbl.Text = user.НКл.ToString();
+                        mf.keyLbl.Text = user.Id.ToString();
                         mf.Show();
                     }
                 }
@@ -95,6 +95,13 @@ namespace Client
             //тбПароль.Text = "admin";
             тбЛогин.Text = "sipulin_vi";
             тбПароль.Text = "123";
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //Terminal_MainForm ac = new Terminal_MainForm();
+            AuthorizeClient ac = new AuthorizeClient();
+            ac.Show();
         }
     }
 }
