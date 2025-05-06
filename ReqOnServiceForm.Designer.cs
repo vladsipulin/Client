@@ -76,9 +76,9 @@
             label1.Location = new Point(19, 31);
             label1.Margin = new Padding(10);
             label1.Name = "label1";
-            label1.Size = new Size(416, 37);
+            label1.Size = new Size(418, 37);
             label1.TabIndex = 24;
-            label1.Text = "Содержание заявки на услугу";
+            label1.Text = "Содержание заявки на услуги";
             // 
             // кбНКл
             // 
@@ -107,9 +107,9 @@
             label9.Font = new Font("Segoe UI", 12F, FontStyle.Bold | FontStyle.Underline, GraphicsUnit.Point);
             label9.Location = new Point(19, 446);
             label9.Name = "label9";
-            label9.Size = new Size(179, 21);
+            label9.Size = new Size(98, 21);
             label9.TabIndex = 30;
-            label9.Text = "Сумма за услугу, руб:";
+            label9.Text = "Итого, руб:";
             // 
             // тбСумма
             // 
@@ -296,7 +296,7 @@
             CHKBOX_FROM_ORGANIZATION.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             CHKBOX_FROM_ORGANIZATION.Location = new Point(19, 350);
             CHKBOX_FROM_ORGANIZATION.Name = "CHKBOX_FROM_ORGANIZATION";
-            CHKBOX_FROM_ORGANIZATION.Size = new Size(200, 25);
+            CHKBOX_FROM_ORGANIZATION.Size = new Size(155, 25);
             CHKBOX_FROM_ORGANIZATION.TabIndex = 43;
             CHKBOX_FROM_ORGANIZATION.Text = "Я от организации";
             CHKBOX_FROM_ORGANIZATION.UseVisualStyleBackColor = true;
@@ -305,13 +305,13 @@
             // 
             CMBX_ORGANIZATION.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             CMBX_ORGANIZATION.DropDownStyle = ComboBoxStyle.DropDownList;
+            CMBX_ORGANIZATION.Enabled = false;
             CMBX_ORGANIZATION.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             CMBX_ORGANIZATION.FormattingEnabled = true;
             CMBX_ORGANIZATION.Location = new Point(19, 377);
             CMBX_ORGANIZATION.Name = "CMBX_ORGANIZATION";
             CMBX_ORGANIZATION.Size = new Size(400, 29);
             CMBX_ORGANIZATION.TabIndex = 44;
-            CMBX_ORGANIZATION.Enabled = false;
             // 
             // TB_DISCOUNT
             // 
@@ -331,7 +331,7 @@
             LBL_DISCOUNT.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             LBL_DISCOUNT.Location = new Point(19, 415);
             LBL_DISCOUNT.Name = "LBL_DISCOUNT";
-            LBL_DISCOUNT.Size = new Size(67, 21);
+            LBL_DISCOUNT.Size = new Size(65, 21);
             LBL_DISCOUNT.TabIndex = 46;
             LBL_DISCOUNT.Text = "Скидка:";
             // 

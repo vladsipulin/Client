@@ -69,11 +69,11 @@
             label1.BackColor = Color.LightSteelBlue;
             label1.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold, GraphicsUnit.Point);
             label1.ForeColor = Color.DarkBlue;
-            label1.Location = new Point(182, 21);
+            label1.Location = new Point(54, 21);
             label1.Name = "label1";
-            label1.Size = new Size(334, 32);
+            label1.Size = new Size(400, 32);
             label1.TabIndex = 0;
-            label1.Text = "ИС гостиничного комплекса";
+            label1.Text = "Рабочая среда сотрудника портье";
             // 
             // label2
             // 
@@ -120,9 +120,9 @@
             // button3
             // 
             button3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button3.Location = new Point(420, 117);
+            button3.Location = new Point(545, 119);
             button3.Name = "button3";
-            button3.Size = new Size(106, 39);
+            button3.Size = new Size(66, 39);
             button3.TabIndex = 7;
             button3.Text = "Забронировать номер";
             button3.UseVisualStyleBackColor = true;
@@ -133,24 +133,24 @@
             label6.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label6.AutoSize = true;
             label6.BackColor = Color.LightSteelBlue;
-            label6.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
+            label6.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             label6.ForeColor = SystemColors.ActiveCaptionText;
             label6.Location = new Point(598, 35);
             label6.Name = "label6";
-            label6.Size = new Size(108, 15);
+            label6.Size = new Size(102, 17);
             label6.TabIndex = 8;
-            label6.Text = "ID пользователя:";
+            label6.Text = "Номер портье:";
             // 
             // keyLbl
             // 
             keyLbl.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             keyLbl.AutoSize = true;
             keyLbl.BackColor = Color.LightSteelBlue;
-            keyLbl.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
+            keyLbl.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             keyLbl.ForeColor = SystemColors.ActiveCaptionText;
-            keyLbl.Location = new Point(713, 35);
+            keyLbl.Location = new Point(699, 35);
             keyLbl.Name = "keyLbl";
-            keyLbl.Size = new Size(44, 15);
+            keyLbl.Size = new Size(48, 17);
             keyLbl.TabIndex = 9;
             keyLbl.Text = "123456";
             // 
@@ -210,7 +210,7 @@
             кбТаблицыБД.FormattingEnabled = true;
             кбТаблицыБД.Location = new Point(131, 75);
             кбТаблицыБД.Name = "кбТаблицыБД";
-            кбТаблицыБД.Size = new Size(270, 23);
+            кбТаблицыБД.Size = new Size(385, 23);
             кбТаблицыБД.TabIndex = 15;
             кбТаблицыБД.SelectionChangeCommitted += кбТаблицыБД_SelectionChangeCommitted;
             // 
@@ -299,19 +299,19 @@
             // comboBox1
             // 
             comboBox1.FormattingEnabled = true;
-            comboBox1.Items.AddRange(new object[] { "Управление группами от организаций", "Управление договорами с организациями", "Управление заявками клиентов на заселения", "Провести покупки услуг по заявкам клиентов", "Управление заселением групп от организаций" });
+            comboBox1.Items.AddRange(new object[] { "Регистрация нового портье", "Управление договорами с организациями", "Управление заявками клиентов на услуги", "Управление заявками клиентов на возврат средств за услуги", "Отчет об отзывах клиентов о терминале" });
             comboBox1.Location = new Point(131, 120);
             comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(270, 23);
+            comboBox1.Size = new Size(385, 23);
             comboBox1.TabIndex = 27;
             comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             // 
             // button8
             // 
             button8.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button8.Location = new Point(643, 120);
+            button8.Location = new Point(676, 120);
             button8.Name = "button8";
-            button8.Size = new Size(107, 39);
+            button8.Size = new Size(74, 39);
             button8.TabIndex = 26;
             button8.Text = "Отзыв на услугу";
             button8.UseVisualStyleBackColor = true;
@@ -319,9 +319,9 @@
             // 
             // button7
             // 
-            button7.Location = new Point(532, 120);
+            button7.Location = new Point(618, 117);
             button7.Name = "button7";
-            button7.Size = new Size(106, 39);
+            button7.Size = new Size(52, 39);
             button7.TabIndex = 25;
             button7.Text = "Отзыв на заселение";
             button7.UseVisualStyleBackColor = true;
@@ -330,9 +330,9 @@
             // button6
             // 
             button6.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button6.Location = new Point(420, 75);
+            button6.Location = new Point(546, 77);
             button6.Name = "button6";
-            button6.Size = new Size(106, 39);
+            button6.Size = new Size(66, 39);
             button6.TabIndex = 24;
             button6.Text = "Заявка на службу быта";
             button6.UseVisualStyleBackColor = true;
@@ -341,9 +341,9 @@
             // button5
             // 
             button5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button5.Location = new Point(643, 75);
+            button5.Location = new Point(676, 75);
             button5.Name = "button5";
-            button5.Size = new Size(107, 39);
+            button5.Size = new Size(74, 39);
             button5.TabIndex = 23;
             button5.Text = "Статус заявки на заселение";
             button5.UseVisualStyleBackColor = true;
@@ -352,9 +352,9 @@
             // button4
             // 
             button4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button4.Location = new Point(532, 75);
+            button4.Location = new Point(618, 75);
             button4.Name = "button4";
-            button4.Size = new Size(107, 39);
+            button4.Size = new Size(53, 39);
             button4.TabIndex = 22;
             button4.Text = "Профиль клиента";
             button4.UseVisualStyleBackColor = true;
@@ -391,7 +391,7 @@
             Controls.Add(panel1);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "ИС гостиничного комплекса";
+            Text = "Главная форма портье";
             Load += MainForm_Load;
             ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();

@@ -11,7 +11,7 @@ namespace Client.Interfaces
     public interface IUserAuth
     {
         //получение всех
-        Task<Result<List<UserRecover>>> GetEmployer();
+        Task<Result<List<Employer>>> GetEmployer();
         Task<Result<List<UserRecover>>> GetClient();
     }
 }

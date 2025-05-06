@@ -17,59 +17,38 @@ namespace Client
 
         private async void loginButton_Click(object sender, EventArgs e)
         {
-            UserRecover user = new UserRecover("<Email>","<‘»ќ>",0,тбЋогин.Text, тбѕароль.Text);
-            //UserAuth user = new UserAuth(0, "admin", "admin");
+            UserAuth user = new UserAuth(0, тбЋогин.Text, тбѕароль.Text);
             string userAddInfo = String.Empty;
 
             _repo = new Authorization();
 
-            var result = await _repo.GetClient();
+            var result = await _repo.GetEmployer();
             if (result)
             {
-                //извлекаем
-                List<UserRecover> users = result.Value;
-                //пронумеровываем
+                List<Employer> employers = result.Value;
                 bool IsUserExists = false;
-                foreach (var element in users)
+                foreach (var element in employers)
                 {
                     if (Equals(element.Ћогин, user.Ћогин) & Equals(element.ѕароль, user.ѕароль))
                     {
                         IsUserExists = true;
-                        userAddInfo = element.UserType;
-                        user.Id = element.Id;
+                        user.ID = element.ID;
                         break;
                     }
                 }
 
                 if (IsUserExists)
                 {
-                    if (userAddInfo.Equals("ѕортье"))
-                    {
-                        Convert.ToInt32(userAddInfo);
-                        MessageBox.Show("ƒобро пожаловать в систему, сотрудник", "»нформаци€", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        MainForm mf = new MainForm();
-                        mf.lbWhoLogged.Text = "—отрудник:";
-                        mf.keyLbl.Text = user.Id.ToString();
-                        mf.Show();
-                    }
-                    else
-                    {
-                        MessageBox.Show("ƒобро пожаловать в систему, клиент", "»нформаци€", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        Terminal_MainForm mf = new Terminal_MainForm();
-                        //MainForm mf = new MainForm();
-                        mf.lbWhoLogged.Text = " лиент:";
-                        mf.keyLbl.Text = user.Id.ToString();
-                        mf.Show();
-                    }
+                    MessageBox.Show("ƒобро пожаловать в систему, сотрудник", "»нформаци€", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MainForm mf = new MainForm();
+                    mf.lbWhoLogged.Text = "—отрудник:";
+                    mf.keyLbl.Text = user.ID.ToString();
+                    mf.Show();
                 }
                 else
                 {
                     MessageBox.Show("¬веденный пользователь не существует/неверно набраны логин или пароль", "ќшибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                //users.ForEach(e => Equals(e.Ћогин, user.Ћогин) ? i++ : user.Ћогин = "sdd");
-                //отображаем
-                //_bsDbClients.DataSource = users;
-                //_bsDbClients.MoveFirst();
             }
             else
             {
@@ -91,10 +70,8 @@ namespace Client
 
         private void AuthorizationForm_Load(object sender, EventArgs e)
         {
-            //тбЋогин.Text = "admin";
-            //тбѕароль.Text = "admin";
-            тбЋогин.Text = "sipulin_vi";
-            тбѕароль.Text = "123";
+            тбЋогин.Text = "admin";
+            тбѕароль.Text = "admin";
         }
 
         private void button1_Click(object sender, EventArgs e)

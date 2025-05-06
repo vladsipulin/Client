@@ -95,9 +95,9 @@ namespace Client.Services
             return new Result<List<UserRecover>>(list);
         }
 
-        public async Task<Result<List<UserRecover>>> GetEmployer()
+        public async Task<Result<List<Employer>>> GetEmployer()
         {
-            var list = new List<UserRecover>();
+            var list = new List<Employer>();
 
             try
             {
@@ -105,20 +105,17 @@ namespace Client.Services
                 using (var cmd = con.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT НС, Логин, Пароль, ФИО, Email
+                        SELECT НС, Логин, Пароль
                         FROM Портье";
                     await con.OpenAsync();
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
                         {
-                            var user = new UserRecover(
-                                Id: reader.GetInt32(0),
+                            var user = new Employer(
+                                ID: reader.GetInt32(0),
                                 Логин: reader.IsDBNull(1) ? null : reader.GetString(1),
-                                Пароль: reader.IsDBNull(2) ? null : reader.GetString(2),
-                                ФИО: reader.IsDBNull(3) ? null : reader.GetString(3),
-                                ЭлПочта: reader.IsDBNull(4) ? null : reader.GetString(4),
-                                UserType: "Портье"
+                                Пароль: reader.IsDBNull(2) ? null : reader.GetString(2)
                             );
                             list.Add(user);
                         }
@@ -127,14 +124,14 @@ namespace Client.Services
             }
             catch (MySqlException ex)
             {
-                return new Result<List<UserRecover>>(GetUserFriendlyErrorMessage(ex));
+                return new Result<List<Employer>>(GetUserFriendlyErrorMessage(ex));
             }
             catch (Exception ex)
             {
-                return new Result<List<UserRecover>>(ex.Message);
+                return new Result<List<Employer>>(ex.Message);
             }
 
-            return new Result<List<UserRecover>>(list);
+            return new Result<List<Employer>>(list);
         }
 
         public async Task<Result<int>> AddUser(UserRecover userAuth)

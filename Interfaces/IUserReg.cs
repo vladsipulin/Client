@@ -11,7 +11,9 @@ namespace Client.Interfaces
     internal interface IUserReg
     {
         void CheckIfUserExists(string login, string email);
-        //добавление
         Task<Result<int>> AddNewUser(UserReg client);
+        Task<int> GetIdByRequest(int НС);
+        bool IsValidPassword(string password);
+        bool HasRepeatingOrSequentialPatterns(string password);
     }
 }

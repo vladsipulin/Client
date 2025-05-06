@@ -27,23 +27,32 @@ namespace Client
         private async void regButton_Click(object sender, EventArgs e)
         {
             bool emptyDataFinded = false;
-            foreach (Control control in this.Controls)
+            foreach (System.Windows.Forms.TextBox textBox in this.Controls.OfType<System.Windows.Forms.TextBox>())
             {
-                //устанавливаем для всех объектов типа textBox свойство - только для чтения
-                if (control is System.Windows.Forms.TextBox)
+                if (textBox.Text.Equals(String.Empty) && textBox.Name != "тбID")
                 {
-                    System.Windows.Forms.TextBox textBox = (System.Windows.Forms.TextBox)control;
-                    if (textBox.Text.Equals(String.Empty))
-                    {
-                        emptyDataFinded = true;
-                        break;
-                    };
+                    emptyDataFinded = true;
+                    break;
                 }
             }
             if (!emptyDataFinded)
             {
                 _reg = new Registration();
-                int нкл = Convert.ToInt32(тбНКл.Text);
+
+                Random rand = new Random();
+                int id = 0;
+                bool isUnique = false;
+
+                while (!isUnique)
+                {
+                    id = rand.Next(10000, 99999);
+                    var existing = await _reg.GetIdByRequest(id);
+                    if (existing == 0)
+                    {
+                        isUnique = true;
+                    }
+                }
+
                 string логин = тбЛогин.Text;
                 string пароль = тбПароль.Text;
                 string почта = тбПочта.Text;
@@ -52,17 +61,30 @@ namespace Client
                 DateTime др = полеДР.Value;
                 Result<int> result;
 
-                UserReg regNewUser = new UserReg(нкл, фио, пол, др, логин, пароль, почта);
-                // _reg.CheckIfUserExists(логин, почта)
-                result = await _reg.AddNewUser(regNewUser);
+                bool isValid = _reg.IsValidPassword(пароль);
 
-                if (!result)
+                if (isValid)
                 {
-                    MessageBox.Show(result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    UserReg regNewUser = new UserReg(id, фио, пол, др, логин, пароль, почта);
+                    result = await _reg.AddNewUser(regNewUser);
+
+                    if (!result)
+                    {
+                        MessageBox.Show(result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Успешное добавление нового портье", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Вы зарегистрировались как новый клиент!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Пароль не соответствует требованиям:\n" +
+                                    "- Длина не менее 16 символов\n" +
+                                    "- Не должен быть предсказуемым\n" +
+                                    "- Не должен содержать повторяющиеся символы или группы\n" +
+                                    "- Должен содержать прописные и строчные буквы, цифры и спецсимволы",
+                                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             else
@@ -70,6 +92,11 @@ namespace Client
                 MessageBox.Show("Заполните все поля для регистрации", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+        }
+
+        private void RegistrationForm_Load(object sender, EventArgs e)
+        {
+            тбID.Enabled = false;
         }
     }
 }

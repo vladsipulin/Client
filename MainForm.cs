@@ -313,13 +313,6 @@ namespace Client
                 button7.Visible = false;
                 button8.Visible = false;
 
-                comboBox1.Items.Clear();
-                comboBox1.Items.Add("Управление группами от организаций");
-                comboBox1.Items.Add("Управление договорами с организациями");
-                comboBox1.Items.Add("Управление заявками клиентов на заселения");
-                comboBox1.Items.Add("Провести покупки услуг по заявкам клиентов");
-                comboBox1.Items.Add("Управление заселением групп от организаций");
-
                 показатьГостиничныеКомплексы.Visible = false;
                 показатьЗаселениеКлиента.Visible = false;
                 показатьЗаявкиКлиентов.Visible = false;
@@ -337,7 +330,7 @@ namespace Client
                 label6.ForeColor = Color.Black;
                 keyLbl.ForeColor = Color.Black;           
 
-                string sql = "SELECT TABLE_NAME AS 'id', TABLE_COMMENT AS 'Таблица' FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='hotel'";
+                string sql = "SELECT TABLE_NAME AS 'id', TABLE_COMMENT AS 'Таблица' FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='Obuhovka'";
                 ComboBoxDataForFill ИменаТаблиц = new ComboBoxDataForFill(sql, "Таблица", "id");
                 LoadCombo(ИменаТаблиц);
                 кбТаблицыБД.DataSource = ИменаТаблиц.dataSource;
@@ -348,7 +341,7 @@ namespace Client
                 SelectFrom(tableName);
 
                 string таблица = (string)кбТаблицыБД.SelectedValue;
-                sql = "SELECT COLUMN_NAME AS 'Столбец' FROM INFORMATION_SCHEMA.COlUMNS WHERE TABLE_SCHEMA='hotel' AND TABLE_NAME=@Таблица";
+                sql = "SELECT COLUMN_NAME AS 'Столбец' FROM INFORMATION_SCHEMA.COlUMNS WHERE TABLE_SCHEMA='Obuhovka' AND TABLE_NAME=@Таблица";
                 ComboBoxDataForFill Столбец = new ComboBoxDataForFill(sql, "Столбец", "Столбец");
                 Столбец.paramsForSQLQuery.Add(new MySqlParameter("@Таблица", MySqlDbType.VarChar, 255) { Value = таблица });
                 LoadCombo(Столбец);
@@ -428,7 +421,7 @@ namespace Client
             else
                 SelectFrom(tableName);
 
-            string sql = "SELECT COLUMN_NAME AS 'Столбец' FROM INFORMATION_SCHEMA.COlUMNS WHERE TABLE_SCHEMA='hotel' AND TABLE_NAME=@Таблица";
+            string sql = "SELECT COLUMN_NAME AS 'Столбец' FROM INFORMATION_SCHEMA.COlUMNS WHERE TABLE_SCHEMA='Obuhovka' AND TABLE_NAME=@Таблица";
             ComboBoxDataForFill Столбец = new ComboBoxDataForFill(sql, "Столбец", "Столбец");
             Столбец.paramsForSQLQuery.Add(new MySqlParameter("@Таблица", MySqlDbType.VarChar, 255) { Value = tableName });
             LoadCombo(Столбец);
@@ -517,9 +510,8 @@ namespace Client
             {
                 if (comboBox1.SelectedIndex == 0)
                 {
-                    Группа obj = new Группа();
-                    obj.lbWhoLogged.Text = keyLbl.Text;
-                    obj.ShowDialog();
+                    RegistrationForm rgf = new RegistrationForm();
+                    rgf.ShowDialog();
                 }
                 else if (comboBox1.SelectedIndex == 1)
                 {
@@ -550,9 +542,8 @@ namespace Client
             {
                 if (comboBox1.SelectedIndex == 0)
                 {
-                    //ReqOnServiceForm rsf = new ReqOnServiceForm();
-                    //rsf.lbWhoLogged.Text = keyLbl.Text;
-                    //rsf.ShowDialog();
+                    RegistrationForm rgf = new RegistrationForm();
+                    rgf.ShowDialog();
                 }
                 else if (comboBox1.SelectedIndex == 1)
                 {

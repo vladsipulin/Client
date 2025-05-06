@@ -25,6 +25,31 @@ namespace Client.Services
             return new MySqlConnection(builder.ConnectionString);
         }
 
+        public async Task<int> GetIdByRequest(int НС)
+        {
+            try
+            {
+                using (var con = GetConnection())
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT COUNT(*) FROM Портье WHERE НС = @НС";
+                    cmd.Parameters.AddWithValue("@НС", НС);
+
+                    await con.OpenAsync();
+                    var result = await cmd.ExecuteScalarAsync();
+                    return Convert.ToInt32(result) > 0 ? НС : 0;
+                }
+            }
+            catch (MySqlException)
+            {
+                return -2;
+            }
+            catch (Exception)
+            {
+                return -3;
+            }
+        }
+
         public void CheckIfUserExists(string login, string email)
         {
             string message = String.Empty;
@@ -60,6 +85,67 @@ namespace Client.Services
             }
         }
 
+        public bool IsValidPassword(string password)
+        {
+            // Список предсказуемых паролей
+            var predictablePasswords = new HashSet<string>
+            {
+                "123456", "123456789", "qwerty", "12345", "password",
+                "12345678", "qwerty123", "1q2w3e", "111111", "1234567890"
+            };
+
+            // Проверка длины пароля
+            if (password.Length < 16)
+                return false;
+
+            // Проверка на предсказуемые пароли
+            if (predictablePasswords.Contains(password.ToLower()))
+                return false;
+
+            // Проверка на повторяющиеся или одинаковые символы
+            if (HasRepeatingOrSequentialPatterns(password))
+                return false;
+
+            // Проверка наличия необходимых типов символов
+            bool hasUpperCase = password.Any(char.IsUpper);
+            bool hasLowerCase = password.Any(char.IsLower);
+            bool hasDigit = password.Any(char.IsDigit);
+            bool hasSpecialChar = password.Any(c => "!@#$%^&*()-_=+[]{}|;:,.<>?".Contains(c));
+
+            return hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar;
+        }
+
+        // Вспомогательный метод для проверки повторяющихся или одинаковых символов
+        public bool HasRepeatingOrSequentialPatterns(string password)
+        {
+            // Проверка на одинаковые символы (например, аааа или 1111)
+            for (int i = 0; i < password.Length - 3; i++)
+            {
+                if (password[i] == password[i + 1] &&
+                    password[i] == password[i + 2] &&
+                    password[i] == password[i + 3])
+                {
+                    return true;
+                }
+            }
+
+            // Проверка на повторяющиеся группы (например, 111222333)
+            for (int groupSize = 2; groupSize <= password.Length / 2; groupSize++)
+            {
+                for (int i = 0; i <= password.Length - 2 * groupSize; i++)
+                {
+                    string group1 = password.Substring(i, groupSize);
+                    string group2 = password.Substring(i + groupSize, groupSize);
+                    if (group1 == group2)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public async Task<Result<int>> AddNewUser(UserReg UserAuth)
         {
             if (UserAuth is null)
@@ -71,10 +157,10 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "INSERT INTO Клиент (НКл, ФИО, Пол, ДатаРождения, Логин, Пароль, Email)" +
-                        " VALUES(@НКл, @ФИО, @Пол, @ДатаРождения, @Логин, @Пароль, @Email)";
+                    cmd.CommandText = "INSERT INTO Портье (НС, ФИО, Пол, ДатаРождения, Логин, Пароль, Email)" +
+                        " VALUES(@НС, @ФИО, @Пол, @ДатаРождения, @Логин, @Пароль, @Email)";
 
-                    cmd.Parameters.Add(new MySqlParameter("@НКл", MySqlDbType.Int32)
+                    cmd.Parameters.Add(new MySqlParameter("@НС", MySqlDbType.Int32)
                     { Value = UserAuth.НКл });
 
                     cmd.Parameters.Add(new MySqlParameter("@ФИО", MySqlDbType.VarChar, 200)

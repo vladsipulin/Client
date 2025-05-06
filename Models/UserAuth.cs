@@ -3,28 +3,15 @@ using Client.Services;
 
 namespace Client.Models
 {
-    public class UserAuth : DbClient
+    public class UserAuth : Employer
     {
         public string UserType { get; set; }
 
-        // Конструктор для создания нового пользователя с сырым паролем
-        public UserAuth(int НКл = 0, string Логин = "<Логин>", string Пароль = "<Пароль>", string Email = "<Email>", string UserType = "<UserType>")
+        public UserAuth(int ID = 0, string Логин = "<Логин>", string Пароль = "<Пароль>")
         {
-            this.НКл = НКл;
+            this.ID = ID;
             this.Логин = Логин;
             this.Пароль = GetPasswordHash(Пароль);
-            this.Email = Email;
-            this.UserType = UserType;
-        }
-
-        // Конструктор для считывания данных из БД с уже хэшированным паролем
-        public UserAuth(int НКл, string Логин, string hashedPassword, string Email, string UserType, bool isHashed)
-        {
-            this.НКл = НКл;
-            this.Логин = Логин;
-            this.Пароль = hashedPassword; // Пароль уже хэшированный
-            this.Email = Email;
-            this.UserType = UserType;
         }
 
         private string GetPasswordHash(string password)
@@ -38,7 +25,7 @@ namespace Client.Models
             if (userAuth is null)
                 throw new ArgumentNullException(nameof(userAuth));
 
-            return new UserAuth(userAuth.НКл, userAuth.Логин, userAuth.Пароль, userAuth.Email, userAuth.UserType, true)
+            return new UserAuth(userAuth.ID, userAuth.Логин, userAuth.Пароль)
             {
                 ФИО = userAuth.ФИО,
                 Пол = userAuth.Пол,
@@ -48,7 +35,7 @@ namespace Client.Models
 
         public override string ToString()
         {
-            return $"{НКл}: login: {Логин} password: {Пароль} email: {Email} userType: {UserType}";
+            return $"{ID}: login: {Логин} password: {Пароль} ";
         }
     }
 }

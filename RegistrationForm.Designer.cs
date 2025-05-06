@@ -42,21 +42,21 @@
             полеДР = new DateTimePicker();
             кбПол = new ComboBox();
             label7 = new Label();
-            тбНКл = new TextBox();
+            тбID = new TextBox();
             SuspendLayout();
             // 
             // тбЛогин
             // 
-            тбЛогин.Location = new Point(54, 91);
+            тбЛогин.Location = new Point(52, 91);
             тбЛогин.Name = "тбЛогин";
-            тбЛогин.Size = new Size(173, 23);
+            тбЛогин.Size = new Size(175, 23);
             тбЛогин.TabIndex = 0;
             // 
             // тбПароль
             // 
-            тбПароль.Location = new Point(54, 146);
+            тбПароль.Location = new Point(52, 146);
             тбПароль.Name = "тбПароль";
-            тбПароль.Size = new Size(172, 23);
+            тбПароль.Size = new Size(174, 23);
             тбПароль.TabIndex = 1;
             // 
             // label2
@@ -83,15 +83,15 @@
             regButton.Name = "regButton";
             regButton.Size = new Size(173, 35);
             regButton.TabIndex = 6;
-            regButton.Text = "Зарегистрироваться";
+            regButton.Text = "Добавить портье";
             regButton.UseVisualStyleBackColor = true;
             regButton.Click += regButton_Click;
             // 
             // тбПочта
             // 
-            тбПочта.Location = new Point(54, 204);
+            тбПочта.Location = new Point(52, 204);
             тбПочта.Name = "тбПочта";
-            тбПочта.Size = new Size(172, 23);
+            тбПочта.Size = new Size(174, 23);
             тбПочта.TabIndex = 7;
             // 
             // label3
@@ -108,15 +108,15 @@
             label4.AutoSize = true;
             label4.Location = new Point(53, 247);
             label4.Name = "label4";
-            label4.Size = new Size(34, 15);
+            label4.Size = new Size(142, 15);
             label4.TabIndex = 10;
-            label4.Text = "ФИО";
+            label4.Text = "Фамилия Имя Отчество:";
             // 
             // тбФИО
             // 
-            тбФИО.Location = new Point(54, 265);
+            тбФИО.Location = new Point(52, 265);
             тбФИО.Name = "тбФИО";
-            тбФИО.Size = new Size(172, 23);
+            тбФИО.Size = new Size(174, 23);
             тбФИО.TabIndex = 9;
             // 
             // label5
@@ -124,33 +124,33 @@
             label5.AutoSize = true;
             label5.Location = new Point(53, 307);
             label5.Name = "label5";
-            label5.Size = new Size(30, 15);
+            label5.Size = new Size(33, 15);
             label5.TabIndex = 12;
-            label5.Text = "Пол";
+            label5.Text = "Пол:";
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(53, 370);
+            label6.Location = new Point(52, 361);
             label6.Name = "label6";
-            label6.Size = new Size(90, 15);
+            label6.Size = new Size(93, 15);
             label6.TabIndex = 14;
-            label6.Text = "Дата рождения";
+            label6.Text = "Дата рождения:";
             // 
             // полеДР
             // 
-            полеДР.Location = new Point(54, 397);
+            полеДР.Location = new Point(52, 386);
             полеДР.Name = "полеДР";
-            полеДР.Size = new Size(172, 23);
+            полеДР.Size = new Size(174, 23);
             полеДР.TabIndex = 15;
             // 
             // кбПол
             // 
             кбПол.FormattingEnabled = true;
             кбПол.Items.AddRange(new object[] { "муж.", "жен." });
-            кбПол.Location = new Point(54, 325);
+            кбПол.Location = new Point(52, 325);
             кбПол.Name = "кбПол";
-            кбПол.Size = new Size(172, 23);
+            кбПол.Size = new Size(174, 23);
             кбПол.TabIndex = 16;
             // 
             // label7
@@ -158,24 +158,24 @@
             label7.AutoSize = true;
             label7.Location = new Point(54, 20);
             label7.Name = "label7";
-            label7.Size = new Size(95, 15);
+            label7.Size = new Size(89, 15);
             label7.TabIndex = 18;
-            label7.Text = "Номер клиента:";
+            label7.Text = "Номер портье:";
             // 
-            // тбНКл
+            // тбID
             // 
-            тбНКл.Location = new Point(53, 38);
-            тбНКл.Name = "тбНКл";
-            тбНКл.Size = new Size(174, 23);
-            тбНКл.TabIndex = 17;
+            тбID.Location = new Point(52, 38);
+            тбID.Name = "тбID";
+            тбID.Size = new Size(175, 23);
+            тбID.TabIndex = 17;
             // 
             // RegistrationForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(280, 531);
+            ClientSize = new Size(287, 526);
             Controls.Add(label7);
-            Controls.Add(тбНКл);
+            Controls.Add(тбID);
             Controls.Add(кбПол);
             Controls.Add(полеДР);
             Controls.Add(label6);
@@ -192,7 +192,8 @@
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "RegistrationForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Регистрация нового клиента";
+            Text = "Создание нового портье";
+            Load += RegistrationForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -213,6 +214,6 @@
         private DateTimePicker полеДР;
         private ComboBox кбПол;
         private Label label7;
-        private TextBox тбНКл;
+        private TextBox тбID;
     }
 }
