@@ -42,15 +42,21 @@ namespace Client
                     m.Body = body;
                     SmtpClient smtp = new SmtpClient("smtp.mail.ru", 587);
                     smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["SmtpUsername"],
-                                                             ConfigurationManager.AppSettings["SmtpPassword"]);
-                    //smtp.Credentials = new NetworkCredential("vladsipulin@mail.ru", "bPqbjmw61PcTD1NEw6nT");
+                                                            ConfigurationManager.AppSettings["SmtpPassword"]);
                     smtp.EnableSsl = true;
                     smtp.Send(m);
-                    MessageBox.Show("Код восстановления успешно отправлен по адресу: " + clientmail, "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Код восстановления успешно отправлен по адресу: " + clientmail,
+                                   "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                catch
+                catch (SmtpException ex)
                 {
-                    MessageBox.Show("Ошибка при попытке отправки письма", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Ошибка SMTP: {ex.Message}\nКод ошибки: {ex.StatusCode}",
+                                   "Ошибка отправки письма", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Общая ошибка: {ex.Message}",
+                                   "Ошибка отправки письма", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             });
         }
@@ -93,13 +99,27 @@ namespace Client
         {
             if (Equals(code.ToString(), тбКВ.Text))
             {
-                var result = _rec.UpdatePasswordOfUser(_ur,тбНП.Text);
-                if (!result)
+                bool isValid = PasswordValidation.IsValidPassword(тбНП.Text);
+
+                if (isValid)
                 {
-                    MessageBox.Show(result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    var result = _rec.UpdatePasswordOfUser(_ur, тбНП.Text);
+                    if (!result)
+                    {
+                        MessageBox.Show(result.Error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                        MessageBox.Show("Ваш пароль был успешно изменен!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
-                    MessageBox.Show("Ваш пароль был успешно изменен!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                {
+                    MessageBox.Show("Пароль не соответствует требованиям:\n" +
+                                    "- Длина не менее 16 символов\n" +
+                                    "- Не должен быть предсказуемым\n" +
+                                    "- Не должен содержать повторяющиеся символы или группы\n" +
+                                    "- Должен содержать прописные и строчные буквы, цифры и спецсимволы",
+                                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
                 MessageBox.Show("Код восстановления неверный", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);

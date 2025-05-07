@@ -41,7 +41,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(45, 136);
+            label3.Location = new Point(72, 144);
             label3.Name = "label3";
             label3.Size = new Size(91, 15);
             label3.TabIndex = 15;
@@ -50,14 +50,14 @@
             // тбНП
             // 
             тбНП.Enabled = false;
-            тбНП.Location = new Point(45, 154);
+            тбНП.Location = new Point(72, 162);
             тбНП.Name = "тбНП";
             тбНП.Size = new Size(173, 23);
             тбНП.TabIndex = 14;
             // 
             // regButton
             // 
-            regButton.Location = new Point(46, 192);
+            regButton.Location = new Point(73, 200);
             regButton.Name = "regButton";
             regButton.Size = new Size(172, 38);
             regButton.TabIndex = 13;
@@ -68,7 +68,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(45, 74);
+            label2.Location = new Point(72, 82);
             label2.Name = "label2";
             label2.Size = new Size(112, 15);
             label2.TabIndex = 12;
@@ -77,7 +77,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(45, 19);
+            label1.Location = new Point(72, 27);
             label1.Name = "label1";
             label1.Size = new Size(116, 15);
             label1.TabIndex = 11;
@@ -85,21 +85,21 @@
             // 
             // тбКВ
             // 
-            тбКВ.Location = new Point(46, 92);
+            тбКВ.Location = new Point(73, 100);
             тбКВ.Name = "тбКВ";
             тбКВ.Size = new Size(172, 23);
             тбКВ.TabIndex = 10;
             // 
             // тбПочта
             // 
-            тбПочта.Location = new Point(45, 37);
+            тбПочта.Location = new Point(72, 45);
             тбПочта.Name = "тбПочта";
             тбПочта.Size = new Size(173, 23);
             тбПочта.TabIndex = 9;
             // 
             // changePassBtn
             // 
-            changePassBtn.Location = new Point(46, 236);
+            changePassBtn.Location = new Point(73, 244);
             changePassBtn.Name = "changePassBtn";
             changePassBtn.Size = new Size(172, 38);
             changePassBtn.TabIndex = 16;
@@ -111,7 +111,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(271, 299);
+            ClientSize = new Size(316, 308);
             Controls.Add(changePassBtn);
             Controls.Add(label3);
             Controls.Add(тбНП);
@@ -123,7 +123,7 @@
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "RecoverForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Изменение пароля";
+            Text = "Восстановление доступа к аккаунту портье";
             Load += RecoverForm_Load;
             ResumeLayout(false);
             PerformLayout();

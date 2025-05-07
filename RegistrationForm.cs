@@ -61,7 +61,7 @@ namespace Client
                 DateTime др = полеДР.Value;
                 Result<int> result;
 
-                bool isValid = _reg.IsValidPassword(пароль);
+                bool isValid = PasswordValidation.IsValidPassword(пароль);
 
                 if (isValid)
                 {

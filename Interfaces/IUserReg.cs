@@ -13,7 +13,5 @@ namespace Client.Interfaces
         void CheckIfUserExists(string login, string email);
         Task<Result<int>> AddNewUser(UserReg client);
         Task<int> GetIdByRequest(int НС);
-        bool IsValidPassword(string password);
-        bool HasRepeatingOrSequentialPatterns(string password);
     }
 }

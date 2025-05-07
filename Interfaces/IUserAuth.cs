@@ -13,5 +13,6 @@ namespace Client.Interfaces
         //получение всех
         Task<Result<List<Employer>>> GetEmployer();
         Task<Result<List<UserRecover>>> GetClient();
+        UserAuth FindUser(string email);
     }
 }

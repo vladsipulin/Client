@@ -9,7 +9,7 @@ using Client.Utils;
 
 namespace Client.Services
 {
-    internal class Authorization : IUserAuth, IUserRecover
+    internal class Authorization : IUserAuth
     {
         public Authorization()
         {
@@ -277,48 +277,44 @@ namespace Client.Services
             }
         }
 
-        public UserRecover FindUser(string email)
+        public UserAuth FindUser(string email)
         {
+            var userWritten = new UserAuth(email);
+
             try
             {
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = @"
-                        SELECT НКл, Email, ФИО
-                        FROM Клиент
-                        WHERE Email = @Email
-                        UNION
-                        SELECT НС, Email, ФИО
-                        FROM Портье
-                        WHERE Email = @Email";
-                    cmd.Parameters.AddWithValue("@Email", email);
+                    cmd.CommandText = "SELECT * FROM Клиент WHERE Email = @Email";
+
+                    cmd.Parameters.Add(new MySqlParameter("@Email", MySqlDbType.VarChar, 255)
+                    { Value = email });
 
                     con.Open();
                     using (var reader = cmd.ExecuteReader())
                     {
-                        if (reader.Read())
+                        while (reader.Read())
                         {
-                            return new UserRecover(
-                                Id: reader.GetInt32(0),
-                                ЭлПочта: reader.IsDBNull(1) ? null : reader.GetString(1),
-                                ФИО: reader.IsDBNull(2) ? null : reader.GetString(2),
-                                UserType: reader.GetInt32(0) >= 1000 ? "Клиент" : "Портье" // Примерное определение типа
-                            );
+                            var userInDB = new UserRecover(reader.GetString(5), reader.GetString(1), reader.GetInt32(0));
+                            userWritten.Email = userInDB.ЭлПочта;
+                            userWritten.ФИО = userInDB.ФИО;
+                            userWritten.ID = userInDB.Id;
                         }
                     }
                 }
+
             }
             catch (MySqlException ex)
             {
-                throw new Exception(GetUserFriendlyErrorMessage(ex));
+                return new UserAuth(GetUserFriendlyErrorMessage(ex));
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return new UserAuth(ex.Message);
             }
 
-            return null;
+            return userWritten;
         }
 
         public Result<UserRecover> UpdatePasswordOfUser(UserRecover userRec, string newPassword)

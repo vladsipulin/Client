@@ -19,10 +19,9 @@ namespace Client
 {
     public partial class AuthorizeClient : Form
     {
-        IUserRecover _rec;
+        IUserAuth _rec;
         int code;
-        UserRecover _ur;
-        Services.Authorization _repo;
+        UserAuth _ur;
         string userEmail;
 
         public AuthorizeClient()
@@ -44,15 +43,22 @@ namespace Client
                     m.Body = body;
                     SmtpClient smtp = new SmtpClient("smtp.mail.ru", 587);
                     smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["SmtpUsername"],
-                                                             ConfigurationManager.AppSettings["SmtpPassword"]);
-                    //smtp.Credentials = new NetworkCredential("vladsipulin@mail.ru", "bPqbjmw61PcTD1NEw6nT");
+                                                            ConfigurationManager.AppSettings["SmtpPassword"]);
                     smtp.EnableSsl = true;
                     smtp.Send(m);
-                    MessageBox.Show("Код авторизации успешно отправлен по адресу: " + clientmail, "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Код авторизации успешно отправлен по адресу: " + clientmail, 
+                                    "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 }
-                catch
+                catch (SmtpException ex)
                 {
-                    MessageBox.Show("Ошибка при попытке отправки письма", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Ошибка SMTP: {ex.Message}\nКод ошибки: {ex.StatusCode}",
+                                   "Ошибка отправки письма", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Общая ошибка: {ex.Message}",
+                                   "Ошибка отправки письма", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             });
         }
@@ -72,7 +78,7 @@ namespace Client
         private void AuthorizeClient_Load(object sender, EventArgs e)
         {
             BTN_CANCEL.Visible = false;
-            _rec = new Recovery();
+            _rec = new Services.Authorization();
         }
 
         private async void BTN_AUTHORIZE_Click(object sender, EventArgs e)
@@ -88,7 +94,7 @@ namespace Client
                     if (result.ФИО != "<ФИО>")
                     {
                         string username = result.ФИО;
-                        _ur = new UserRecover(mail, username, result.Id);
+                        _ur = new UserAuth(mail, username, result.ID);
                         SendEmail(mail, "Код авторизации клиента в систему заказа услуг", "Здравствуйте, " + username + ".\nВы запросили код авторизации в систему: " + code + "\n");
                         BTN_CANCEL.Visible = true;
                         LBL_HEADER.Text = "Введите код авторизации:";
@@ -111,7 +117,7 @@ namespace Client
                     MessageBox.Show("Добро пожаловать!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Terminal_MainForm tmf = new Terminal_MainForm();
                     tmf.lbWhoLogged.Text = "Клиент:";
-                    tmf.keyLbl.Text = _ur.Id.ToString();
+                    tmf.keyLbl.Text = _ur.ID.ToString();
                     tmf.ShowDialog();
                     BTN_CANCEL.Visible = false;
                     BTN_AUTHORIZE.Text = "Получить код авторизации";

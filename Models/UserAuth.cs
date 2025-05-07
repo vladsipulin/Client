@@ -14,6 +14,13 @@ namespace Client.Models
             this.Пароль = GetPasswordHash(Пароль);
         }
 
+        public UserAuth(string Email = "<Email>", string ФИО= "<ФИО>", int ID = 0)
+        {
+            this.Email = Email;
+            this.ФИО = ФИО;
+            this.ID = ID;
+        }
+
         private string GetPasswordHash(string password)
         {
             string salt = "TfbcZEIwOHJokZyDIvOqjg==";

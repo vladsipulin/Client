@@ -36,7 +36,7 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM Клиент WHERE Email = @Email";
+                    cmd.CommandText = "SELECT * FROM Портье WHERE Email = @Email";
 
                     cmd.Parameters.Add(new MySqlParameter("@Email", MySqlDbType.VarChar, 255)
                     { Value = email });
@@ -46,7 +46,7 @@ namespace Client.Services
                     {
                         while (reader.Read())
                         {
-                            var userInDB = new UserRecover(reader.GetString(5), reader.GetString(1), reader.GetInt32(0));
+                            var userInDB = new UserRecover(reader.GetString(6), reader.GetString(1), reader.GetInt32(0));
                             userWritten.ЭлПочта = userInDB.ЭлПочта; 
                             userWritten.ФИО = userInDB.ФИО;
                             userWritten.Id = userInDB.Id;
@@ -88,7 +88,7 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "UPDATE Клиент" +
+                    cmd.CommandText = "UPDATE Портье" +
                         " SET Пароль = @Пароль" +
                         " WHERE Email = @Email";
 
