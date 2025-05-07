@@ -70,17 +70,17 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "INSERT INTO ДоговорСОрганизацией (НДоговора, НОрг, НГ, НС, ДатаНачала, ДатаОкончания)" +
-                        " VALUES(@НДоговора, @НОрг, @НГ, @НС, @ДатаНачала, @ДатаОкончания)";
+                    cmd.CommandText = "INSERT INTO ДоговорСОрганизацией (НТипаДоговора, НОрг, НС, ДатаНачала, ДатаОкончания)" +
+                        " VALUES(@НТипаДоговора, @НОрг, @НС, @ДатаНачала, @ДатаОкончания)";
 
-                    cmd.Parameters.Add(new MySqlParameter("@НДоговора", MySqlDbType.Int32)
+                    cmd.Parameters.Add(new MySqlParameter("@НТипаДоговора", MySqlDbType.Int32)
                     { Value = objOfTable.НДоговора });
 
                     cmd.Parameters.Add(new MySqlParameter("@НОрг", MySqlDbType.Int32)
                     { Value = objOfTable.НОрг });
 
-                    cmd.Parameters.Add(new MySqlParameter("@НГ", MySqlDbType.Int32)
-                    { Value = objOfTable.НГ });
+                    //cmd.Parameters.Add(new MySqlParameter("@НГ", MySqlDbType.Int32)
+                    //{ Value = objOfTable.НГ });
 
                     cmd.Parameters.Add(new MySqlParameter("@НС", MySqlDbType.Int32)
                     { Value = objOfTable.НС });
@@ -126,10 +126,10 @@ namespace Client.Services
                             var objOfTable = new Dogovor(reader.GetInt32(0));
                             objOfTable.НДоговора = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
                             objOfTable.НОрг = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
-                            objOfTable.НГ = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
-                            objOfTable.НС = reader.IsDBNull(3) ? 0 : reader.GetInt32(3);
-                            objOfTable.ДатаНачала = reader.IsDBNull(4) ? "null" : reader.GetDateTime(4).ToShortDateString();
-                            objOfTable.ДатаОкончания = reader.IsDBNull(5) ? "null" : reader.GetDateTime(5).ToShortDateString();
+                            //objOfTable.НГ = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
+                            objOfTable.НС = reader.IsDBNull(3) ? 0 : reader.GetInt32(2);
+                            objOfTable.ДатаНачала = reader.IsDBNull(4) ? "null" : reader.GetDateTime(3).ToShortDateString();
+                            objOfTable.ДатаОкончания = reader.IsDBNull(5) ? "null" : reader.GetDateTime(4).ToShortDateString();
                             list.Add(objOfTable);
                         }
                     }
@@ -175,7 +175,7 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT COUNT(*) FROM ДоговорСОрганизацией WHERE НДоговора = @key";
+                    cmd.CommandText = "SELECT COUNT(*) FROM ДоговорСОрганизацией WHERE НТипаДоговора = @key";
                     cmd.Parameters.Add(new MySqlParameter("@key", MySqlDbType.Int32) { Value = НДоговора });
 
                     con.Open();
@@ -237,8 +237,8 @@ namespace Client.Services
                 using (var cmd = con.CreateCommand())
                 {
                     cmd.CommandText = "UPDATE ДоговорСОрганизацией" +
-                        " SET НДоговора = @val1, НОрг = @val2, НГ = @val3, НС = @val4, ДатаНачала=@val5, ДатаОкончания=@val6 " +
-                        " WHERE НДоговора = @val7 AND НОрг = @val8";
+                        " SET НТипаДоговора = @val1, НОрг = @val2, НС = @val4, ДатаНачала=@val5, ДатаОкончания=@val6 " +
+                        " WHERE НТипаДоговора = @val7 AND НОрг = @val8";
 
                     cmd.Parameters.Add(new MySqlParameter("@val1", MySqlDbType.Int32)
                     { Value = objOfTable.НДоговора });
@@ -246,8 +246,8 @@ namespace Client.Services
                     cmd.Parameters.Add(new MySqlParameter("@val2", MySqlDbType.Int32)
                     { Value = objOfTable.НОрг });
 
-                    cmd.Parameters.Add(new MySqlParameter("@val3", MySqlDbType.Int32)
-                    { Value = objOfTable.НГ });
+                    //cmd.Parameters.Add(new MySqlParameter("@val3", MySqlDbType.Int32)
+                    //{ Value = objOfTable.НГ });
 
                     cmd.Parameters.Add(new MySqlParameter("@val4", MySqlDbType.Int32)
                     { Value = objOfTable.НС });

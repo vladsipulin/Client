@@ -6,6 +6,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -17,13 +18,15 @@ namespace Client
 {
     public partial class Договор : Form
     {
-        MySqlConnection con = new MySqlConnection("server=localhost;user id=root;database=hotel");
+        MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySqlConn"].ConnectionString);
         MySqlCommand cmd;
         MySqlDataAdapter da;
         DataTable dt;
         private IDogovor _repo;
         string sql;
         int номерДоговора = 0;
+        bool loadingData = false;
+
         public Договор()
         {
             InitializeComponent();
@@ -87,40 +90,44 @@ namespace Client
 
             this.BackColor = System.Drawing.Color.White;
             checkBox1.Checked = true;
+            кбНС.Enabled = false;
         }
 
         private async void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            sql = $"SELECT * FROM Организация";
-            ComboBoxDataForFill Организация = new ComboBoxDataForFill(sql, "Наименование", "НОрг");
-            LoadCombo(Организация);
-            кбНОрг.DataSource = Организация.dataSource;
-            кбНОрг.DisplayMember = Организация.DisplayMember;
-            кбНОрг.ValueMember = Организация.ValueMember;
 
-            sql = "SELECT * FROM ГостиничныйКомплекс";
-            ComboBoxDataForFill ГК = new ComboBoxDataForFill(sql, "Название", "НГ");
-            LoadCombo(ГК);
-            кбНГ.DataSource = ГК.dataSource;
-            кбНГ.DisplayMember = ГК.DisplayMember;
-            кбНГ.ValueMember = ГК.ValueMember;
+            //sql = "SELECT * FROM ГостиничныйКомплекс";
+            //ComboBoxDataForFill ГК = new ComboBoxDataForFill(sql, "Название", "НГ");
+            //LoadCombo(ГК);
+            //кбНГ.DataSource = ГК.dataSource;
+            //кбНГ.DisplayMember = ГК.DisplayMember;
+            //кбНГ.ValueMember = ГК.ValueMember;
 
-            sql = $"SELECT НС, ФИО FROM Сотрудник ";
+            sql = $"SELECT НС, ФИО FROM Портье ";
             ComboBoxDataForFill Сотрудник = new ComboBoxDataForFill(sql, "ФИО", "НС");
             LoadCombo(Сотрудник);
             кбНС.DataSource = Сотрудник.dataSource;
             кбНС.DisplayMember = Сотрудник.DisplayMember;
             кбНС.ValueMember = Сотрудник.ValueMember;
+
             if (checkBox1.Checked)
             {
                 кбНДоговора.Text = "";
                 button1.Enabled = true;
+                кбНС.Enabled = true;
                 button2.Enabled = false;
                 button3.Enabled = false;
 
+                sql = $"SELECT * FROM Организация";
+                ComboBoxDataForFill Организация = new ComboBoxDataForFill(sql, "Наименование", "НОрг");
+                LoadCombo(Организация);
+                кбНОрг.DataSource = Организация.dataSource;
+                кбНОрг.DisplayMember = Организация.DisplayMember;
+                кбНОрг.ValueMember = Организация.ValueMember;
+
                 // Инициализация ComboBox
-                sql = "SELECT * FROM Договор";
-                ComboBoxDataForFill Договор = new ComboBoxDataForFill(sql, "НДоговора", "НДоговора");
+                sql = "SELECT * FROM ТипДоговора";
+                ComboBoxDataForFill Договор = new ComboBoxDataForFill(sql, "Наименование", "НТипаДоговора");
                 LoadCombo(Договор);
 
                 кбНДоговора.DataSource = Договор.dataSource;
@@ -130,53 +137,56 @@ namespace Client
             else
             {
                 button1.Enabled = false;
+                кбНС.Enabled = true;
                 button2.Enabled = true;
                 button3.Enabled = true;
 
-                // Инициализация ComboBox
+                // Инициализация ComboBox для организаций (кбНОрг)
+                string sqlOrg = "SELECT DISTINCT Организация.НОрг, Организация.Наименование " +
+                                "FROM Организация " +
+                                "INNER JOIN ДоговорСОрганизацией ON Организация.НОрг = ДоговорСОрганизацией.НОрг";
+                ComboBoxDataForFill Организация = new ComboBoxDataForFill(sqlOrg, "Наименование", "НОрг");
+                LoadCombo(Организация);
+
+                кбНОрг.DataSource = Организация.dataSource;
+                кбНОрг.DisplayMember = Организация.DisplayMember;
+                кбНОрг.ValueMember = Организация.ValueMember;
+
+                // comboBox с именем TEMP, который хранит данные таблицы ДоговорСОрганизацией
+                // так как иначе с кбНОрг и кбНДоговора не получилось сделать
                 sql = "SELECT * FROM ДоговорСОрганизацией";
-                ComboBoxDataForFill Договор = new ComboBoxDataForFill(sql, "НДоговора", "НДоговора");
-                LoadCombo(Договор);
+                ComboBoxDataForFill ДСО = new ComboBoxDataForFill(sql, "НТипаДоговора", "НТипаДоговора");
+                LoadCombo(ДСО);
 
-                кбНДоговора.DataSource = Договор.dataSource;
-                кбНДоговора.DisplayMember = Договор.DisplayMember;
-                кбНДоговора.ValueMember = Договор.ValueMember;
+                CMBX_TEMP.DataSource = ДСО.dataSource;
+                CMBX_TEMP.DisplayMember = ДСО.DisplayMember;
+                CMBX_TEMP.ValueMember = ДСО.ValueMember;
 
-                // Сохранение выбранного значения
-                номерДоговора = (int)кбНДоговора.SelectedValue;
+                var selectedOrgValue = кбНОрг.SelectedValue;
 
-                var selectedValue = кбНДоговора.SelectedValue;
-
-                if (selectedValue != null)
+                loadingData = true;
+                if (selectedOrgValue != null)
                 {
-                    var номерSource = кбНДоговора.DataSource as DataTable;
+                    var номерSource = CMBX_TEMP.DataSource as DataTable;
 
                     if (номерSource != null)
                     {
-                        // Находим строку с выбранным `НГр`
+                        // Находим строку с выбранным `НТипаДоговора`
                         var selectedRow = номерSource.Rows
                             .Cast<DataRow>()
-                            .FirstOrDefault(row => row["НДоговора"].Equals(selectedValue));
+                            .FirstOrDefault(row => row["НТипаДоговора"].Equals(кбНДоговора.SelectedValue));
 
                         if (selectedRow != null)
                         {
-                            // Устанавливаем соответствующее значение `НОрг` в кбНОрг
-                            var relatedНОрг = selectedRow["НОрг"];
-                            if (relatedНОрг != DBNull.Value)
-                            {
-                                кбНОрг.SelectedValue = relatedНОрг;
-                            }
-
-                            var relatedНГ = selectedRow["НГ"];
-                            if (relatedНГ != DBNull.Value)
-                            {
-                                кбНГ.SelectedValue = relatedНГ;
-                            }
-
+                            // Устанавливаем значение `НС` в кбНС
                             var номерСотрудника = selectedRow["НС"];
                             if (номерСотрудника != DBNull.Value)
                             {
                                 кбНС.SelectedValue = номерСотрудника;
+                            }
+                            else
+                            {
+                                кбНС.SelectedValue = null;
                             }
 
                             // Устанавливаем значение для dateTimePicker
@@ -185,19 +195,35 @@ namespace Client
                             {
                                 тбДатаНачала.Value = Convert.ToDateTime(датаНачала);
                             }
+                            else
+                            {
+                                тбДатаНачала.Value = DateTime.Today;
+                            }
 
                             var датаОкончания = selectedRow["ДатаОкончания"];
                             if (датаОкончания != DBNull.Value)
                             {
                                 тбДатаОкончания.Value = Convert.ToDateTime(датаОкончания);
                             }
+                            else
+                            {
+                                тбДатаОкончания.Value = DateTime.Today;
+                            }
                         }
                     }
+
                 }
-
-
+                loadingData = false;
+                // Сохранение выбранного значения
+                if (кбНДоговора.SelectedValue != null)
+                {
+                    номерДоговора = (int)кбНДоговора.SelectedValue;
+                }
+                else
+                {
+                    номерДоговора = 0; // Или другое значение по умолчанию
+                }
             }
-
             try
             {
                 // Получение выбранного значения
@@ -217,56 +243,6 @@ namespace Client
 
         private async void кбНДоговора_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            if (!checkBox1.Checked)
-            {
-                var selectedValue = кбНДоговора.SelectedValue;
-
-                var номерSource = кбНДоговора.DataSource as DataTable;
-
-                if (номерSource != null & selectedValue != null)
-                {
-                    // Находим строку с выбранным `НГр`
-                    var selectedRow = номерSource.Rows
-                        .Cast<DataRow>()
-                        .FirstOrDefault(row => row["НДоговора"].Equals(selectedValue));
-
-                    if (selectedRow != null)
-                    {
-                        // Устанавливаем соответствующее значение `НОрг` в кбНОрг
-                        var relatedНОрг = selectedRow["НОрг"];
-                        if (relatedНОрг != DBNull.Value)
-                        {
-                            кбНОрг.SelectedValue = relatedНОрг;
-                        }
-
-                        var relatedНГ = selectedRow["НГ"];
-                        if (relatedНГ != DBNull.Value)
-                        {
-                            кбНГ.SelectedValue = relatedНГ;
-                        }
-
-                        var номерСотрудника = selectedRow["НС"];
-                        if (номерСотрудника != DBNull.Value)
-                        {
-                            кбНС.SelectedValue = номерСотрудника;
-                        }
-
-                        // Устанавливаем значение для dateTimePicker
-                        var датаНачала = selectedRow["ДатаНачала"];
-                        if (датаНачала != DBNull.Value)
-                        {
-                            тбДатаНачала.Value = Convert.ToDateTime(датаНачала);
-                        }
-
-                        var датаОкончания = selectedRow["ДатаОкончания"];
-                        if (датаОкончания != DBNull.Value)
-                        {
-                            тбДатаОкончания.Value = Convert.ToDateTime(датаОкончания);
-                        }
-                    }
-                }
-            }
-
             try
             {
                 int selectedId = (int)кбНОрг.SelectedValue;
@@ -281,15 +257,52 @@ namespace Client
 
         private async void кбНОрг_SelectionChangeCommitted(object sender, EventArgs e)
         {
+            if (!checkBox1.Checked)
+            {
+                loadingData = true;
+                var selectedValue = кбНОрг.SelectedValue;
+
+                var номерSource = CMBX_TEMP.DataSource as DataTable;
+
+                if (номерSource != null & selectedValue != null)
+                {
+                    var selectedRow = номерSource.Rows
+                        .Cast<DataRow>()
+                        .FirstOrDefault(row => row["НОрг"].Equals(selectedValue));
+
+                    if (selectedRow != null)
+                    {
+                        var relatedНОрг = selectedRow["НТипаДоговора"];
+                        if (relatedНОрг != DBNull.Value)
+                        {
+                            кбНДоговора.SelectedValue = relatedНОрг;
+                        }
+
+                        var номерСотрудника = selectedRow["НС"];
+                        if (номерСотрудника != DBNull.Value)
+                        {
+                            кбНС.SelectedValue = номерСотрудника;
+                        }
+
+                        var датаНачала = selectedRow["ДатаНачала"];
+                        if (датаНачала != DBNull.Value)
+                        {
+                            тбДатаНачала.Value = Convert.ToDateTime(датаНачала);
+                        }
+
+                        var датаОкончания = selectedRow["ДатаОкончания"];
+                        if (датаОкончания != DBNull.Value)
+                        {
+                            тбДатаОкончания.Value = Convert.ToDateTime(датаОкончания);
+                        }
+                    }
+                }
+                loadingData = false;
+            }
             try
             {
-                // Получение выбранного значения
                 int selectedId = Convert.ToInt32(кбНОрг.SelectedValue);
-
-                // Запрос данных из базы данных
                 var data = await _repo.GetOrgDetails(selectedId);
-
-                // Привязка данных к DataGridView
                 dataGridView1.DataSource = data;
             }
             catch (Exception ex)
@@ -302,27 +315,9 @@ namespace Client
         {
             try
             {
-                /*
-                Random rand = new Random();
-
-                bool isUnique = false;
-
-                while (!isUnique)
-                {
-                    номерДоговора = rand.Next(10000, 99999); // Генерация случайного числа от 10000 до 99999
-
-                    // Проверка уникальности 
-                    var existing = await _repo.FindExistingNumOfDogovor(номерДоговора);
-                    if (existing == 0)
-                    {
-                        // Если номера еще нет в базе данных, то он уникален
-                        isUnique = true;
-                    }
-                }*/
-
                 номерДоговора = (int)кбНДоговора.SelectedValue;
 
-                Dogovor current = new Dogovor(номерДоговора, (int)кбНОрг.SelectedValue, (int)кбНГ.SelectedValue, (int)кбНС.SelectedValue,
+                Dogovor current = new Dogovor(номерДоговора, (int)кбНОрг.SelectedValue, 0, (int)кбНС.SelectedValue,
                                                  Convert.ToDateTime(тбДатаНачала.Text), Convert.ToDateTime(тбДатаОкончания.Text));
 
                 Result<int> result;
@@ -331,6 +326,10 @@ namespace Client
                 if (result)
                 {
                     MessageBox.Show($"Договор №{номерДоговора} с организацией '{кбНОрг.Text}' успешно создан!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    sql = "SELECT * FROM ДоговорСОрганизацией";
+                    ComboBoxDataForFill ДСО = new ComboBoxDataForFill(sql, "НТипаДоговора", "НТипаДоговора");
+                    LoadCombo(ДСО);
+                    CMBX_TEMP.DataSource = ДСО.dataSource;
                 }
                 if (!result)
                 {
@@ -349,7 +348,7 @@ namespace Client
             try
             {
                 номерДоговора = (int)кбНДоговора.SelectedValue;
-                Dogovor current = new Dogovor(номерДоговора, (int)кбНОрг.SelectedValue, (int)кбНГ.SelectedValue, (int)кбНС.SelectedValue,
+                Dogovor current = new Dogovor(номерДоговора, (int)кбНОрг.SelectedValue, 0, (int)кбНС.SelectedValue,
                                                  Convert.ToDateTime(тбДатаНачала.Text), Convert.ToDateTime(тбДатаОкончания.Text));
 
                 Result<int> result;
@@ -358,6 +357,10 @@ namespace Client
                 if (result)
                 {
                     MessageBox.Show($"Сведения договора №{номерДоговора} с организацией '{кбНОрг.Text}' успешно изменены!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    sql = "SELECT * FROM ДоговорСОрганизацией";
+                    ComboBoxDataForFill ДСО = new ComboBoxDataForFill(sql, "НТипаДоговора", "НТипаДоговора");
+                    LoadCombo(ДСО);
+                    CMBX_TEMP.DataSource = ДСО.dataSource;
                 }
                 if (!result)
                 {
@@ -375,7 +378,7 @@ namespace Client
             try
             {
                 номерДоговора = (int)кбНДоговора.SelectedValue;
-                Dogovor current = new Dogovor(номерДоговора, (int)кбНОрг.SelectedValue, (int)кбНГ.SelectedValue, (int)кбНС.SelectedValue,
+                Dogovor current = new Dogovor(номерДоговора, (int)кбНОрг.SelectedValue, 0, (int)кбНС.SelectedValue,
                                                 Convert.ToDateTime(тбДатаНачала.Text), Convert.ToDateTime(тбДатаОкончания.Text));
 
                 Result<int> result;
@@ -384,6 +387,10 @@ namespace Client
                 if (result)
                 {
                     MessageBox.Show($"Договор №{номерДоговора} с организацией '{кбНОрг.Text}' успешно расторгнут!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    sql = "SELECT * FROM ДоговорСОрганизацией";
+                    ComboBoxDataForFill ДСО = new ComboBoxDataForFill(sql, "НТипаДоговора", "НТипаДоговора");
+                    LoadCombo(ДСО);
+                    CMBX_TEMP.DataSource = ДСО.dataSource;
                 }
                 if (!result)
                 {
@@ -398,22 +405,32 @@ namespace Client
 
         private void тбДатаНачала_ValueChanged(object sender, EventArgs e)
         {
-            DateTime date1 = тбДатаНачала.Value.Date;
-            DateTime date2 = тбДатаОкончания.Value.Date;
-            if (date2 < date1)
+            if (!loadingData)
             {
-                MessageBox.Show("Ошибка: дата начала позже даты окончания", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DateTime date1 = тбДатаНачала.Value.Date;
+                DateTime date2 = тбДатаОкончания.Value.Date;
+                if (date2 < date1)
+                {
+                    MessageBox.Show("Ошибка: дата начала позже даты окончания", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
+            else
+                return;
         }
 
         private void тбДатаОкончания_ValueChanged(object sender, EventArgs e)
         {
-            DateTime date1 = тбДатаНачала.Value.Date;
-            DateTime date2 = тбДатаОкончания.Value.Date;
-            if (date2 < date1)
+            if (!loadingData)
             {
-                MessageBox.Show("Ошибка: дата окончания раньше даты начала", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DateTime date1 = тбДатаНачала.Value.Date;
+                DateTime date2 = тбДатаОкончания.Value.Date;
+                if (date2 < date1)
+                {
+                    MessageBox.Show("Ошибка: дата окончания раньше даты начала", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
+            else
+                return;
         }
     }
 }

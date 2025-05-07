@@ -44,7 +44,7 @@
             тбДатаОкончания = new DateTimePicker();
             label7 = new Label();
             label6 = new Label();
-            кбНГ = new ComboBox();
+            CMBX_TEMP = new ComboBox();
             button2 = new Button();
             label2 = new Label();
             кбНОрг = new ComboBox();
@@ -58,7 +58,7 @@
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(15, 370);
+            dataGridView1.Location = new Point(16, 329);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new Size(623, 136);
@@ -68,7 +68,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label3.Location = new Point(15, 332);
+            label3.Location = new Point(16, 291);
             label3.Name = "label3";
             label3.Size = new Size(205, 20);
             label3.TabIndex = 56;
@@ -89,32 +89,32 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label5.Location = new Point(13, 39);
+            label5.Location = new Point(19, 39);
             label5.Name = "label5";
-            label5.Size = new Size(87, 15);
+            label5.Size = new Size(86, 15);
             label5.TabIndex = 37;
-            label5.Text = "Код договора:";
+            label5.Text = "Тип договора:";
             // 
             // кбНДоговора
             // 
             кбНДоговора.FormattingEnabled = true;
-            кбНДоговора.Location = new Point(164, 36);
+            кбНДоговора.Location = new Point(111, 36);
             кбНДоговора.Name = "кбНДоговора";
-            кбНДоговора.Size = new Size(202, 23);
+            кбНДоговора.Size = new Size(290, 23);
             кбНДоговора.TabIndex = 38;
             кбНДоговора.SelectionChangeCommitted += кбНДоговора_SelectionChangeCommitted;
             // 
             // тбДатаНачала
             // 
-            тбДатаНачала.Location = new Point(164, 200);
+            тбДатаНачала.Location = new Point(111, 161);
             тбДатаНачала.Name = "тбДатаНачала";
-            тбДатаНачала.Size = new Size(202, 23);
+            тбДатаНачала.Size = new Size(290, 23);
             тбДатаНачала.TabIndex = 35;
             тбДатаНачала.ValueChanged += тбДатаНачала_ValueChanged;
             // 
             // button3
             // 
-            button3.Location = new Point(421, 171);
+            button3.Location = new Point(421, 130);
             button3.Name = "button3";
             button3.Size = new Size(165, 23);
             button3.TabIndex = 34;
@@ -130,7 +130,7 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(659, 318);
+            panel1.Size = new Size(659, 276);
             panel1.TabIndex = 55;
             // 
             // lbWhoLogged
@@ -153,7 +153,7 @@
             groupBox1.Controls.Add(тбДатаОкончания);
             groupBox1.Controls.Add(label7);
             groupBox1.Controls.Add(label6);
-            groupBox1.Controls.Add(кбНГ);
+            groupBox1.Controls.Add(CMBX_TEMP);
             groupBox1.Controls.Add(checkBox1);
             groupBox1.Controls.Add(label5);
             groupBox1.Controls.Add(кбНДоговора);
@@ -166,7 +166,7 @@
             groupBox1.Controls.Add(label1);
             groupBox1.Location = new Point(16, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(623, 283);
+            groupBox1.Size = new Size(623, 242);
             groupBox1.TabIndex = 49;
             groupBox1.TabStop = false;
             groupBox1.Text = "Информация о договоре";
@@ -175,7 +175,7 @@
             // 
             label10.AutoSize = true;
             label10.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label10.Location = new Point(13, 158);
+            label10.Location = new Point(37, 119);
             label10.Name = "label10";
             label10.Size = new Size(68, 15);
             label10.TabIndex = 61;
@@ -184,16 +184,16 @@
             // кбНС
             // 
             кбНС.FormattingEnabled = true;
-            кбНС.Location = new Point(164, 155);
+            кбНС.Location = new Point(111, 116);
             кбНС.Name = "кбНС";
-            кбНС.Size = new Size(202, 23);
+            кбНС.Size = new Size(290, 23);
             кбНС.TabIndex = 62;
             // 
             // label8
             // 
             label8.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label8.AutoSize = true;
-            label8.Location = new Point(558, 257);
+            label8.Location = new Point(558, 201);
             label8.Name = "label8";
             label8.Size = new Size(59, 15);
             label8.TabIndex = 58;
@@ -202,9 +202,9 @@
             // 
             // тбДатаОкончания
             // 
-            тбДатаОкончания.Location = new Point(164, 240);
+            тбДатаОкончания.Location = new Point(111, 201);
             тбДатаОкончания.Name = "тбДатаОкончания";
-            тбДатаОкончания.Size = new Size(202, 23);
+            тбДатаОкончания.Size = new Size(290, 23);
             тбДатаОкончания.TabIndex = 44;
             тбДатаОкончания.ValueChanged += тбДатаОкончания_ValueChanged;
             // 
@@ -212,7 +212,7 @@
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label7.Location = new Point(13, 246);
+            label7.Location = new Point(6, 207);
             label7.Name = "label7";
             label7.Size = new Size(99, 15);
             label7.TabIndex = 43;
@@ -222,23 +222,25 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label6.Location = new Point(13, 118);
+            label6.Location = new Point(411, 178);
             label6.Name = "label6";
             label6.Size = new Size(141, 15);
             label6.TabIndex = 40;
             label6.Text = "Гостиничный комплекс:";
+            label6.Visible = false;
             // 
-            // кбНГ
+            // CMBX_TEMP
             // 
-            кбНГ.FormattingEnabled = true;
-            кбНГ.Location = new Point(164, 115);
-            кбНГ.Name = "кбНГ";
-            кбНГ.Size = new Size(202, 23);
-            кбНГ.TabIndex = 41;
+            CMBX_TEMP.FormattingEnabled = true;
+            CMBX_TEMP.Location = new Point(558, 175);
+            CMBX_TEMP.Name = "CMBX_TEMP";
+            CMBX_TEMP.Size = new Size(28, 23);
+            CMBX_TEMP.TabIndex = 41;
+            CMBX_TEMP.Visible = false;
             // 
             // button2
             // 
-            button2.Location = new Point(421, 142);
+            button2.Location = new Point(421, 101);
             button2.Name = "button2";
             button2.Size = new Size(165, 23);
             button2.TabIndex = 33;
@@ -251,7 +253,7 @@
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
             label2.ForeColor = SystemColors.ControlText;
-            label2.Location = new Point(13, 79);
+            label2.Location = new Point(22, 79);
             label2.Name = "label2";
             label2.Size = new Size(83, 15);
             label2.TabIndex = 27;
@@ -260,15 +262,15 @@
             // кбНОрг
             // 
             кбНОрг.FormattingEnabled = true;
-            кбНОрг.Location = new Point(164, 76);
+            кбНОрг.Location = new Point(111, 76);
             кбНОрг.Name = "кбНОрг";
-            кбНОрг.Size = new Size(202, 23);
+            кбНОрг.Size = new Size(290, 23);
             кбНОрг.TabIndex = 28;
             кбНОрг.SelectionChangeCommitted += кбНОрг_SelectionChangeCommitted;
             // 
             // button1
             // 
-            button1.Location = new Point(421, 113);
+            button1.Location = new Point(421, 72);
             button1.Name = "button1";
             button1.Size = new Size(165, 23);
             button1.TabIndex = 32;
@@ -280,7 +282,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.Location = new Point(13, 206);
+            label1.Location = new Point(27, 167);
             label1.Name = "label1";
             label1.Size = new Size(78, 15);
             label1.TabIndex = 30;
@@ -291,7 +293,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
-            ClientSize = new Size(659, 525);
+            ClientSize = new Size(659, 481);
             Controls.Add(dataGridView1);
             Controls.Add(label3);
             Controls.Add(panel1);
@@ -327,7 +329,7 @@
         private Button button1;
         private Label label1;
         private Label label6;
-        private ComboBox кбНГ;
+        private ComboBox CMBX_TEMP;
         private DateTimePicker тбДатаОкончания;
         private Label label7;
         internal Label label8;
