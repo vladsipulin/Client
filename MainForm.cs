@@ -521,21 +521,17 @@ namespace Client
                 }
                 else if (comboBox1.SelectedIndex == 2)
                 {
-                    ЗаселениеКлиента obj = new ЗаселениеКлиента();
+                    УчетПокупокУслугКлиентов obj = new УчетПокупокУслугКлиентов();
                     obj.lbWhoLogged.Text = keyLbl.Text;
                     obj.ShowDialog();
                 }
                 else if (comboBox1.SelectedIndex == 3)
                 {
-                    УчетПокупокУслугКлиентов obj = new УчетПокупокУслугКлиентов();
-                    obj.lbWhoLogged.Text = keyLbl.Text;
-                    obj.ShowDialog();
+
                 }
                 else if (comboBox1.SelectedIndex == 4)
                 {
-                    ЗаселениеГруппы obj = new ЗаселениеГруппы();
-                    obj.lbWhoLogged.Text = keyLbl.Text;
-                    obj.ShowDialog();
+
                 }
             }
             else

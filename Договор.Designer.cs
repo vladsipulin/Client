@@ -77,7 +77,7 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(421, 37);
+            checkBox1.Location = new Point(435, 37);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new Size(165, 19);
             checkBox1.TabIndex = 39;
@@ -114,7 +114,7 @@
             // 
             // button3
             // 
-            button3.Location = new Point(421, 130);
+            button3.Location = new Point(435, 130);
             button3.Name = "button3";
             button3.Size = new Size(165, 23);
             button3.TabIndex = 34;
@@ -240,7 +240,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(421, 101);
+            button2.Location = new Point(435, 101);
             button2.Name = "button2";
             button2.Size = new Size(165, 23);
             button2.TabIndex = 33;
@@ -270,7 +270,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(421, 72);
+            button1.Location = new Point(435, 72);
             button1.Name = "button1";
             button1.Size = new Size(165, 23);
             button1.TabIndex = 32;

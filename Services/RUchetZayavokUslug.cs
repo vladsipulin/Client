@@ -147,9 +147,9 @@ namespace Client.Services
                 using (var con = GetConnection())
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "UPDATE УчетПокупокУслуг" +
-                        " SET НЗаявки = @val1, НКл = @val2, НС = @val3, ДатаОплаты = @val4, РазмерШтрафа = @val5, СуммаКОплате = @val6" +
-                        " WHERE НЗаявки = @val7 AND НКл = @val8";
+                    cmd.CommandText = "UPDATE ЗаявкаНаУслугу" +
+                        " SET НЗаявки = @val1, НКл = @val2, НС = @val3, ДатаОплаты = @val4, РазмерШтрафа = @val5, СуммаКОплате = @val6, ПокупкаСовершена = @val7" +
+                        " WHERE НЗаявки = @val1 AND НКл = @val2";
 
                     cmd.Parameters.Add(new MySqlParameter("@val1", MySqlDbType.Int32)
                     { Value = objOfTable.НЗаявки });
@@ -169,11 +169,8 @@ namespace Client.Services
                     cmd.Parameters.Add(new MySqlParameter("@val6", MySqlDbType.Float)
                     { Value = objOfTable.СуммаКОплате });
 
-                    cmd.Parameters.Add(new MySqlParameter("@val7", MySqlDbType.Int32)
-                    { Value = objOfTable.НЗаявки });
-
-                    cmd.Parameters.Add(new MySqlParameter("@val8", MySqlDbType.Int32)
-                    { Value = objOfTable.НКл });
+                    cmd.Parameters.Add(new MySqlParameter("@val7", DbType.Boolean)
+                    { Value = objOfTable.ПокупкаСовершена });
 
                     con.Open();
                     result = await cmd.ExecuteNonQueryAsync();
