@@ -39,7 +39,7 @@ namespace Client
 
                 if (IsUserExists)
                 {
-                    MessageBox.Show("Добро пожаловать в систему, сотрудник", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //MessageBox.Show("Добро пожаловать", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     MainForm mf = new MainForm();
                     mf.lbWhoLogged.Text = "Сотрудник:";
                     mf.keyLbl.Text = user.ID.ToString();

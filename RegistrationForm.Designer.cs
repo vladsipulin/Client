@@ -47,14 +47,14 @@
             // 
             // тбЛогин
             // 
-            тбЛогин.Location = new Point(52, 91);
+            тбЛогин.Location = new Point(44, 34);
             тбЛогин.Name = "тбЛогин";
             тбЛогин.Size = new Size(175, 23);
             тбЛогин.TabIndex = 0;
             // 
             // тбПароль
             // 
-            тбПароль.Location = new Point(52, 146);
+            тбПароль.Location = new Point(44, 89);
             тбПароль.Name = "тбПароль";
             тбПароль.Size = new Size(174, 23);
             тбПароль.TabIndex = 1;
@@ -62,7 +62,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(53, 128);
+            label2.Location = new Point(45, 71);
             label2.Name = "label2";
             label2.Size = new Size(52, 15);
             label2.TabIndex = 5;
@@ -71,7 +71,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(53, 73);
+            label1.Location = new Point(45, 16);
             label1.Name = "label1";
             label1.Size = new Size(44, 15);
             label1.TabIndex = 4;
@@ -79,17 +79,17 @@
             // 
             // regButton
             // 
-            regButton.Location = new Point(54, 463);
+            regButton.Location = new Point(44, 387);
             regButton.Name = "regButton";
-            regButton.Size = new Size(173, 35);
+            regButton.Size = new Size(175, 35);
             regButton.TabIndex = 6;
-            regButton.Text = "Добавить портье";
+            regButton.Text = "Подтвердить регистрацию";
             regButton.UseVisualStyleBackColor = true;
             regButton.Click += regButton_Click;
             // 
             // тбПочта
             // 
-            тбПочта.Location = new Point(52, 204);
+            тбПочта.Location = new Point(44, 147);
             тбПочта.Name = "тбПочта";
             тбПочта.Size = new Size(174, 23);
             тбПочта.TabIndex = 7;
@@ -97,7 +97,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(53, 186);
+            label3.Location = new Point(45, 129);
             label3.Name = "label3";
             label3.Size = new Size(116, 15);
             label3.TabIndex = 8;
@@ -106,7 +106,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(53, 247);
+            label4.Location = new Point(45, 190);
             label4.Name = "label4";
             label4.Size = new Size(142, 15);
             label4.TabIndex = 10;
@@ -114,7 +114,7 @@
             // 
             // тбФИО
             // 
-            тбФИО.Location = new Point(52, 265);
+            тбФИО.Location = new Point(44, 208);
             тбФИО.Name = "тбФИО";
             тбФИО.Size = new Size(174, 23);
             тбФИО.TabIndex = 9;
@@ -122,7 +122,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(53, 307);
+            label5.Location = new Point(45, 250);
             label5.Name = "label5";
             label5.Size = new Size(33, 15);
             label5.TabIndex = 12;
@@ -131,7 +131,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(52, 361);
+            label6.Location = new Point(44, 304);
             label6.Name = "label6";
             label6.Size = new Size(93, 15);
             label6.TabIndex = 14;
@@ -139,7 +139,7 @@
             // 
             // полеДР
             // 
-            полеДР.Location = new Point(52, 386);
+            полеДР.Location = new Point(44, 329);
             полеДР.Name = "полеДР";
             полеДР.Size = new Size(174, 23);
             полеДР.TabIndex = 15;
@@ -148,7 +148,7 @@
             // 
             кбПол.FormattingEnabled = true;
             кбПол.Items.AddRange(new object[] { "муж.", "жен." });
-            кбПол.Location = new Point(52, 325);
+            кбПол.Location = new Point(44, 268);
             кбПол.Name = "кбПол";
             кбПол.Size = new Size(174, 23);
             кбПол.TabIndex = 16;
@@ -156,7 +156,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(54, 20);
+            label7.Location = new Point(262, 22);
             label7.Name = "label7";
             label7.Size = new Size(89, 15);
             label7.TabIndex = 18;
@@ -164,7 +164,7 @@
             // 
             // тбID
             // 
-            тбID.Location = new Point(52, 38);
+            тбID.Location = new Point(262, 40);
             тбID.Name = "тбID";
             тбID.Size = new Size(175, 23);
             тбID.TabIndex = 17;
@@ -173,7 +173,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(287, 526);
+            ClientSize = new Size(262, 443);
             Controls.Add(label7);
             Controls.Add(тбID);
             Controls.Add(кбПол);
@@ -192,7 +192,7 @@
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "RegistrationForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Создание нового портье";
+            Text = "Регистрация нового портье";
             Load += RegistrationForm_Load;
             ResumeLayout(false);
             PerformLayout();

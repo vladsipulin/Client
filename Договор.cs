@@ -114,7 +114,7 @@ namespace Client
             {
                 кбНДоговора.Text = "";
                 button1.Enabled = true;
-                кбНС.Enabled = true;
+                кбНС.Enabled = false;
                 button2.Enabled = false;
                 button3.Enabled = false;
 
@@ -137,7 +137,7 @@ namespace Client
             else
             {
                 button1.Enabled = false;
-                кбНС.Enabled = true;
+                кбНС.Enabled = false;
                 button2.Enabled = true;
                 button3.Enabled = true;
 

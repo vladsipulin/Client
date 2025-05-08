@@ -114,7 +114,7 @@ namespace Client
             {
                 if (TB_EMAIL.Text.Equals(code.ToString()))
                 {
-                    MessageBox.Show("Добро пожаловать!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //MessageBox.Show("Добро пожаловать!", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Terminal_MainForm tmf = new Terminal_MainForm();
                     tmf.lbWhoLogged.Text = "Клиент:";
                     tmf.keyLbl.Text = _ur.ID.ToString();

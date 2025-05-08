@@ -97,6 +97,8 @@ namespace Client
         private void RegistrationForm_Load(object sender, EventArgs e)
         {
             тбID.Enabled = false;
+            тбID.Visible = false;
+            label7.Visible = false;
         }
     }
 }

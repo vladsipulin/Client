@@ -19,7 +19,7 @@ namespace Client
         MySqlCommand cmd;
         MySqlDataAdapter da;
         DataTable dt;
-        private IUchetZayavokUslug _repo;
+        IUchetZayavokUslug _repo;
         string sql;
         Dictionary<string, Control> controlsMapping;
         bool firstLoading = true;
@@ -134,8 +134,8 @@ namespace Client
             checkBox1.Checked = true;
             checkBox1.Visible = false;
             кбНС.Enabled = false;
-            тбСтоимостьОплаты.ReadOnly = false;
-            тбШтраф.ReadOnly = false;
+            тбСтоимостьОплаты.ReadOnly = true;
+            тбШтраф.ReadOnly = true;
             BTN_UPDATECURRENT.Visible = false;
 
             controlsMapping = new Dictionary<string, Control>
@@ -230,41 +230,41 @@ namespace Client
 
                 //if (!firstLoading)
                 //{
-                    // Загружаем клиентов
-                    sql = "SELECT DISTINCT НКл, ФИО FROM Клиент WHERE НКл IN (SELECT НКл FROM ЗаявкаНаУслугу WHERE ПокупкаСовершена=0)";
-                    ComboBoxDataForFill Клиент = new ComboBoxDataForFill(sql, "ФИО", "НКл");
-                    LoadCombo(Клиент, кбНКл);
+                // Загружаем клиентов
+                sql = "SELECT DISTINCT НКл, ФИО FROM Клиент WHERE НКл IN (SELECT НКл FROM ЗаявкаНаУслугу WHERE ПокупкаСовершена=0)";
+                ComboBoxDataForFill Клиент = new ComboBoxDataForFill(sql, "ФИО", "НКл");
+                LoadCombo(Клиент, кбНКл);
 
-                    int? НКл = (int?)(кбНКл.SelectedValue ?? 0);
+                int? НКл = (int?)(кбНКл.SelectedValue ?? 0);
 
-                    if (НКл == 0)
-                    {
-                        MessageBox.Show("Клиенты с неподтвержденными заявками отсутствуют.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        checkBox1.Checked = false;
-                        return;
-                    }
+                if (НКл == 0)
+                {
+                    MessageBox.Show("Клиенты с неподтвержденными заявками отсутствуют.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    checkBox1.Checked = false;
+                    return;
+                }
 
-                    // Загружаем заявки клиента
-                    sql = "SELECT DISTINCT НЗаявки FROM ЗаявкаНаУслугу WHERE НКл=@НКл AND ПокупкаСовершена=0";
-                    ComboBoxDataForFill ЗаявкаНаУслугу = new ComboBoxDataForFill(sql, "НЗаявки", "НЗаявки");
-                    ЗаявкаНаУслугу.paramsForSQLQuery.Add(new MySqlParameter("@НКл", MySqlDbType.Int32) { Value = НКл });
-                    LoadCombo(ЗаявкаНаУслугу, кбНЗаявки);
+                // Загружаем заявки клиента
+                sql = "SELECT DISTINCT НЗаявки FROM ЗаявкаНаУслугу WHERE НКл=@НКл AND ПокупкаСовершена=0";
+                ComboBoxDataForFill ЗаявкаНаУслугу = new ComboBoxDataForFill(sql, "НЗаявки", "НЗаявки");
+                ЗаявкаНаУслугу.paramsForSQLQuery.Add(new MySqlParameter("@НКл", MySqlDbType.Int32) { Value = НКл });
+                LoadCombo(ЗаявкаНаУслугу, кбНЗаявки);
 
-                    int? НЗаявки = (int?)(кбНЗаявки.SelectedValue ?? 0);
+                int? НЗаявки = (int?)(кбНЗаявки.SelectedValue ?? 0);
 
-                    if (НЗаявки == 0)
-                    {
-                        MessageBox.Show("Заявки, требующие подтверждения покупки, отсутствуют", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        this.Close();
-                    }
+                if (НЗаявки == 0)
+                {
+                    MessageBox.Show("Заявки, требующие подтверждения покупки, отсутствуют", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.Close();
+                }
 
-                    // Загружаем портье
-                    sql = "SELECT НС, ФИО FROM Портье WHERE НС=@НС";
-                    ComboBoxDataForFill Портье = new ComboBoxDataForFill(sql, "ФИО", "НС");
-                    Портье.paramsForSQLQuery.Add(new MySqlParameter("@НС", MySqlDbType.Int32) { Value = Convert.ToInt16(lbWhoLogged.Text) });
-                    LoadCombo(Портье, кбНС);
+                // Загружаем портье
+                sql = "SELECT НС, ФИО FROM Портье WHERE НС=@НС";
+                ComboBoxDataForFill Портье = new ComboBoxDataForFill(sql, "ФИО", "НС");
+                Портье.paramsForSQLQuery.Add(new MySqlParameter("@НС", MySqlDbType.Int32) { Value = Convert.ToInt16(lbWhoLogged.Text) });
+                LoadCombo(Портье, кбНС);
 
-                    await LoadServicesByRequest(НЗаявки.Value);
+                await LoadServicesByRequest(НЗаявки.Value);
                 //}
             }
             else
@@ -343,26 +343,13 @@ namespace Client
         private async void кбНЗаявки_SelectionChangeCommitted(object sender, EventArgs e)
         {
             int НЗаявки = (int)кбНЗаявки.SelectedValue;
-
-            // Загружаем портье
-            if (checkBox1.Checked)
-            {
-                sql = "SELECT НС, ФИО FROM Портье WHERE НС=@НС";
-                ComboBoxDataForFill Портье = new ComboBoxDataForFill(sql, "ФИО", "НС");
-                Портье.paramsForSQLQuery.Add(new MySqlParameter("@НС", MySqlDbType.Int32) { Value = Convert.ToInt16(lbWhoLogged.Text) });
-                LoadCombo(Портье, кбНС);
-            }
-            else
-            {
-                sql = "SELECT НС, ФИО FROM Портье WHERE НС IN (SELECT НС FROM ЗаявкаНаУслугу WHERE НЗаявки=@НЗаявки)";
-                ComboBoxDataForFill Портье = new ComboBoxDataForFill(sql, "ФИО", "НС");
-                Портье.paramsForSQLQuery.Add(new MySqlParameter("@НЗаявки", MySqlDbType.Int32) { Value = НЗаявки });
-                LoadCombo(Портье, кбНС);
-
-                SetControlsFromDataRow(НЗаявки, кбНЗаявки.DataSource as DataTable, controlsMapping);
-            }
-
+            sql = "SELECT НС, ФИО FROM Портье WHERE НС=@НС";
+            ComboBoxDataForFill Портье = new ComboBoxDataForFill(sql, "ФИО", "НС");
+            Портье.paramsForSQLQuery.Add(new MySqlParameter("@НС", MySqlDbType.Int32) { Value = Convert.ToInt16(lbWhoLogged.Text) });
+            LoadCombo(Портье, кбНС);
+            SetControlsFromDataRow(НЗаявки, кбНЗаявки.DataSource as DataTable, controlsMapping);
             await LoadServicesByRequest(НЗаявки);
+            тбДатаОплаты_ValueChanged(тбДатаОплаты.Value, null);
         }
 
         private async void тбДатаОплаты_ValueChanged(object sender, EventArgs e)
@@ -448,7 +435,7 @@ namespace Client
                 if (result)
                 {
                     MessageBox.Show($"Покупка по заявке №{кбНЗаявки.SelectedValue} подтверждена", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    
+
                     sql = "SELECT DISTINCT НЗаявки FROM ЗаявкаНаУслугу WHERE НКл=@НКл AND ПокупкаСовершена=0";
                     ComboBoxDataForFill ЗаявкаНаУслугу = new ComboBoxDataForFill(sql, "НЗаявки", "НЗаявки");
                     ЗаявкаНаУслугу.paramsForSQLQuery.Add(new MySqlParameter("@НКл", MySqlDbType.Int32) { Value = Convert.ToInt16(кбНКл.Text) });
