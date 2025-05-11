@@ -11,7 +11,7 @@ namespace Client.Models
         {
             this.ID = ID;
             this.Логин = Логин;
-            this.Пароль = GetPasswordHash(Пароль);
+            this.Пароль = PasswordHasher.HashPassword(Пароль, ID);
             this.UserType = UserType;
         }
 
@@ -21,12 +21,6 @@ namespace Client.Models
             this.ФИО = ФИО;
             this.ID = ID;
             UserType = String.Empty;
-        }
-
-        private string GetPasswordHash(string password)
-        {
-            string salt = "TfbcZEIwOHJokZyDIvOqjg==";
-            return PasswordHasher.HashPassword(password, salt);
         }
 
         public override string ToString()

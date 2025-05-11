@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -6,37 +7,39 @@ namespace Client.Services
 {
     internal class PasswordHasher
     {
-        // Метод для генерации случайной соли
-        public static string GenerateSalt(int size = 16)
-        {
-            var rng = new RNGCryptoServiceProvider();
-            var saltBytes = new byte[size];
-            rng.GetBytes(saltBytes);
-            return Convert.ToBase64String(saltBytes);
-        }
+        // Читаем перец из App.config
+        private static readonly string Pepper = ConfigurationManager.AppSettings["PasswordPepper"]
+            ?? throw new ConfigurationErrorsException("PasswordPepper not found in App.config");
 
-        // Метод для хеширования пароля с использованием соли
-        public static string HashPassword(string password, string salt)
+        // Метод для генерации детерминированной соли
+        public static string GenerateSalt(string userIdentifier)
         {
             using (var sha256 = SHA256.Create())
             {
-                // Конкатенируем пароль с солью
-                var saltedPassword = password + salt;
-                var saltedPasswordBytes = Encoding.UTF8.GetBytes(saltedPassword);
+                var identifierBytes = Encoding.UTF8.GetBytes(userIdentifier);
+                var saltBytes = sha256.ComputeHash(identifierBytes);
+                return Convert.ToBase64String(saltBytes);
+            }
+        }
+
+        // Метод для хеширования пароля
+        public static string HashPassword(string password, int userIdentifier)
+        {
+            var salt = GenerateSalt(userIdentifier.ToString());
+
+            using (var sha256 = SHA256.Create())
+            {
+                // Конкатенируем пароль, соль и перец
+                var saltedPepperedPassword = password + salt + Pepper;
+                var saltedPepperedPasswordBytes = Encoding.UTF8.GetBytes(saltedPepperedPassword);
 
                 // Вычисляем хеш
-                var hashBytes = sha256.ComputeHash(saltedPasswordBytes);
+                var hashBytes = sha256.ComputeHash(saltedPepperedPasswordBytes);
 
                 // Преобразуем хеш в строку Base64
                 return Convert.ToBase64String(hashBytes);
             }
         }
-
-        // Метод для проверки пароля
-        public static bool VerifyPassword(string enteredPassword, string storedHash, string storedSalt)
-        {
-            var hashOfEnteredPassword = HashPassword(enteredPassword, storedSalt);
-            return hashOfEnteredPassword == storedHash;
-        }
     }
-}
+}	
+

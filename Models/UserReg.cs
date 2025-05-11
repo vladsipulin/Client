@@ -26,18 +26,8 @@ namespace Client.Models
             this.Пол = Пол;
             this.ДатаРождения = ДатаРождения.ToShortDateString();
             this.Логин = Логин;
-            this.Пароль = GetPasswordHash(Пароль);
+            this.Пароль = PasswordHasher.HashPassword(Пароль, НКл);
             this.Email = Email;
-        }
-
-        private string GetPasswordHash(string password)
-        {
-            string salt = "TfbcZEIwOHJokZyDIvOqjg==";
-            //Console.WriteLine($"Salt: {salt}");
-
-            string hashedPassword = PasswordHasher.HashPassword(password, salt);
-            //Console.WriteLine($"Hashed Password: {hashedPassword}");
-            return hashedPassword;
         }
 
         /// <summary>

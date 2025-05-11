@@ -350,7 +350,7 @@ namespace Client.Services
                         return new Result<UserRecover>("Не указан тип пользователя (Клиент или Портье).");
                     }
 
-                    string hashedPassword = PasswordHasher.HashPassword(newPassword, "TfbcZEIwOHJokZyDIvOqjg==");
+                    string hashedPassword = PasswordHasher.HashPassword(newPassword, userRec.Id);
                     cmd.Parameters.AddWithValue("@Пароль", hashedPassword);
                     cmd.Parameters.AddWithValue("@Id", userRec.Id);
 

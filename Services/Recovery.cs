@@ -67,19 +67,9 @@ namespace Client.Services
             return userWritten;
         }
 
-        private string GetPasswordHash(string password)
-        {
-            string salt = "TfbcZEIwOHJokZyDIvOqjg==";
-            //Console.WriteLine($"Salt: {salt}");
-
-            string hashedPassword = PasswordHasher.HashPassword(password, salt);
-            //Console.WriteLine($"Hashed Password: {hashedPassword}");
-            return hashedPassword;
-        }
-
         public Result<UserRecover> UpdatePasswordOfUser(UserRecover userRec, string newPassword)
         {
-            newPassword = GetPasswordHash(newPassword);
+            newPassword = PasswordHasher.HashPassword(newPassword, userRec.Id);
 
             if (userRec is null)
                 throw new ArgumentNullException(nameof(userRec));
