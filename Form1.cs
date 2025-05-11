@@ -17,7 +17,7 @@ namespace Client
 
         private async void loginButton_Click(object sender, EventArgs e)
         {
-            UserAuth user = new UserAuth(0, тбЛогин.Text, тбПароль.Text);
+            UserAuth user = new UserAuth(тбЛогин.Text, тбПароль.Text, -1, null);
             string userAddInfo = String.Empty;
 
             _repo = new Authorization();
@@ -33,6 +33,7 @@ namespace Client
                     {
                         IsUserExists = true;
                         user.ID = element.ID;
+                        user.UserType = element.UserType; 
                         break;
                     }
                 }
@@ -40,10 +41,21 @@ namespace Client
                 if (IsUserExists)
                 {
                     //MessageBox.Show("Добро пожаловать", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    MainForm mf = new MainForm();
-                    mf.lbWhoLogged.Text = "Сотрудник:";
-                    mf.keyLbl.Text = user.ID.ToString();
-                    mf.Show();
+
+                    if (user.UserType.Equals("Базовый"))
+                    {
+                        MainForm_Porter mfp = new MainForm_Porter();
+                        mfp.lbWhoLogged.Text = "Сотрудник:";
+                        mfp.keyLbl.Text = user.ID.ToString();
+                        mfp.Show();
+                    }
+                    else if (user.UserType.Equals("Полный"))
+                    {
+                        MainForm mf = new MainForm();
+                        mf.lbWhoLogged.Text = "Сотрудник:";
+                        mf.keyLbl.Text = user.ID.ToString();
+                        mf.Show();
+                    }
                 }
                 else
                 {
@@ -70,8 +82,10 @@ namespace Client
 
         private void AuthorizationForm_Load(object sender, EventArgs e)
         {
-            тбЛогин.Text = "admin";
-            тбПароль.Text = "admin";
+            //тбЛогин.Text = "admin";
+            //тбПароль.Text = "admin";
+            тбЛогин.Text = "igoshev_nl";
+            тбПароль.Text = "VLAD_Eww@_Land0980";
         }
 
         private void button1_Click(object sender, EventArgs e)

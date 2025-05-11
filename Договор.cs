@@ -95,14 +95,6 @@ namespace Client
 
         private async void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-
-            //sql = "SELECT * FROM ГостиничныйКомплекс";
-            //ComboBoxDataForFill ГК = new ComboBoxDataForFill(sql, "Название", "НГ");
-            //LoadCombo(ГК);
-            //кбНГ.DataSource = ГК.dataSource;
-            //кбНГ.DisplayMember = ГК.DisplayMember;
-            //кбНГ.ValueMember = ГК.ValueMember;
-
             sql = $"SELECT НС, ФИО FROM Портье ";
             ComboBoxDataForFill Сотрудник = new ComboBoxDataForFill(sql, "ФИО", "НС");
             LoadCombo(Сотрудник);
@@ -117,6 +109,8 @@ namespace Client
                 кбНС.Enabled = false;
                 button2.Enabled = false;
                 button3.Enabled = false;
+
+                кбНС.SelectedValue = Convert.ToInt32(lbWhoLogged.Text);
 
                 sql = $"SELECT * FROM Организация";
                 ComboBoxDataForFill Организация = new ComboBoxDataForFill(sql, "Наименование", "НОрг");

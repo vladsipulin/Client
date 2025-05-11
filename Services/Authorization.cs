@@ -105,7 +105,7 @@ namespace Client.Services
                 using (var cmd = con.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT НС, Логин, Пароль
+                        SELECT НС, Логин, Пароль, Доступ
                         FROM Портье";
                     await con.OpenAsync();
                     using (var reader = await cmd.ExecuteReaderAsync())
@@ -115,7 +115,8 @@ namespace Client.Services
                             var user = new Employer(
                                 ID: reader.GetInt32(0),
                                 Логин: reader.IsDBNull(1) ? null : reader.GetString(1),
-                                Пароль: reader.IsDBNull(2) ? null : reader.GetString(2)
+                                Пароль: reader.IsDBNull(2) ? null : reader.GetString(2),
+                                UserType: reader.IsDBNull(3) ? "Базовый" : reader.GetString(3) 
                             );
                             list.Add(user);
                         }

@@ -303,7 +303,7 @@ namespace Client
                 }
                 */
             }
-            else
+            else if (Equals(lbWhoLogged.Text, "Сотрудник:"))
             {
                 button1.Visible = false;
                 button2.Visible = false;
@@ -537,6 +537,10 @@ namespace Client
                 {
                     GenerateExcelReport();
                 }
+                else if (comboBox1.SelectedIndex == 5)
+                {
+                    GenerateTopServicesReport();
+                }
             }
             else
             {
@@ -715,7 +719,128 @@ namespace Client
             }
             catch (System.IO.IOException ex) when (ex.Message.Contains("being used by another process"))
             {
-                MessageBox.Show("Файл шаблона Excel открыт. Пожалуйста, закройте файл и повторите попытку.",
+                MessageBox.Show("Файл шаблона Excel открыт и доступ к нему невозможен. Пожалуйста, закройте файл и повторите попытку.",
+                    "Ошибка доступа к файлу", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Произошла ошибка при создании отчёта: {ex.Message}",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+
+        private void GenerateTopServicesReport()
+        {
+            // Путь к шаблону Excel
+            string templatePath = @"C:\Users\user\Desktop\4 курс ВУЗ\Управление данными\WinForms\Client\bin\Debug\net6.0-windows\Templates\2.xlsx";
+            if (!File.Exists(templatePath))
+            {
+                MessageBox.Show("Шаблон Excel не найден по пути: " + templatePath, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try
+            {
+                using (var workbook = new XLWorkbook(templatePath))
+                {
+                    var worksheet = workbook.Worksheet("Отчет об услугах"); 
+
+                    // Подключаемся к базе данных
+                    using (MySqlConnection conn = GetConnection())
+                    {
+                        conn.Open();
+
+                        // SQL-запрос для получения топ-5 услуг
+                        string query = @"SELECT 
+                                            z.НУслуги,
+                                            u.Наименование AS НаименованиеУслуги,
+                                            COUNT(CASE WHEN z.ПокупкаСовершена = TRUE THEN 1 END) AS КоличествоЗаказов,
+                                            SUM(CASE WHEN z.ПокупкаСовершена = TRUE THEN z.Сумма ELSE 0 END) AS СуммаЗаказов,
+                                            COUNT(v.НЗаявки) AS КоличествоВозвратов
+                                        FROM ЗаявкаНаУслугу z
+                                        LEFT JOIN Услуга u ON z.НУслуги = u.НУслуги
+                                        LEFT JOIN ВозвратСредств v ON z.НЗаявки = v.НЗаявки AND z.НУслуги = v.НУслуги AND z.НКл = v.НКл
+                                        GROUP BY z.НУслуги, u.Наименование
+                                        ORDER BY КоличествоЗаказов DESC
+                                        LIMIT 5";
+
+                        using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                        {
+                            using (MySqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                int row = 7; // Начинаем с строки 7 (B7:F7)
+
+                                while (reader.Read() && row <= 11) // Заполняем до строки 11 (топ-5)
+                                {
+                                    // C: Наименование услуги
+                                    worksheet.Cell(row, 3).Value = reader["НаименованиеУслуги"].ToString();
+
+                                    // D: Количество заказов
+                                    worksheet.Cell(row, 4).Value = Convert.ToInt32(reader["КоличествоЗаказов"]);
+
+                                    // E: Сумма всех заказов, руб.
+                                    worksheet.Cell(row, 5).Value = Convert.ToDouble(reader["СуммаЗаказов"]);
+                                    worksheet.Cell(row, 5).Style.NumberFormat.Format = "#,##0.00";
+
+                                    // F: Количество возвратов
+                                    worksheet.Cell(row, 6).Value = Convert.ToInt32(reader["КоличествоВозвратов"]);
+
+                                    row++;
+                                }
+
+                                // Если записей меньше 5, заполняем оставшиеся строки нулями
+                                while (row <= 11)
+                                {
+                                    worksheet.Cell(row, 3).Value = "-";
+                                    worksheet.Cell(row, 4).Value = 0;
+                                    worksheet.Cell(row, 5).Value = 0;
+                                    worksheet.Cell(row, 5).Style.NumberFormat.Format = "#,##0.00";
+                                    worksheet.Cell(row, 6).Value = 0;
+                                    row++;
+                                }
+                            }
+                        }
+
+                        conn.Close();
+                    }
+
+                    // Задаём ширину столбцов B–F (2–6) для читаемости
+                    worksheet.Column(2).Width = 12;  // B: Место по популярности
+                    worksheet.Column(3).Width = 20;  // C: Наименование услуги
+                    worksheet.Column(4).Width = 14;  // D: Количество заказов
+                    worksheet.Column(5).Width = 14;  // E: Сумма всех заказов
+                    worksheet.Column(6).Width = 14;  // F: Количество возвратов
+
+                    // Настраиваем параметры страницы для печати на A4
+                    worksheet.PageSetup.PageOrientation = XLPageOrientation.Landscape;
+                    worksheet.PageSetup.PaperSize = XLPaperSize.A4Paper;
+                    worksheet.PageSetup.Margins.Left = 0.7;
+                    worksheet.PageSetup.Margins.Right = 0.7;
+                    worksheet.PageSetup.Margins.Top = 0.7;
+                    worksheet.PageSetup.Margins.Bottom = 0.7;
+                    worksheet.PageSetup.FitToPages(1, 1);
+                    worksheet.PageSetup.Scale = 70;
+
+                    // Сохраняем файл
+                    string reportsDirectory = Path.Combine(Environment.CurrentDirectory, "Reports");
+                    Directory.CreateDirectory(reportsDirectory); // Создаём папку, если её нет
+                    string fileName = $"Топ_Услуг_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.xlsx";
+                    string filePath = Path.Combine(reportsDirectory, fileName);
+                    workbook.SaveAs(filePath);
+
+                    // Открываем файл
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = filePath,
+                        UseShellExecute = true
+                    });
+                }
+            }
+            catch (System.IO.IOException ex) when (ex.Message.Contains("being used by another process"))
+            {
+                MessageBox.Show("Файл шаблона Excel открыт и доступ к нему невозможен. Пожалуйста, закройте файл и повторите попытку.",
                     "Ошибка доступа к файлу", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }

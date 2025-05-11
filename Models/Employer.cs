@@ -15,9 +15,10 @@ namespace Client.Models
         public string Логин { get; set; }
         public string Пароль { get; set; }
         public string Email { get; set; }
+        public string UserType { get; set; }
 
 
-        public Employer(int ID = 0, string Логин = "<Логин>", string Пароль = "<Пароль>", string ФИО = "<ФИО>", string Пол = "<Пол>", DateTime ДатаРождения = default, string Email = "<Email>")
+        public Employer(int ID = 0, string Логин = "<Логин>", string Пароль = "<Пароль>", string ФИО = "<ФИО>", string Пол = "<Пол>", DateTime ДатаРождения = default, string Email = "<Email>", string UserType = "Базовый")
         {
             this.ID = ID;
             this.ФИО = ФИО;
@@ -26,6 +27,7 @@ namespace Client.Models
             this.Логин = Логин;
             this.Пароль = Пароль;
             this.Email = Email;
+            this.UserType = UserType;
         }
 
         /// <summary>
@@ -46,12 +48,13 @@ namespace Client.Models
                 Логин = client.Логин,
                 Пароль = client.Пароль,
                 Email = client.Email,
+                UserType = client.UserType,
             };
         }
 
         public override string ToString()
         {
-            return $"{ID}: {ФИО} {Пол} {ДатаРождения} {Логин} {Пароль} {Email}";
+            return $"{ID}: {ФИО} {Пол} {ДатаРождения} {Логин} {Пароль} {Email} {UserType}";
         }
     }
 }

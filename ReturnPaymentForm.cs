@@ -167,7 +167,7 @@ namespace Client
 
             sql = "SELECT НС, ФИО FROM Портье WHERE НС=@НС";
             ComboBoxDataForFill Портье = new ComboBoxDataForFill(sql, "ФИО", "НС");
-            Портье.paramsForSQLQuery.Add(new MySqlParameter("@НС", MySqlDbType.Int32) { Value = Convert.ToInt16(lbWhoLogged.Text) });
+            Портье.paramsForSQLQuery.Add(new MySqlParameter("@НС", MySqlDbType.Int32) { Value = Convert.ToInt32(lbWhoLogged.Text) });
             LoadCombo(Портье, кбНС);
 
             GetSumByPickingOrderNum();
